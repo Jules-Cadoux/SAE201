@@ -6,78 +6,77 @@ using System.Threading.Tasks;
 
 namespace SAE201.Model
 {
-    public class Employe
+    public class Vin
     {
-        private int numEmploye;
-        private string nom;
-        private string prenom;
-        private string login;
-        private string mdp;
+        private int numVin;
+        private string nomVin;
+        private double prixVin;
+        private string description;
+        private int millésime;
 
-        public int NumEmploye
+        public int NumVin
         {
             get
             {
-                return this.numEmploye;
+                return numVin;
             }
 
             set
             {
-                this.numEmploye = value;
+                numVin = value;
             }
         }
 
-        public string Nom
+        public string NomVin
         {
             get
             {
-                return nom;
+                return nomVin;
             }
 
             set
             {
-                nom = value;
+                nomVin = value;
             }
         }
 
-        public string Prenom
+        public double PrixVin
         {
             get
             {
-                return prenom;
+                return prixVin;
             }
 
             set
             {
-                prenom = value;
+                prixVin = value;
             }
         }
 
-        public string Login
+        public string Description
         {
             get
             {
-                return login;
+                return description;
             }
 
             set
             {
-                login = value;
+                description = value;
             }
         }
 
-        public string Mdp
+        public int Millésime
         {
             get
             {
-                return this.mdp;
+                return this.millésime;
             }
 
             set
             {
-                this.mdp = value;
+                this.millésime = value;
             }
         }
-
     }
 }
