@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace SAE201.Model
 {
-    class Fournisseur
+    public class Fournisseur
     {
-        int numFournisseur;
-        string nomFournisseur;
+        private int numFournisseur;
+        private string nomFournisseur;
 
         public int NumFournisseur
         {
