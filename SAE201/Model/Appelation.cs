@@ -7,37 +7,36 @@ using System.Threading.Tasks;
 namespace SAE201.Model
 {
     public enum Typedappelation { AOP,AOC,IGP}
-    class Appelation
+    public class Appelation
     {
-        int NumAppelation;
-        Typedappelation NomAppelation;
+        private int numAppelation;
+        private Typedappelation nomAppelation;
 
-        public int NumAppelation1
+        public int NumAppelation
         {
             get
             {
-                return this.NumAppelation;
+                return this.numAppelation;
             }
 
             set
             {
-                this.NumAppelation = value;
+                this.numAppelation = value;
             }
         }
 
-        public Typedappelation NomAppelation1
+        public Typedappelation NomAppelation
         {
             get
             {
-                return this.NomAppelation;
+                return this.nomAppelation;
             }
 
             set
             {
-
                 if (value != Typedappelation.AOP && value != Typedappelation.AOC && value != Typedappelation.IGP)
                     throw new ArgumentException("Le Typedappelation doit être AOP ou AOC ou IGP");
-                this.NomAppelation = value;
+                this.nomAppelation = value;
             }
         }
     }
