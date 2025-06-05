@@ -10,6 +10,6 @@
     Height="450"
     mc:Ignorable="d">
     <Grid >
-        <Button Content="Button" HorizontalAlignment="Left" Margin="253,131,0,0" VerticalAlignment="Top" Height="133" Width="266"/>
+        <Button Content="Button" HorizontalAlignment="Left" Margin="260,134,0,0" VerticalAlignment="Top"/>
     </Grid>
 </Window>
