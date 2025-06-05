@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace SAE201.Model
 {
@@ -13,6 +14,15 @@ namespace SAE201.Model
         private double prixVin;
         private string description;
         private int millésime;
+
+        public Vin(int numVin, Fournisseur numFournisseur, string nomVin, double prixVin, string description, int millésime)
+        {
+            this.NumVin = numVin;
+            this.NomVin = nomVin;
+            this.PrixVin = prixVin;
+            this.Description = description;
+            this.Millésime = millésime;
+        }
 
         public int NumVin
         {
@@ -49,6 +59,11 @@ namespace SAE201.Model
 
             set
             {
+                if(value <= 0)
+                {
+                    MessageBox.Show("Le prix en peut pas être <= à la date actuelle", "Erreur création vin", MessageBoxButton.OK, MessageBoxImage.Error);
+
+                }
                 prixVin = value;
             }
         }
@@ -75,8 +90,22 @@ namespace SAE201.Model
 
             set
             {
+                if(value > DateTime.Today.Year)
+                {
+                    MessageBox.Show("Le millésime doit être < à la date actuelle", "Erreur création vin",MessageBoxButton.OK,MessageBoxImage.Error);
+                }
                 this.millésime = value;
             }
+        }
+
+        public override bool Equals(object? obj)
+        {
+            return obj is Vin vin &&
+                   this.NumVin == vin.NumVin &&
+                   this.NomVin == vin.NomVin &&
+                   this.PrixVin == vin.PrixVin &&
+                   this.Description == vin.Description &&
+                   this.Millésime == vin.Millésime;
         }
     }
 }
