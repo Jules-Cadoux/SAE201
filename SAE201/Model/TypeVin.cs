@@ -12,6 +12,18 @@ namespace SAE201.Model
         int numType;
         TypeDeVin nomType;
 
+        public TypeVin(int numType, TypeDeVin nomType)
+        {
+            this.NumType = numType;
+            this.NomType = nomType;
+        }
+
+        public TypeVin(int numType)
+        {
+            this.NumType = numType;
+        }
+        public TypeVin(){ }
+
         public int NumType
         {
             get
@@ -38,6 +50,12 @@ namespace SAE201.Model
                     throw new ArgumentException("Le NomType doit être Rosé ou Blanc ou Rouge");
                 this.nomType = value;
             }
+        }
+
+        public override bool Equals(object? obj)
+        {
+            return obj is TypeVin vin &&
+                   this.NumType == vin.NumType;
         }
     }
 }
