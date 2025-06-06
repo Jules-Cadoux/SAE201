@@ -12,6 +12,16 @@ namespace SAE201.Model
         private int numRole;
         private differentRole nomRole;
 
+        public Role()
+        {
+        }
+
+        public Role(int numRole, differentRole nomRole)
+        {
+            this.NumRole = numRole;
+            this.NomRole = nomRole;
+        }
+
         public int NumRole
         {
             get
@@ -36,6 +46,12 @@ namespace SAE201.Model
             {
                 this.nomRole = value;
             }
+        }
+
+        public override bool Equals(object? obj)
+        {
+            return obj is Role role &&
+                   this.NumRole == role.NumRole;
         }
     }
 }

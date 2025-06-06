@@ -11,6 +11,10 @@ namespace SAE201.Model
         private int numFournisseur;
         private string nomFournisseur;
 
+        public Fournisseur()
+        {
+        }
+
         public Fournisseur(int numFournisseur, string nomFournisseur)
         {
             this.NumFournisseur = numFournisseur;
@@ -41,6 +45,17 @@ namespace SAE201.Model
             {
                 this.nomFournisseur = value;
             }
+        }
+
+        public override bool Equals(object? obj)
+        {
+            return obj is Fournisseur fournisseur &&
+                   this.NumFournisseur == fournisseur.NumFournisseur;
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(this.NumFournisseur, this.NomFournisseur);
         }
     }
 }

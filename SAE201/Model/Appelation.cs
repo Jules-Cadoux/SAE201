@@ -12,6 +12,21 @@ namespace SAE201.Model
         private int numAppelation;
         private Typedappelation nomAppelation;
 
+        public Appelation()
+        {
+        }
+
+        public Appelation(int numAppelation)
+        {
+            this.NumAppelation = numAppelation;
+        }
+
+        public Appelation(int numAppelation, Typedappelation nomAppelation)
+        {
+            this.NumAppelation = numAppelation;
+            this.NomAppelation = nomAppelation;
+        }
+
         public int NumAppelation
         {
             get
@@ -38,6 +53,12 @@ namespace SAE201.Model
                     throw new ArgumentException("Le Typedappelation doit être AOP ou AOC ou IGP");
                 this.nomAppelation = value;
             }
+        }
+
+        public override bool Equals(object? obj)
+        {
+            return obj is Appelation appelation &&
+                   this.NumAppelation == appelation.NumAppelation;
         }
     }
 }

@@ -13,6 +13,21 @@ namespace SAE201.Model
         private string prenomClient;
         private string mailClient;
 
+        public Client(int numClient, string nomClient, string prenomClient, string mailClient)
+        {
+            this.NumClient = numClient;
+            this.NomClient = nomClient;
+            this.PrenomClient = prenomClient;
+            this.MailClient = mailClient;
+        }
+
+        public Client(int numClient)
+        {
+            this.NumClient = numClient;
+
+        }
+        public Client(){ }
+
         public int NumClient
         {
             get
