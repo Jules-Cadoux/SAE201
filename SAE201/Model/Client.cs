@@ -1,5 +1,7 @@
-﻿using System;
+﻿using Npgsql;
+using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -78,6 +80,73 @@ namespace SAE201.Model
             {
                 this.mailClient = value;
             }
+        }
+
+        public int Create()
+        {
+            int nb = 0;
+            using (NpgsqlCommand cmdInsert = new NpgsqlCommand("INSERT INTO client (nomclient,prenomclient, mailclient) VALUES (@nomclient,@prenomclient, @mailclient) RETURNING numclient"))
+            {
+                cmdInsert.Parameters.AddWithValue("nomclient", this.NomClient);
+                cmdInsert.Parameters.AddWithValue("prenomclient", this.PrenomClient);
+                cmdInsert.Parameters.AddWithValue("mailclient", this.mailClient);
+                nb = DataAccess.Instance.ExecuteInsert(cmdInsert);
+            }
+            this.NumClient = nb;
+            return nb;
+        }
+        public void Read()
+        {
+            using (NpgsqlCommand cmdSelect = new NpgsqlCommand("SELECT * FROM client WHERE numclient = @numclient"))
+            {
+                cmdSelect.Parameters.AddWithValue("numclient", this.numClient);
+                DataTable dt = DataAccess.Instance.ExecuteSelect(cmdSelect);
+                this.NumClient = (int)dt.Rows[0]["numclient"];
+                this.NomClient = (string)dt.Rows[0]["nomclient"];
+                this.PrenomClient = (string)dt.Rows[0]["prenomclient"];
+                this.MailClient = (string)dt.Rows[0]["mailclient"];
+
+            }
+        }
+
+        public int Update()
+        {
+            using (NpgsqlCommand cmdUpdate = new NpgsqlCommand("UPDATE client SET nomclient = @nomclient, prenomclient = @prenomclient, mailclient = @mailclient WHERE numclient = @numclient"))
+            {
+                cmdUpdate.Parameters.AddWithValue("nomclient", this.NomClient);
+                cmdUpdate.Parameters.AddWithValue("prenomclient", this.PrenomClient);
+                cmdUpdate.Parameters.AddWithValue("mailClient", this.MailClient);
+                cmdUpdate.Parameters.AddWithValue("numclient", this.NumClient);
+                return DataAccess.Instance.ExecuteSet(cmdUpdate);
+            }
+        }
+
+        public int Delete()
+        {
+            using (NpgsqlCommand cmdDelete = new NpgsqlCommand("DELETE FROM client WHERE numclient = @numclient"))
+            {
+                cmdDelete.Parameters.AddWithValue("numclient", this.NumClient);
+                return DataAccess.Instance.ExecuteSet(cmdDelete);
+            }
+        }
+
+
+        public List<Client> FindAll()
+        {
+            List<Client> lesClients = new List<Client>();
+            using (NpgsqlCommand cmdSelect = new NpgsqlCommand("select * from client ;"))
+            {
+                DataTable dt = DataAccess.Instance.ExecuteSelect(cmdSelect);
+                foreach (DataRow dr in dt.Rows)
+                    lesClients.Add(new Client((Int32)dr["numclient"], (string)dr["nomclient"],
+                   (string)dr["prenomclient"], (string)dr["mailclient"]));
+            }
+            return lesClients;
+        }
+
+        public List<Client> FindBySelection(string criteres)
+        {
+            throw new NotImplementedException();
         }
     }
 }
