@@ -20,9 +20,10 @@ namespace SAE201
     /// </summary>
     public partial class Connection : Window
     {
-        public List<Employe> employe = new List<Employe>();
+        public List<Employe> Employe {  get; set; }
         public Connection()
         {
+            ChargeData();
             InitializeComponent();
         }
         
@@ -30,7 +31,7 @@ namespace SAE201
         {
             try
             {
-                employe = new List<Employe>(new Employe().FindAll());
+                Employe = new List<Employe>(new Employe().FindAll());
             }
             catch(Exception ex) 
             {
@@ -42,7 +43,7 @@ namespace SAE201
 
         private void seConnecter_Click(object sender, RoutedEventArgs e)
         {
-            Employe user = employe.Find(x => x.Login == txLogin.Text && x.Mdp == txMdp.Text);
+            Employe user = Employe.Find(x => x.Login == txLogin.Text && x.Mdp == txMdp.Text);
             if (user is null)
             {
                 MessageBox.Show("Mot de passe ou login incorrect, réessayer");

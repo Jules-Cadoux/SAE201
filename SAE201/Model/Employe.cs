@@ -177,29 +177,8 @@ namespace SAE201.Model
             }
         }
 
-        public static List<Employe> FindAll()
+        public List<Employe> FindAll()
         {
-            List<Employe> employes = new List<Employe>();
-            using (NpgsqlCommand cmd = new NpgsqlCommand("SELECT * FROM employe"))
-            {
-                DataTable dt = DataAccess.Instance.ExecuteSelect(cmd);
-                foreach (DataRow row in dt.Rows)
-                {
-                    Employe emp = new Employe
-                    {
-                        NumEmploye = (int)row["numemploye"],
-                        Nom = (string)row["nom"],
-                        Prenom = (string)row["prenom"],
-                        Login = (string)row["login"],
-                        Mdp = (string)row["mdp"],
-                        NumRole = new Role { NumRole = (int)row["numrole"] }
-                    };
-                    employes.Add(emp);
-                }
-            }
-            //return employes;
-
-
             List<Employe> lesEmployes = new List<Employe>();
             using (NpgsqlCommand cmdSelect = new NpgsqlCommand("select * from employe ;"))
             {
