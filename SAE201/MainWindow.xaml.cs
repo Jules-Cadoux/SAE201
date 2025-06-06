@@ -18,7 +18,7 @@ namespace SAE201
     {
         public MainWindow()
         {
-            InitializeComponent();
+            //InitializeComponent();
         }
     }
 }

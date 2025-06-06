@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SAE201.Model;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -21,7 +22,10 @@ namespace SAE201.Windows
     {
         public RechercherClient()
         {
+            //ChargeData();
             InitializeComponent();
         }
+
+       
     }
 }
