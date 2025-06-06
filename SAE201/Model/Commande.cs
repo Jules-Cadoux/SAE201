@@ -18,8 +18,9 @@ namespace SAE201.Model
         {
         }
 
-        public Commande(int numCommande, Employe numEmploye, DateTime dateCommande, bool valider, double prixTotal) : this(numCommande)
+        public Commande(int numCommande, Employe numEmploye, DateTime dateCommande, bool valider, double prixTotal)
         {
+            this.NumCommande = numCommande;
             this.NumEmploye = numEmploye;
             this.DateCommande = dateCommande;
             this.Valider = valider;
