@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SAE201.Model;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -19,23 +20,36 @@ namespace SAE201
     /// </summary>
     public partial class Connection : Window
     {
+        public List<Employe> employe = new List<Employe>();
         public Connection()
         {
             InitializeComponent();
         }
+        
+        public void ChargeData()
+        {
+            try
+            {
+                employe = new List<Employe>(new Employe().FindAll());
+            }
+            catch(Exception ex) 
+            {
+                MessageBox.Show("Problème lors de la récupération des données,veuillez consulter votre admin");
+                LogError.Log(ex, "Erreur SQL");
+                Application.Current.Shutdown();
+            }   
+        }
 
         private void seConnecter_Click(object sender, RoutedEventArgs e)
         {
-            string login = txLogin.Text;
-            string mdp = txMdp.Text;
-            bool res = dataReservation.ConnexionBD(login, mdp);
-            if (res == true)
+            Employe user = employe.Find(x => x.Login == txLogin.Text && x.Mdp == txMdp.Text);
+            if (user is null)
             {
-                DialogResult = true;
+                MessageBox.Show("Mot de passe ou login incorrect, réessayer");
             }
             else
             {
-                MessageBox.Show("Mot de passe ou login incorrect, réessayer");
+                DialogResult = true;
             }
         }
     }
