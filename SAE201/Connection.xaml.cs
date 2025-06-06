@@ -24,7 +24,7 @@ namespace SAE201
             InitializeComponent();
         }
 
-        private void seConnecter_Click(object sender, RoutedEventArgs e)
+        /*private void seConnecter_Click(object sender, RoutedEventArgs e)
         {
             string login = txLogin.Text;
             string mdp = txMdp.Text;
@@ -37,6 +37,6 @@ namespace SAE201
             {
                 MessageBox.Show("Mot de passe ou login incorrect, réessayer");
             }
-        }
+        }*/
     }
 }

@@ -9,7 +9,15 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Page Remove="Windows\RechercherClient.xaml" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Npgsql" Version="9.0.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Windows\RechercherClient.xaml" />
   </ItemGroup>
 
 </Project>

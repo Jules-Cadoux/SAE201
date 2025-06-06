@@ -12,26 +12,26 @@
     <Grid>
         <TabControl>
             <TabItem Header="Les Clients">
-                <Grid Background="#FFE5E5E5">
+                <Grid Background="#FFFFFF">
                     <DataGrid
                         x:Name="dgClient"
                         Margin="71,42,213,18"
                         AutoGenerateColumns="False"
                         IsReadOnly="True"
-                        ItemsSource="{Binding LesChiens}">
+                        ItemsSource="{Binding LesClients}">
                         <DataGrid.Columns>
                             <DataGridTextColumn
                                 Width="*"
-                                Binding="{Binding Nom}"
+                                Binding="{Binding NomClient}"
                                 Header="Nom" />
                             <DataGridTextColumn
                                 Width="*"
-                                Binding="{Binding Maitre}"
-                                Header="Maitre" />
+                                Binding="{Binding PrenomClient}"
+                                Header="Prénom" />
                             <DataGridTextColumn
                                 Width="*"
-                                Binding="{Binding Poids}"
-                                Header="Poids (kg)" />
+                                Binding="{Binding MailClient}"
+                                Header="Mail " />
                         </DataGrid.Columns>
                     </DataGrid>
 
@@ -40,8 +40,8 @@
                         Width="286"
                         Margin="183,10,0,0"
                         HorizontalAlignment="Left"
-                        VerticalAlignment="Top"
-                        TextChanged="textMotClefChien_TextChanged" />
+                        VerticalAlignment="Top" />
+                    <!--  TextChanged="textMotClefChien_TextChanged"  -->
 
                     <Button
                         x:Name="buttSupprimer"
@@ -50,10 +50,10 @@
                         Margin="676,110,0,0"
                         HorizontalAlignment="Left"
                         VerticalAlignment="Top"
-                        Click="buttSupprimer_Click"
                         Content="&#xE74D;"
                         FontFamily="Segoe MDL2 Assets"
                         ToolTip="Supprimer" />
+                    <!--  Click="buttSupprimer_Click"  -->
 
                     <Button
                         x:Name="buttAjouter"
@@ -62,11 +62,10 @@
                         Margin="676,148,0,0"
                         HorizontalAlignment="Left"
                         VerticalAlignment="Top"
-                        Click="buttAjouter_Click"
                         Content="&#xE710;"
                         FontFamily="Segoe MDL2 Assets"
                         ToolTip="Ajouter" />
-
+                    <!--  Click="buttAjouter_Click"  -->
                     <Button
                         x:Name="buttEditer"
                         Width="30"
@@ -74,10 +73,10 @@
                         Margin="676,186,0,0"
                         HorizontalAlignment="Left"
                         VerticalAlignment="Top"
-                        Click="buttEditer_Click"
                         Content="&#xE70F;"
                         FontFamily="Segoe MDL2 Assets"
                         ToolTip="Editer" />
+                    <!--  Click="buttEditer_Click"  -->
                 </Grid>
             </TabItem>
 

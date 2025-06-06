@@ -14,7 +14,7 @@
                 <TextBox x:Name="txLogin" Width="200" TextWrapping="Wrap" />
                 <Label Margin="25,10,0,0" Content="Mot de passe " />
                 <TextBox x:Name="txMdp" Width="200" TextWrapping="Wrap" />
-                <Button x:Name="seConnecter" Width="108" Margin="0,25,0,0" Content="Se connecter" Click="seConnecter_Click" />
+                <Button x:Name="seConnecter" Width="108" Margin="0,25,0,0" Content="Se connecter"  /><!--Click="seConnecter_Click"-->
             </StackPanel>
         </Grid>
     </Grid>
