@@ -1,6 +1,7 @@
 ﻿using SAE201.Model;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -20,12 +21,27 @@ namespace SAE201.Windows
     /// </summary>
     public partial class RechercherClient : Window
     {
+        public ObservableCollection<Client> LesClients { get; set; }
         public RechercherClient()
         {
-            //ChargeData();
-            InitializeComponent();
+            InitializeComponent();            
+            ChargeData();
         }
 
-       
+        public void ChargeData()
+        {
+            try
+            {
+                List<Client> clients = new Client().FindAll();
+                LesClients = new ObservableCollection<Client>(clients);
+                this.DataContext = this; 
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Problème lors de récupération des données");
+                LogError.Log(ex, "Erreur SQL");
+            }
+        }
+
     }
 }

@@ -1,6 +1,7 @@
 ﻿using SAE201.Model;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -20,18 +21,20 @@ namespace SAE201
     /// </summary>
     public partial class Connection : Window
     {
-        public List<Employe> Employe {  get; set; }
+        public ObservableCollection<Employe> LesEmployes { get; set; }
         public Connection()
         {
-            ChargeData();
             InitializeComponent();
+            ChargeData();
         }
         
         public void ChargeData()
         {
             try
             {
-                Employe = new List<Employe>(new Employe().FindAll());
+                List<Employe> employes = new Employe().FindAll();
+                LesEmployes = new ObservableCollection<Employe>(employes);
+                this.DataContext = this;
             }
             catch(Exception ex) 
             {
@@ -43,7 +46,7 @@ namespace SAE201
 
         private void seConnecter_Click(object sender, RoutedEventArgs e)
         {
-            Employe user = Employe.Find(x => x.Login == txLogin.Text && x.Mdp == txMdp.Text);
+            Employe user = Employe.FindByLoginAndPassword(txLogin.Text, txMdp.Text);
             if (user is null)
             {
                 MessageBox.Show("Mot de passe ou login incorrect, réessayer");

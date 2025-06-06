@@ -22,6 +22,12 @@ namespace SAE201.Model
             this.PrenomClient = prenomClient;
             this.MailClient = mailClient;
         }
+        public Client(string nomClient, string prenomClient, string mailClient)
+        {
+            this.NomClient = nomClient;
+            this.PrenomClient = prenomClient;
+            this.MailClient = mailClient;
+        }
 
         public Client(int numClient)
         {
@@ -85,7 +91,7 @@ namespace SAE201.Model
         public int Create()
         {
             int nb = 0;
-            using (NpgsqlCommand cmdInsert = new NpgsqlCommand("INSERT INTO client (nomclient,prenomclient, mailclient) VALUES (@nomclient,@prenomclient, @mailclient) RETURNING numclient"))
+            using (NpgsqlCommand cmdInsert = new NpgsqlCommand("INSERT INTO sae201_nicolas.client (nomclient,prenomclient, mailclient) VALUES (@nomclient,@prenomclient, @mailclient) RETURNING numclient"))
             {
                 cmdInsert.Parameters.AddWithValue("nomclient", this.NomClient);
                 cmdInsert.Parameters.AddWithValue("prenomclient", this.PrenomClient);
@@ -95,9 +101,10 @@ namespace SAE201.Model
             this.NumClient = nb;
             return nb;
         }
+
         public void Read()
         {
-            using (NpgsqlCommand cmdSelect = new NpgsqlCommand("SELECT * FROM client WHERE numclient = @numclient"))
+            using (NpgsqlCommand cmdSelect = new NpgsqlCommand("SELECT * FROM sae201_nicolas.client WHERE numclient = @numclient"))
             {
                 cmdSelect.Parameters.AddWithValue("numclient", this.numClient);
                 DataTable dt = DataAccess.Instance.ExecuteSelect(cmdSelect);
@@ -111,11 +118,11 @@ namespace SAE201.Model
 
         public int Update()
         {
-            using (NpgsqlCommand cmdUpdate = new NpgsqlCommand("UPDATE client SET nomclient = @nomclient, prenomclient = @prenomclient, mailclient = @mailclient WHERE numclient = @numclient"))
+            using (NpgsqlCommand cmdUpdate = new NpgsqlCommand("UPDATE sae201_nicolas.client SET nomclient = @nomclient, prenomclient = @prenomclient, mailclient = @mailclient WHERE numclient = @numclient"))
             {
                 cmdUpdate.Parameters.AddWithValue("nomclient", this.NomClient);
                 cmdUpdate.Parameters.AddWithValue("prenomclient", this.PrenomClient);
-                cmdUpdate.Parameters.AddWithValue("mailClient", this.MailClient);
+                cmdUpdate.Parameters.AddWithValue("mailclient", this.MailClient);
                 cmdUpdate.Parameters.AddWithValue("numclient", this.NumClient);
                 return DataAccess.Instance.ExecuteSet(cmdUpdate);
             }
@@ -123,7 +130,7 @@ namespace SAE201.Model
 
         public int Delete()
         {
-            using (NpgsqlCommand cmdDelete = new NpgsqlCommand("DELETE FROM client WHERE numclient = @numclient"))
+            using (NpgsqlCommand cmdDelete = new NpgsqlCommand("DELETE FROM sae201_nicolas.client WHERE numclient = @numclient"))
             {
                 cmdDelete.Parameters.AddWithValue("numclient", this.NumClient);
                 return DataAccess.Instance.ExecuteSet(cmdDelete);
@@ -134,12 +141,21 @@ namespace SAE201.Model
         public List<Client> FindAll()
         {
             List<Client> lesClients = new List<Client>();
-            using (NpgsqlCommand cmdSelect = new NpgsqlCommand("select * from client ;"))
+            using (NpgsqlCommand cmdSelect = new NpgsqlCommand("select * from sae201_nicolas.client ;"))
             {
                 DataTable dt = DataAccess.Instance.ExecuteSelect(cmdSelect);
                 foreach (DataRow dr in dt.Rows)
-                    lesClients.Add(new Client((Int32)dr["numclient"], (string)dr["nomclient"],
-                   (string)dr["prenomclient"], (string)dr["mailclient"]));
+                {
+                    int numclient = (int)dr["numclient"];
+                    string nomclient = (string)dr["nomclient"];
+                    string prenomclient = (string)dr["prenomclient"];
+                    string mailclient = (string)dr["mailclient"];
+                    Client client = new Client(numclient, nomclient, prenomclient, mailclient);
+                    lesClients.Add(client);
+                    /*lesClients.Add(new Client((Int32)dr["numclient"], (string)dr["nomclient"],
+                   (string)dr["prenomclient"], (string)dr["mailclient"]));*/
+                }
+                    
             }
             return lesClients;
         }

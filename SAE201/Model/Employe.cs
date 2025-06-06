@@ -117,8 +117,7 @@ namespace SAE201.Model
         public int Create()
         {
             int nb = 0;
-            using (NpgsqlCommand cmd = new NpgsqlCommand(
-                "INSERT INTO employe (numrole, nom, prenom, login, mdp) VALUES (@numrole, @nom, @prenom, @login, @mdp) RETURNING numemploye"))
+            using (NpgsqlCommand cmd = new NpgsqlCommand("INSERT INTO sae201_nicolas.employe (numrole, nom, prenom, login, mdp) VALUES (@numrole, @nom, @prenom, @login, @mdp) RETURNING numemploye"))
             {
                 cmd.Parameters.AddWithValue("numrole", this.NumRole.NumRole);
                 cmd.Parameters.AddWithValue("nom", this.Nom);
@@ -134,7 +133,7 @@ namespace SAE201.Model
 
         public void Read()
         {
-            using (NpgsqlCommand cmd = new NpgsqlCommand("SELECT * FROM employe WHERE numemploye = @numemploye"))
+            using (NpgsqlCommand cmd = new NpgsqlCommand("SELECT * FROM sae201_nicolas.employe WHERE numemploye = @numemploye"))
             {
                 cmd.Parameters.AddWithValue("numemploye", this.NumEmploye);
                 DataTable dt = DataAccess.Instance.ExecuteSelect(cmd);
@@ -154,8 +153,7 @@ namespace SAE201.Model
 
         public int Update()
         {
-            using (NpgsqlCommand cmd = new NpgsqlCommand(
-                "UPDATE employe SET numrole = @numrole, nom = @nom, prenom = @prenom, login = @login, mdp = @mdp WHERE numemploye = @numemploye"))
+            using (NpgsqlCommand cmd = new NpgsqlCommand("UPDATE sae201_nicolas.employe SET numrole = @numrole, nom = @nom, prenom = @prenom, login = @login, mdp = @mdp WHERE numemploye = @numemploye"))
             {
                 cmd.Parameters.AddWithValue("numrole", this.NumRole.NumRole);
                 cmd.Parameters.AddWithValue("nom", this.Nom);
@@ -170,7 +168,7 @@ namespace SAE201.Model
 
         public int Delete()
         {
-            using (NpgsqlCommand cmd = new NpgsqlCommand("DELETE FROM employe WHERE numemploye = @numemploye"))
+            using (NpgsqlCommand cmd = new NpgsqlCommand("DELETE FROM sae201_nicolas.employe WHERE numemploye = @numemploye"))
             {
                 cmd.Parameters.AddWithValue("numemploye", this.NumEmploye);
                 return DataAccess.Instance.ExecuteSet(cmd);
@@ -180,12 +178,23 @@ namespace SAE201.Model
         public List<Employe> FindAll()
         {
             List<Employe> lesEmployes = new List<Employe>();
-            using (NpgsqlCommand cmdSelect = new NpgsqlCommand("select * from employe ;"))
+            using (NpgsqlCommand cmdSelect = new NpgsqlCommand("SELECT * FROM sae201_nicolas.employe"))
             {
                 DataTable dt = DataAccess.Instance.ExecuteSelect(cmdSelect);
                 foreach (DataRow dr in dt.Rows)
-                    lesEmployes.Add(new Employe((Int32)dr["numemploye"], (Role)dr["numrole"], (string)dr["nom"],
-                   (string)dr["prenom"], (string)dr["login"], (string)dr["mdp"]));
+                {
+                    int numEmploye = (int)dr["numemploye"];
+                    int numRole = (int)dr["numrole"];
+                    string nom = (string)dr["nom"];
+                    string prenom = (string)dr["prenom"];
+                    string login = (string)dr["login"];
+                    string mdp = (string)dr["mdp"];
+
+                    // Créer l'objet Role correctement
+                    Role role = new Role { NumRole = numRole };
+
+                    lesEmployes.Add(new Employe(numEmploye, role, nom, prenom, login, mdp));
+                }
             }
             return lesEmployes;
         }
@@ -200,6 +209,32 @@ namespace SAE201.Model
         {
             return obj is Employe employe &&
                    this.NumEmploye == employe.NumEmploye;
+        }
+
+        public static Employe FindByLoginAndPassword(string login, string password)
+        {
+            using (NpgsqlCommand cmd = new NpgsqlCommand("SELECT * FROM sae201_nicolas.employe WHERE login = @login AND mdp = @mdp"))
+            {
+                cmd.Parameters.AddWithValue("login", login);
+                cmd.Parameters.AddWithValue("mdp", password);
+
+                DataTable dt = DataAccess.Instance.ExecuteSelect(cmd);
+                if (dt.Rows.Count > 0)
+                {
+                    DataRow row = dt.Rows[0];
+                    int numEmploye = (int)row["numemploye"];
+                    int numRole = (int)row["numrole"];
+                    string nom = (string)row["nom"];
+                    string prenom = (string)row["prenom"];
+                    string loginEmp = (string)row["login"];
+                    string mdp = (string)row["mdp"];
+
+                    Role role = new Role { NumRole = numRole };
+
+                    return new Employe(numEmploye, role, nom, prenom, loginEmp, mdp);
+                }
+                return null;
+            }
         }
     }
 }
