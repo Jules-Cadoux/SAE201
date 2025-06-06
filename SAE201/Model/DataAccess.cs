@@ -35,7 +35,7 @@ namespace SAE201.Model
                 LogError.Log(ex, "Pb de connexion GetConnection \n" + connectionString);
                 throw;
             }
-        }
+                             }
 
 
         // pour récupérer la connexion (et l'ouvrir si nécessaire)
