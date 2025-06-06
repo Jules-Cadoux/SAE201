@@ -1,5 +1,7 @@
-﻿using System;
+﻿using Npgsql;
+using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -96,6 +98,115 @@ namespace SAE201.Model
         {
             return obj is Commande commande &&
                    this.NumCommande == commande.NumCommande;
+        }
+
+        public int Create()
+        {
+            int id = 0;
+            using (NpgsqlCommand cmd = new NpgsqlCommand(
+                "INSERT INTO commande (numemploye, datecommande, valider, prixtotal) " +
+                "VALUES (@numemploye, @datecommande, @valider, @prixtotal) RETURNING numcommande"))
+            {
+                cmd.Parameters.AddWithValue("numemploye", this.NumEmploye.NumEmploye);
+                cmd.Parameters.AddWithValue("datecommande", this.DateCommande);
+                cmd.Parameters.AddWithValue("valider", this.Valider);
+                cmd.Parameters.AddWithValue("prixtotal", this.PrixTotal);
+
+                id = DataAccess.Instance.ExecuteInsert(cmd);
+                this.NumCommande = id;
+            }
+            return id;
+        }
+
+        public void Read()
+        {
+            using (NpgsqlCommand cmd = new NpgsqlCommand("SELECT * FROM commande WHERE numcommande = @id"))
+            {
+                cmd.Parameters.AddWithValue("id", this.NumCommande);
+                DataTable dt = DataAccess.Instance.ExecuteSelect(cmd);
+                if (dt.Rows.Count > 0)
+                {
+                    DataRow row = dt.Rows[0];
+                    this.DateCommande = (DateTime)row["datecommande"];
+                    this.Valider = (bool)row["valider"];
+                    this.PrixTotal = Convert.ToDouble(row["prixtotal"]);
+
+                    int idEmploye = (int)row["numemploye"];
+                    this.NumEmploye = new Employe(idEmploye);
+                    this.NumEmploye.Read(); // suppose que Employe a une méthode Read()
+                }
+            }
+        }
+
+        public int Update()
+        {
+            using (NpgsqlCommand cmd = new NpgsqlCommand(
+                "UPDATE commande SET numemploye = @numemploye, datecommande = @datecommande, valider = @valider, prixtotal = @prixtotal " +
+                "WHERE numcommande = @numcommande"))
+            {
+                cmd.Parameters.AddWithValue("numemploye", this.NumEmploye.NumEmploye);
+                cmd.Parameters.AddWithValue("datecommande", this.DateCommande);
+                cmd.Parameters.AddWithValue("valider", this.Valider);
+                cmd.Parameters.AddWithValue("prixtotal", this.PrixTotal);
+                cmd.Parameters.AddWithValue("numcommande", this.NumCommande);
+
+                return DataAccess.Instance.ExecuteSet(cmd);
+            }
+        }
+
+        public int Delete()
+        {
+            using (NpgsqlCommand cmd = new NpgsqlCommand("DELETE FROM commande WHERE numcommande = @numcommande"))
+            {
+                cmd.Parameters.AddWithValue("numcommande", this.NumCommande);
+                return DataAccess.Instance.ExecuteSet(cmd);
+            }
+        }
+
+        public static List<Commande> FindAll()
+        {
+            List<Commande> commandes = new List<Commande>();
+            using (NpgsqlCommand cmd = new NpgsqlCommand("SELECT * FROM commande"))
+            {
+                DataTable dt = DataAccess.Instance.ExecuteSelect(cmd);
+                foreach (DataRow row in dt.Rows)
+                {
+                    int id = (int)row["numcommande"];
+                    int idEmploye = (int)row["numemploye"];
+                    DateTime date = (DateTime)row["datecommande"];
+                    bool valider = (bool)row["valider"];
+                    double prix = Convert.ToDouble(row["prixtotal"]);
+
+                    Employe emp = new Employe(idEmploye);
+                    emp.Read();
+
+                    commandes.Add(new Commande(id, emp, date, valider, prix));
+                }
+            }
+            return commandes;
+        }
+
+        public static List<Commande> FindBySelection(string criteres)
+        {
+            List<Commande> commandes = new List<Commande>();
+            using (NpgsqlCommand cmd = new NpgsqlCommand($"SELECT * FROM commande WHERE {criteres}"))
+            {
+                DataTable dt = DataAccess.Instance.ExecuteSelect(cmd);
+                foreach (DataRow row in dt.Rows)
+                {
+                    int id = (int)row["numcommande"];
+                    int idEmploye = (int)row["numemploye"];
+                    DateTime date = (DateTime)row["datecommande"];
+                    bool valider = (bool)row["valider"];
+                    double prix = Convert.ToDouble(row["prixtotal"]);
+
+                    Employe emp = new Employe(idEmploye);
+                    emp.Read();
+
+                    commandes.Add(new Commande(id, emp, date, valider, prix));
+                }
+            }
+            return commandes;
         }
     }
 }

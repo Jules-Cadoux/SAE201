@@ -1,0 +1,86 @@
+﻿<Window
+    x:Class="SAE201.Windows.RechercherClient"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:SAE201.Windows"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Title="RechercherClient"
+    Width="800"
+    Height="450"
+    mc:Ignorable="d">
+    <Grid>
+        <TabControl>
+            <TabItem Header="Les Clients">
+                <Grid Background="#FFE5E5E5">
+                    <DataGrid
+                        x:Name="dgClient"
+                        Margin="71,42,213,18"
+                        AutoGenerateColumns="False"
+                        IsReadOnly="True"
+                        ItemsSource="{Binding LesChiens}">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn
+                                Width="*"
+                                Binding="{Binding Nom}"
+                                Header="Nom" />
+                            <DataGridTextColumn
+                                Width="*"
+                                Binding="{Binding Maitre}"
+                                Header="Maitre" />
+                            <DataGridTextColumn
+                                Width="*"
+                                Binding="{Binding Poids}"
+                                Header="Poids (kg)" />
+                        </DataGrid.Columns>
+                    </DataGrid>
+
+                    <TextBox
+                        x:Name="textMotClefChien"
+                        Width="286"
+                        Margin="183,10,0,0"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Top"
+                        TextChanged="textMotClefChien_TextChanged" />
+
+                    <Button
+                        x:Name="buttSupprimer"
+                        Width="30"
+                        Height="30"
+                        Margin="676,110,0,0"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Top"
+                        Click="buttSupprimer_Click"
+                        Content="&#xE74D;"
+                        FontFamily="Segoe MDL2 Assets"
+                        ToolTip="Supprimer" />
+
+                    <Button
+                        x:Name="buttAjouter"
+                        Width="30"
+                        Height="30"
+                        Margin="676,148,0,0"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Top"
+                        Click="buttAjouter_Click"
+                        Content="&#xE710;"
+                        FontFamily="Segoe MDL2 Assets"
+                        ToolTip="Ajouter" />
+
+                    <Button
+                        x:Name="buttEditer"
+                        Width="30"
+                        Height="30"
+                        Margin="676,186,0,0"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Top"
+                        Click="buttEditer_Click"
+                        Content="&#xE70F;"
+                        FontFamily="Segoe MDL2 Assets"
+                        ToolTip="Editer" />
+                </Grid>
+            </TabItem>
+
+        </TabControl>
+    </Grid>
+</Window>

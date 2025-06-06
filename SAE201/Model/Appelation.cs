@@ -9,7 +9,7 @@ namespace SAE201.Model
     public enum Typedappelation { AOP,AOC,IGP}
     public class Appelation
     {
-        private int numAppelation;
+        private int numType2;
         private Typedappelation nomAppelation;
 
         public Appelation()
@@ -18,25 +18,25 @@ namespace SAE201.Model
 
         public Appelation(int numAppelation)
         {
-            this.NumAppelation = numAppelation;
+            this.NumType2 = numAppelation;
         }
 
         public Appelation(int numAppelation, Typedappelation nomAppelation)
         {
-            this.NumAppelation = numAppelation;
+            this.NumType2 = numAppelation;
             this.NomAppelation = nomAppelation;
         }
 
-        public int NumAppelation
+        public int NumType2
         {
             get
             {
-                return this.numAppelation;
+                return this.numType2;
             }
 
             set
             {
-                this.numAppelation = value;
+                this.numType2 = value;
             }
         }
 
@@ -58,7 +58,7 @@ namespace SAE201.Model
         public override bool Equals(object? obj)
         {
             return obj is Appelation appelation &&
-                   this.NumAppelation == appelation.NumAppelation;
+                   this.NumType2 == appelation.NumType2;
         }
     }
 }
