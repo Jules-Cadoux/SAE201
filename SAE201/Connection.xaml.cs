@@ -41,7 +41,7 @@ namespace SAE201
             }   
         }
 
-        private void seConnecter_Click(object sender, RoutedEventArgs e)
+        /*private void seConnecter_Click(object sender, RoutedEventArgs e)
         {
             Employe user = Employe.Find(x => x.Login == txLogin.Text && x.Mdp == txMdp.Text);
             if (user is null)
@@ -52,6 +52,6 @@ namespace SAE201
             {
                 DialogResult = true;
             }
-        }
+        }*/
     }
 }
