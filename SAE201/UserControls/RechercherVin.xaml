@@ -44,8 +44,7 @@
                 <TextBox x:Name="textPrix" Width="80" Height="30" VerticalContentAlignment="Center" 
                          TextChanged="TextPrix_TextChanged"/>
                 <Button x:Name="btnReinitialiser" Content="Réinitialiser filtres" 
-            Width="140" Height="30" Margin="20,0,0,0"
-            Click="BtnReinitialiser_Click"/>
+            Width="140" Height="30" Margin="20,0,0,0" Click="BtnReinitialiser_Click"/>
             </StackPanel>
 
 
