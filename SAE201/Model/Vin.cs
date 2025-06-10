@@ -13,14 +13,14 @@ namespace SAE201.Model
     {
         private int numVin;
         private Fournisseur numFournisseur;
-        private TypeVin numType;
+        private int numType;
         private Appelation numType2;
         private string nomVin;
         private double prixVin;
         private string description;
         private int millesime;
 
-        public Vin(int numVin, Fournisseur numFournisseur, TypeVin numType, Appelation numType2, string nomVin, double prixVin, string description, int millesime)
+        public Vin(int numVin, Fournisseur numFournisseur, int numType, Appelation numType2, string nomVin, double prixVin, string description, int millesime)
         {
             this.NumVin = numVin;
             this.NumFournisseur = numFournisseur;
@@ -32,7 +32,7 @@ namespace SAE201.Model
             this.Millesime = millesime;
         }
 
-        public Vin(int numVin, Fournisseur numFournisseur, TypeVin numType, Appelation numType2)
+        public Vin(int numVin, Fournisseur numFournisseur, int numType, Appelation numType2)
         {
             this.NumVin = numVin;
             this.NumFournisseur = numFournisseur;
@@ -68,7 +68,7 @@ namespace SAE201.Model
             }
         }
 
-        public TypeVin NumType
+        public int NumType
         {
             get
             {
@@ -162,7 +162,7 @@ namespace SAE201.Model
                 "VALUES (@numfournisseur, @numtype, @numtype2, @nomvin, @prixvin, @descriptif, @millesime) RETURNING numvin"))
             {
                 cmd.Parameters.AddWithValue("numfournisseur", this.NumFournisseur.NumFournisseur);
-                cmd.Parameters.AddWithValue("numtype", this.NumType.NumType);
+                cmd.Parameters.AddWithValue("numtype", this.NumType);
                 cmd.Parameters.AddWithValue("numtype2", this.NumType2.NumType2);
                 cmd.Parameters.AddWithValue("nomvin", this.NomVin);
                 cmd.Parameters.AddWithValue("prixvin", this.PrixVin);
@@ -189,7 +189,7 @@ namespace SAE201.Model
                     this.Millesime = (int)row["millesime"];
 
                     this.NumFournisseur = new Fournisseur { NumFournisseur = (int)row["numfournisseur"] };
-                    this.NumType = new TypeVin { NumType = (int)row["numtype"] };
+                    this.NumType = (int)row["numtype"];
                     this.NumType2 = new Appelation { NumType2 = (int)row["numtype2"] };
                 }
             }
@@ -202,7 +202,7 @@ namespace SAE201.Model
                 "prixvin = @prixvin, descriptif = @descriptif, millesime = @millesime WHERE numvin = @numvin"))
             {
                 cmd.Parameters.AddWithValue("numfournisseur", this.NumFournisseur.NumFournisseur);
-                cmd.Parameters.AddWithValue("numtype", this.NumType.NumType);
+                cmd.Parameters.AddWithValue("numtype", this.NumType);
                 cmd.Parameters.AddWithValue("numtype2", this.NumType2.NumType2);
                 cmd.Parameters.AddWithValue("nomvin", this.NomVin);
                 cmd.Parameters.AddWithValue("prixvin", this.PrixVin);
@@ -238,7 +238,7 @@ namespace SAE201.Model
                         Description = (string)row["descriptif"],
                         Millesime = (int)row["millesime"],
                         NumFournisseur = new Fournisseur { NumFournisseur = (int)row["numfournisseur"] },
-                        NumType = new TypeVin { NumType = (int)row["numtype"] },
+                        NumType = (int)row["numtype"],
                         NumType2 = new Appelation { NumType2 = (int)row["numtype2"] }
                     };
                     vins.Add(v);
@@ -263,7 +263,7 @@ namespace SAE201.Model
                         Description = (string)row["descriptif"],
                         Millesime = (int)row["millesime"],
                         NumFournisseur = new Fournisseur { NumFournisseur = (int)row["numfournisseur"] },
-                        NumType = new TypeVin { NumType = (int)row["numtype"] },
+                        NumType = (int)row["numtype"],
                         NumType2 = new Appelation { NumType2 = (int)row["numtype2"] }
                     };
                     vins.Add(v);
@@ -281,6 +281,14 @@ namespace SAE201.Model
                    this.PrixVin == vin.PrixVin &&
                    this.Description == vin.Description &&
                    this.Millesime == vin.Millesime;
+        }
+        public static bool operator >(Vin? left, Vin? right)
+        {
+            return (left.PrixVin > right.PrixVin);
+        }
+        public static bool operator <(Vin? left, Vin? right)
+        {
+            return (left.PrixVin < right.PrixVin);
         }
     }
 }

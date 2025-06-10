@@ -18,10 +18,7 @@ using System.Windows.Shapes;
 
 namespace SAE201.UserControls
 {
-    /// <summary>
-    /// Logique d'interaction pour RechercherVin.xaml
-    /// </summary>
-    public partial class RechercherVin : UserControl 
+    public partial class RechercherVin : UserControl
     {
         public ObservableCollection<Vin> Vins { get; set; }
         public ICollectionView VinsView { get; set; }
@@ -32,10 +29,7 @@ namespace SAE201.UserControls
             Vins = new ObservableCollection<Vin>();
             VinsView = CollectionViewSource.GetDefaultView(Vins);
             VinsView.Filter = RechercheMotClefVin;
-
-            // Charger les données depuis la base
             ChargerVins();
-
             DataContext = this;
         }
 
@@ -60,20 +54,103 @@ namespace SAE201.UserControls
 
         private bool RechercheMotClefVin(object obj)
         {
-            // Vérification de sécurité
-            if (textRechercheVin == null || String.IsNullOrEmpty(textRechercheVin.Text))
-                return true;
-
             Vin unVin = obj as Vin;
-            if (unVin == null || String.IsNullOrEmpty(unVin.NomVin))
+            if (unVin == null)
                 return false;
 
-            return unVin.NomVin.StartsWith(textRechercheVin.Text, StringComparison.OrdinalIgnoreCase);
+            // Filtre par nom de vin
+            if (textRechercheVin != null && !String.IsNullOrEmpty(textRechercheVin.Text))
+            {
+                if (String.IsNullOrEmpty(unVin.NomVin) ||
+                    !unVin.NomVin.ToLower().Contains(textRechercheVin.Text.ToLower()))
+                {
+                    return false;
+                }
+            }
+
+            // Filtre par type de vin - CORRIGÉ
+            if (comboTypeVin != null && comboTypeVin.SelectedItem is ComboBoxItem typeItem &&
+                typeItem.Content.ToString() != "Tous les types")
+            {
+                string typeSelectionne = typeItem.Content.ToString();
+
+                // Mapping des types selon votre logique métier
+                // Adaptez cette partie selon la structure de votre classe Vin
+                string typeVin = "";
+                switch (unVin.NumType)
+                {
+                    case 1:
+                        typeVin = "Rouge";
+                        break;
+                    case 2:
+                        typeVin = "Blanc";
+                        break;
+                    case 3:
+                        typeVin = "Rosé";
+                        break;
+                    default:
+                        typeVin = "";
+                        break;
+                }
+
+                if (!typeVin.Equals(typeSelectionne, StringComparison.OrdinalIgnoreCase))
+                {
+                    return false;
+                }
+            }
+
+            // Filtre par appellation - CORRIGÉ
+            if (comboAppellation != null && comboAppellation.SelectedItem is ComboBoxItem appellationItem &&
+                appellationItem.Content.ToString() != "Toutes appellations")
+            {
+                // Vérification de la propriété d'appellation
+                if (unVin.NumType2 == null ||
+                    String.IsNullOrEmpty(unVin.NumType2.NomAppelation.ToString()) ||
+                    !unVin.NumType2.NomAppelation.ToString().Equals(appellationItem.Content.ToString(), StringComparison.OrdinalIgnoreCase))
+                {
+                    return false;
+                }
+            }
+
+            // Filtre par année exacte - CORRIGÉ
+            if (textAnnee != null && !String.IsNullOrEmpty(textAnnee.Text))
+            {
+                if (int.TryParse(textAnnee.Text, out int anneeRecherchee))
+                {
+                    if (unVin.Millesime != anneeRecherchee)
+                    {
+                        return false;
+                    }
+                }
+                else
+                {
+                    // Si la saisie n'est pas un nombre valide, on ignore ce filtre
+                    // Ou vous pouvez choisir de retourner false pour masquer tous les résultats
+                }
+            }
+
+            // Filtre par prix exact - CORRIGÉ
+            if (textPrix != null && !String.IsNullOrEmpty(textPrix.Text))
+            {
+                if (double.TryParse(textPrix.Text, out double prixRecherche))
+                {
+                    if (Math.Abs(unVin.PrixVin - prixRecherche) > 0.01) // Comparaison avec tolérance pour les doubles
+                    {
+                        return false;
+                    }
+                }
+                else
+                {
+                    // Si la saisie n'est pas un nombre valide, on ignore ce filtre
+                    // Ou vous pouvez choisir de retourner false pour masquer tous les résultats
+                }
+            }
+
+            return true;
         }
 
         private void RefreshRecherche(object sender, TextChangedEventArgs e)
         {
-            // Correction : refresh direct sur VinsView
             VinsView?.Refresh();
         }
 
@@ -81,6 +158,50 @@ namespace SAE201.UserControls
         {
             if (labRechercheVin != null)
                 labRechercheVin.Content = "";
+        }
+
+        private void ComboTypeVin_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            VinsView?.Refresh();
+        }
+
+        private void ComboAppellation_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            VinsView?.Refresh();
+        }
+
+        private void TextAnnee_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            VinsView?.Refresh();
+        }
+
+        private void TextPrix_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            VinsView?.Refresh();
+        }
+
+        private void BtnReinitialiser_Click(object sender, RoutedEventArgs e)
+        {
+            if (textRechercheVin != null)
+            {
+                textRechercheVin.Text = "";
+                if (labRechercheVin != null)
+                    labRechercheVin.Content = "Nom du vin";
+            }
+
+            if (comboTypeVin != null)
+                comboTypeVin.SelectedIndex = 0;
+
+            if (comboAppellation != null)
+                comboAppellation.SelectedIndex = 0;
+
+            if (textAnnee != null)
+                textAnnee.Text = "";
+
+            if (textPrix != null)
+                textPrix.Text = "";
+
+            VinsView?.Refresh();
         }
     }
 }
