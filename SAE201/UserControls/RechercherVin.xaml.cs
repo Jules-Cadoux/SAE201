@@ -36,7 +36,7 @@ namespace SAE201.UserControls
         public ObservableCollection<Vin> Vins { get; set; }
         public ICollectionView VinsView { get; set; }
 
-        public ObservableCollection<VinDemande> VinsDemande { get; set; }
+        public ObservableCollection<VinDemande> VinsDemande { get; set; } = new ObservableCollection<VinDemande>();
 
         public RechercherVin()
         {
@@ -236,19 +236,18 @@ namespace SAE201.UserControls
         {
             Button btn = sender as Button;
 
-            // Vérifiez si le bouton est valide
+            // Vérifiez si le bouton et le vin sont valides
             if (btn != null && btn.Tag is Vin vinSelectionne)
             {
-                // Si vinSelectionne est null ou invalide, vous évitez d'ajouter dans VinsDemande
-                if (vinSelectionne == null)
+                // Vérifiez si NumFournisseur et NumType2 sont non nuls avant d'y accéder
+                if (vinSelectionne.NumFournisseur == null || vinSelectionne.NumType2 == null)
                 {
-                    MessageBox.Show("Erreur : Le vin sélectionné est invalide.");
+                    MessageBox.Show("Le vin sélectionné est incomplet.");
                     return;
                 }
 
                 // Ajoutez à la collection VinsDemande
                 VinsDemande.Add(new VinDemande(vinSelectionne.NomVin, DateTime.Now, 1));
-
                 MessageBox.Show($"Vin '{vinSelectionne.NomVin}' ajouté ! Total: {VinsDemande.Count} vins");
             }
             else
