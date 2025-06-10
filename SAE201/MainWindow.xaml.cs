@@ -1,4 +1,6 @@
-﻿using System.Text;
+﻿using SAE201.Model;
+using System.Collections.ObjectModel;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -16,9 +18,23 @@ namespace SAE201
     /// </summary>
     public partial class MainWindow : Window
     {
+        public ObservableCollection<Vin> Vins { get; set; }
         public MainWindow()
         {
-            InitializeComponent();
+            Connection co = new Connection();
+            bool? result = co.ShowDialog();
+            if (result == true)
+            {
+                InitializeComponent();
+            }
+            else
+            {
+                Application.Current.Shutdown();
+            }
+            MainWindow mainWindow = this;
+            mainWindow.Show();
+            Vins = new ObservableCollection<Vin>(Vin.FindAll());
+            DataContext = this;
         }
     }
 }
