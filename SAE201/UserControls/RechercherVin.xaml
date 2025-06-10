@@ -6,81 +6,98 @@
       xmlns:local="clr-namespace:SAE201.UserControls"
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800">
+    <TabControl>
+        <TabItem Header="TabItem">
+            <Grid Margin="20">
 
-    <Grid Margin="20">
-        <StackPanel Background="#FFE5E5E5">
-            <!-- Zone de recherche par nom -->
-            <Grid>
-                <TextBox x:Name="textRechercheVin" Height="40" Padding="10" FontSize="14" 
+                <StackPanel Background="#FFE5E5E5">
+                    <!-- Zone de recherche par nom -->
+                    <Grid>
+                        <TextBox x:Name="textRechercheVin" Height="40" Padding="10" FontSize="14" 
                          TextChanged="RefreshRecherche" GotFocus="textRechercheVin_GotFocus" />
-                <Label x:Name="labRechercheVin" Height="40" Content="Nom du vin" 
+                        <Label x:Name="labRechercheVin" Height="40" Content="Nom du vin" 
                        VerticalContentAlignment="Center" Width="80" HorizontalAlignment="Left"/>
-            </Grid>
+                    </Grid>
 
-            <!-- Zone de filtres -->
-            <StackPanel Margin="0,10,0,10" Orientation="Horizontal">
-                <ComboBox x:Name="comboTypeVin" Width="120" Height="30" Text="Type de vin" 
+                    <!-- Zone de filtres -->
+                    <StackPanel Margin="0,10,0,10" Orientation="Horizontal">
+                        <ComboBox x:Name="comboTypeVin" Width="120" Height="30" Text="Type de vin" 
                           VerticalContentAlignment="Center" SelectionChanged="ComboTypeVin_SelectionChanged">
-                    <ComboBoxItem Content="Tous les types" IsSelected="True"/>
-                    <ComboBoxItem Content="Blanc"/>
-                    <ComboBoxItem Content="Rosé"/>
-                    <ComboBoxItem Content="Rouge"/>
-                </ComboBox>
+                            <ComboBoxItem Content="Tous les types" IsSelected="True"/>
+                            <ComboBoxItem Content="Blanc"/>
+                            <ComboBoxItem Content="Rosé"/>
+                            <ComboBoxItem Content="Rouge"/>
+                        </ComboBox>
 
-                <ComboBox x:Name="comboAppellation" Width="135" Height="30" Text="Appellation" 
+                        <ComboBox x:Name="comboAppellation" Width="135" Height="30" Text="Appellation" 
                           VerticalContentAlignment="Center" Margin="10,0,0,0"
                           SelectionChanged="ComboAppellation_SelectionChanged">
-                    <ComboBoxItem Content="Toutes appellations" IsSelected="True"/>
-                    <ComboBoxItem Content="AOC"/>
-                    <ComboBoxItem Content="AOP"/>
-                    <ComboBoxItem Content="IGP"/>
-                </ComboBox>
+                            <ComboBoxItem Content="Toutes appellations" IsSelected="True"/>
+                            <ComboBoxItem Content="AOC"/>
+                            <ComboBoxItem Content="AOP"/>
+                            <ComboBoxItem Content="IGP"/>
+                        </ComboBox>
 
-                <TextBlock Margin="10,0,5,0" VerticalAlignment="Center" Text="Année :" />
-                <TextBox x:Name="textAnnee" Width="60" Height="30" VerticalContentAlignment="Center" 
+                        <TextBlock Margin="10,0,5,0" VerticalAlignment="Center" Text="Année :" />
+                        <TextBox x:Name="textAnnee" Width="60" Height="30" VerticalContentAlignment="Center" 
                          TextChanged="TextAnnee_TextChanged"/>
 
-                <TextBlock Margin="10,0,5,0" VerticalAlignment="Center" Text="Prix (€):" />
-                <TextBox x:Name="textPrix" Width="80" Height="30" VerticalContentAlignment="Center" 
+                        <TextBlock Margin="10,0,5,0" VerticalAlignment="Center" Text="Prix (€):" />
+                        <TextBox x:Name="textPrix" Width="80" Height="30" VerticalContentAlignment="Center" 
                          TextChanged="TextPrix_TextChanged"/>
-                <Button x:Name="btnReinitialiser" Content="Réinitialiser filtres" 
+                        <Button x:Name="btnReinitialiser" Content="Réinitialiser filtres" 
             Width="140" Height="30" Margin="20,0,0,0" Click="BtnReinitialiser_Click"/>
-            </StackPanel>
+                    </StackPanel>
 
 
-            <!-- Zone d'affichage des résultats -->
-            <StackPanel>
-                <TextBlock Margin="0,0,0,10" FontSize="16" FontWeight="Bold" 
+                    <!-- Zone d'affichage des résultats -->
+                    <StackPanel>
+                        <TextBlock Margin="0,0,0,10" FontSize="16" FontWeight="Bold" 
                            Text="{Binding VinsView.Count, StringFormat='Résultats ({0})'}" />
-                <ListBox x:Name="listBoxVins" ItemsSource="{Binding VinsView}" 
-                         ScrollViewer.HorizontalScrollBarVisibility="Disabled" Height="274" Width="728">
-                    <ListBox.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <UniformGrid Columns="3" />
-                        </ItemsPanelTemplate>
-                    </ListBox.ItemsPanel>
-                    <ListBox.ItemTemplate>
-                        <DataTemplate>
-                            <Border Padding="10" Background="White" CornerRadius="5" Margin="5" 
-                                    BorderBrush="#E0E0E0" BorderThickness="1" Height="250" Width="250">
-                                <StackPanel>
-                                    <Rectangle Height="100" Fill="#DDD" Margin="0,0,0,10"/>
-                                    <TextBlock Margin="0,5,0,0" FontWeight="Bold" Text="{Binding NomVin}" 
+                        <ListBox x:Name="listBoxVins" ItemsSource="{Binding VinsView}" 
+                         ScrollViewer.HorizontalScrollBarVisibility="Disabled" Height="355" Width="826">
+                            <ListBox.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <UniformGrid Columns="3" />
+                                </ItemsPanelTemplate>
+                            </ListBox.ItemsPanel>
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <Border Padding="10" Background="White" CornerRadius="5" Margin="5" 
+                                    BorderBrush="#E0E0E0" BorderThickness="1" Height="250" Width="240">
+                                        <StackPanel>
+                                            <Rectangle Height="100" Fill="#DDD" Margin="0,0,0,10"/>
+                                            <TextBlock Margin="0,5,0,0" FontWeight="Bold" Text="{Binding NomVin}" 
                                                TextWrapping="Wrap" FontSize="14"/>
-                                    <TextBlock Margin="0,5,0,0" Foreground="Gray" Text="{Binding Description}" 
+                                            <TextBlock Margin="0,5,0,0" Foreground="Gray" Text="{Binding Description}" 
                                                TextWrapping="Wrap" FontSize="11" MaxHeight="30"/>
-                                    <TextBlock Margin="0,5,0,0" FontWeight="Bold" Foreground="#5C6AC4" 
+                                            <TextBlock Margin="0,5,0,0" FontWeight="Bold" Foreground="#5C6AC4" 
                                                Text="{Binding PrixVin, StringFormat='{}{0:C}'}" 
                                                HorizontalAlignment="Center"/>
-                                    <Button Width="25" Height="25" Content="&#xE710;" 
+                                            <Button Width="25" Height="25" Content="&#xE710;" 
                                             FontFamily="Segoe MDL2 Assets" ToolTip="Ajouter au panier" 
                                             HorizontalAlignment="Right" Margin="0,5,0,0" Tag="{Binding}"/>
-                                </StackPanel>
-                            </Border>
-                        </DataTemplate>
-                    </ListBox.ItemTemplate>
-                </ListBox>
+                                        </StackPanel>
+                                    </Border>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+                    </StackPanel>
+                </StackPanel>
+            </Grid>
+        </TabItem>
+        <TabItem Header="TabItem" Margin="-2,0,2,0" Height="22" VerticalAlignment="Bottom">
+            <StackPanel>
+                <Label Content="Créer une demande" Width="730" FontSize="18" FontWeight="Bold" Margin="0,10,0,0"/>
+                <DataGrid Height="235"  Width="734" Margin="0,30,0,0">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Vin"  Width="450"/>
+                        <DataGridTextColumn Header="Date"  Width="*"/>
+                        <DataGridTextColumn Header="Quantité"  Width="*"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+                <Button Content="Valider la demande" Width="120" Margin="600,25,0,0" Height="25"/>
             </StackPanel>
-        </StackPanel>
-    </Grid>
+        </TabItem>
+    </TabControl>
 </UserControl>
