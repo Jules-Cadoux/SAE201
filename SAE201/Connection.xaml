@@ -25,10 +25,9 @@
                     Width="200"
                     TextWrapping="Wrap" />
                 <Label Margin="25,10,0,0" Content="Mot de passe " />
-                <TextBox
+                <PasswordBox
                     x:Name="txMdp"
-                    Width="200"
-                    TextWrapping="Wrap" />
+                    Width="200" />
                 <Button
                     x:Name="seConnecter"
                     Width="108"

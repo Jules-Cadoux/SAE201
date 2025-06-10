@@ -21,8 +21,19 @@ namespace SAE201
         public ObservableCollection<Vin> Vins { get; set; }
         public MainWindow()
         {
-            Connection mainWindow = new Connection();
+            Connection co = new Connection();
+            bool? result = co.ShowDialog();
 
+            if (result == true)
+            {
+                InitializeComponent();
+            }
+            else
+            {
+
+                Application.Current.Shutdown();
+            }
+        }
             // Afficher MainWindow
             mainWindow.Show();
             Vins = new ObservableCollection<Vin>();
