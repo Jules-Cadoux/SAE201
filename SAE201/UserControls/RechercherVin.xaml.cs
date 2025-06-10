@@ -103,10 +103,30 @@ namespace SAE201.UserControls
             if (comboAppellation != null && comboAppellation.SelectedItem is ComboBoxItem appellationItem &&
                 appellationItem.Content.ToString() != "Toutes appellations")
             {
-                // Vérification de la propriété d'appellation
-                if (unVin.NumType2 == null ||
-                    String.IsNullOrEmpty(unVin.NumType2.NomAppelation.ToString()) ||
-                    !unVin.NumType2.NomAppelation.ToString().Equals(appellationItem.Content.ToString(), StringComparison.OrdinalIgnoreCase))
+                string appellationSelectionnee = appellationItem.Content.ToString();
+                
+                // Mapping selon votre base de données : 1=AOP, 2=AOC, 3=IGP
+                string appellationVin = "";
+                if (unVin.NumType2 != null)
+                {
+                    switch (unVin.NumType2.NumType2)
+                    {
+                        case 1:
+                            appellationVin = "AOP";
+                            break;
+                        case 2:
+                            appellationVin = "AOC";
+                            break;
+                        case 3:
+                            appellationVin = "IGP";
+                            break;
+                        default:
+                            appellationVin = "";
+                            break;
+                    }
+                }
+                
+                if (!appellationVin.Equals(appellationSelectionnee, StringComparison.OrdinalIgnoreCase))
                 {
                     return false;
                 }
@@ -130,19 +150,12 @@ namespace SAE201.UserControls
             }
 
             // Filtre par prix exact - CORRIGÉ
-            if (textPrix != null && !String.IsNullOrEmpty(textPrix.Text))
+            if (textPrix != null && !String.IsNullOrEmpty(textPrix.Text) &&
+                double.TryParse(textPrix.Text, out double prixMax))
             {
-                if (double.TryParse(textPrix.Text, out double prixRecherche))
+                if (unVin.PrixVin > prixMax)
                 {
-                    if (Math.Abs(unVin.PrixVin - prixRecherche) > 0.01) // Comparaison avec tolérance pour les doubles
-                    {
-                        return false;
-                    }
-                }
-                else
-                {
-                    // Si la saisie n'est pas un nombre valide, on ignore ce filtre
-                    // Ou vous pouvez choisir de retourner false pour masquer tous les résultats
+                    return false;
                 }
             }
 
