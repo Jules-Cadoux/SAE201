@@ -22,6 +22,7 @@ namespace SAE201
     public partial class Connection : Window
     {
         public ObservableCollection<Employe> LesEmployes { get; set; }
+        public Employe EmployeConnecte { get; set; }
         public Connection()
         {
             InitializeComponent();
@@ -44,7 +45,7 @@ namespace SAE201
             }   
         }
 
-        private void seConnecter_Click(object sender, RoutedEventArgs e)
+        public void seConnecter_Click(object sender, RoutedEventArgs e)
         {
             Employe user = Employe.FindByLoginAndPassword(txLogin.Text, txMdp.Password);
             if (user is null)
@@ -53,6 +54,7 @@ namespace SAE201
             }
             else
             {
+                EmployeConnecte = user; 
                 DialogResult = true;
             }
         }

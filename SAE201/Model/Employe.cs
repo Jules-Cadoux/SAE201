@@ -11,7 +11,7 @@ namespace SAE201.Model
     public class Employe
     {
         private int numEmploye;
-        private Role numRole;
+        private int numRole;
         private string nom;
         private string prenom;
         private string login;
@@ -26,7 +26,7 @@ namespace SAE201.Model
             this.NumEmploye = numEmploye;
         }
 
-        public Employe(int numEmploye, Role numRole, string nom, string prenom, string login, string mdp)
+        public Employe(int numEmploye, int numRole, string nom, string prenom, string login, string mdp)
         {
             this.NumEmploye = numEmploye;
             this.NumRole = numRole;
@@ -49,7 +49,7 @@ namespace SAE201.Model
             }
         }
 
-        public Role NumRole
+        public int NumRole
         {
             get
             {
@@ -119,7 +119,7 @@ namespace SAE201.Model
             int nb = 0;
             using (NpgsqlCommand cmd = new NpgsqlCommand("INSERT INTO sae201_nicolas.employe (numrole, nom, prenom, login, mdp) VALUES (@numrole, @nom, @prenom, @login, @mdp) RETURNING numemploye"))
             {
-                cmd.Parameters.AddWithValue("numrole", this.NumRole.NumRole);
+                cmd.Parameters.AddWithValue("numrole", this.NumRole);
                 cmd.Parameters.AddWithValue("nom", this.Nom);
                 cmd.Parameters.AddWithValue("prenom", this.Prenom);
                 cmd.Parameters.AddWithValue("login", this.Login);
@@ -146,7 +146,7 @@ namespace SAE201.Model
                     this.Mdp = (string)row["mdp"];
 
                     int idRole = (int)row["numrole"];
-                    this.NumRole = new Role { NumRole = idRole }; 
+                    this.NumRole = idRole ; 
                 }
             }
         }
@@ -155,7 +155,7 @@ namespace SAE201.Model
         {
             using (NpgsqlCommand cmd = new NpgsqlCommand("UPDATE sae201_nicolas.employe SET numrole = @numrole, nom = @nom, prenom = @prenom, login = @login, mdp = @mdp WHERE numemploye = @numemploye"))
             {
-                cmd.Parameters.AddWithValue("numrole", this.NumRole.NumRole);
+                cmd.Parameters.AddWithValue("numrole", this.NumRole);
                 cmd.Parameters.AddWithValue("nom", this.Nom);
                 cmd.Parameters.AddWithValue("prenom", this.Prenom);
                 cmd.Parameters.AddWithValue("login", this.Login);
@@ -191,7 +191,7 @@ namespace SAE201.Model
                     string mdp = (string)dr["mdp"];
 
                     // Créer l'objet Role correctement
-                    Role role = new Role { NumRole = numRole };
+                    int role = numRole ;
 
                     lesEmployes.Add(new Employe(numEmploye, role, nom, prenom, login, mdp));
                 }
@@ -229,7 +229,7 @@ namespace SAE201.Model
                     string loginEmp = (string)row["login"];
                     string mdp = (string)row["mdp"];
 
-                    Role role = new Role { NumRole = numRole };
+                    int role = numRole ;
 
                     return new Employe(numEmploye, role, nom, prenom, loginEmp, mdp);
                 }

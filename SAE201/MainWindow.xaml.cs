@@ -1,4 +1,5 @@
 ﻿using SAE201.Model;
+using SAE201.UserControls;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Text;
@@ -21,19 +22,13 @@ namespace SAE201
     {
         public ObservableCollection<Vin> Vins { get; set; }
         public ICollectionView VinsView { get; set; }
+        private Employe employeConnecte;
 
         public MainWindow()
         {
-            Connection co = new Connection();
-            bool? result = co.ShowDialog();
-            if (result == true)
-            {
-                InitializeComponent();
-            }
-            else
-            {
-                Application.Current.Shutdown();
-            }
+            InitializeComponent();
+            Login();
+            ChargeUserControl();
             Vins = new ObservableCollection<Vin>();
             VinsView = CollectionViewSource.GetDefaultView(Vins);
             VinsView.Filter = RechercheMotClefVin;
@@ -46,9 +41,47 @@ namespace SAE201
                 }
             }
             DataContext = this;
+
+        }
+        private void Vendeur()
+        {
+            Main.Content = new RechercherVin();
+        }
+        private void Responsable()
+        {
+            Main.Content = new RechercherVin();
+        }
+        private void Login()
+        {
+            Connection co = new Connection();
+            if (co.ShowDialog()==true)
+            {
+                employeConnecte = co.EmployeConnecte;
+            }
+        }
+        private void ChargeUserControl()
+        {
+            Main.Content=null;
+            switch(employeConnecte.NumRole)
+            {
+                case 1:
+                    Vendeur(); 
+                    break;
+
+                case 2:
+                    Responsable();
+                    break;
+                default:
+                    // Gérer le cas où le rôle n'est pas reconnu
+                    MessageBox.Show("Rôle non reconnu");
+                    break;
+            }
         }
 
-        private bool RechercheMotClefVin(object obj)
+        
+            
+          
+private bool RechercheMotClefVin(object obj)
         {
             if (String.IsNullOrEmpty(textRechercheVin.Text))
                 return true;
@@ -67,5 +100,9 @@ namespace SAE201
         {
             labRechercheVin.Content = "";
         }
+
+        //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
     }
 }
