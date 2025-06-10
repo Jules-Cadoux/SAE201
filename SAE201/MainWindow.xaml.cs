@@ -20,8 +20,7 @@ namespace SAE201
     /// </summary>
     public partial class MainWindow : Window
     {
-        public ObservableCollection<Vin> Vins { get; set; }
-        public ICollectionView VinsView { get; set; }
+        
         private Employe employeConnecte;
 
         public MainWindow()
@@ -29,19 +28,6 @@ namespace SAE201
             InitializeComponent();
             Login();
             ChargeUserControl();
-            Vins = new ObservableCollection<Vin>();
-            VinsView = CollectionViewSource.GetDefaultView(Vins);
-            VinsView.Filter = RechercheMotClefVin;
-            List<Vin> vinsFromDb = Vin.FindAll();
-            if (vinsFromDb != null)
-            {
-                foreach (Vin vin in vinsFromDb)
-                {
-                    Vins.Add(vin);
-                }
-            }
-            DataContext = this;
-
         }
         private void Vendeur()
         {
@@ -76,29 +62,6 @@ namespace SAE201
                     MessageBox.Show("Rôle non reconnu");
                     break;
             }
-        }
-
-        
-            
-          
-private bool RechercheMotClefVin(object obj)
-        {
-            if (String.IsNullOrEmpty(textRechercheVin.Text))
-                return true;
-            Vin unVin = obj as Vin;
-            return (unVin.NomVin.StartsWith(textRechercheVin.Text, StringComparison.OrdinalIgnoreCase));
-        }
-        private void RefreshRecherche(object sender, TextChangedEventArgs e)
-        {
-            if (VinsView != null)
-            {
-                CollectionViewSource.GetDefaultView(VinsView).Refresh();
-            }
-        }
-
-        private void textRechercheVin_GotFocus(object sender, RoutedEventArgs e)
-        {
-            labRechercheVin.Content = "";
         }
 
         //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
