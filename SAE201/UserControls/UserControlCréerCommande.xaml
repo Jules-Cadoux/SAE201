@@ -5,13 +5,11 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:SAE201.UserControls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    d:DesignHeight="450"
     d:DesignWidth="800"
     Background="#F9F9F9"
-    mc:Ignorable="d">
+    mc:Ignorable="d" Height="965">
 
     <Grid>
-        <!--  Onglets  -->
         <TabControl Margin="20">
             <TabItem Header="Créer Commande" IsSelected="True">
                 <TabItem.HeaderTemplate>
@@ -24,102 +22,81 @@
                     </DataTemplate>
                 </TabItem.HeaderTemplate>
             </TabItem>
+
         </TabControl>
+        <DataGrid
+            x:Name="dgCommande"
+            Margin="30,103,30,561"
+            AlternatingRowBackground="#FFF8F8"
+            AutoGenerateColumns="False"
+            Background="White"
+            BorderBrush="#8B0000"
+            BorderThickness="2"
+            GridLinesVisibility="Horizontal"
+            HeadersVisibility="Column"
+            HorizontalGridLinesBrush="#E0E0E0"
+            IsReadOnly="True"
+            ItemsSource="{Binding LesDemandes}"
+            RowBackground="White">
+            <DataGrid.ColumnHeaderStyle>
+                <Style TargetType="{x:Type DataGridColumnHeader}">
+                    <Setter Property="Background" Value="#8B0000" />
+                    <Setter Property="Foreground" Value="White" />
+                    <Setter Property="FontWeight" Value="Bold" />
+                    <Setter Property="Padding" Value="8,5" />
+                    <Setter Property="BorderBrush" Value="#660000" />
+                    <Setter Property="BorderThickness" Value="0,0,1,0" />
+                </Style>
+            </DataGrid.ColumnHeaderStyle>
+            <DataGrid.Columns>
+                <DataGridTextColumn
+                    Width="2*"
+                    Binding="{Binding NomVin}"
+                    Header="Vin" />
+                <DataGridTextColumn
+                    Width="*"
+                    Binding="{Binding PrenomClient}"
+                    Header="Fournisseur" />
+                <DataGridTextColumn
+                    Width="*"
+                    Binding="{Binding NumC}"
+                    Header="Demandé par " />
+                <DataGridTextColumn
+                    Width="*"
+                    Binding="{Binding MailClient}"
+                    Header="Date" />
+                <DataGridTextColumn
+                    Width="*"
+                    Binding="{Binding MailClient}"
+                    Header="Choix " />
+            </DataGrid.Columns>
+        </DataGrid>
+        <Label
+            Margin="30,61,0,0"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Top"
+            Content="Créer une commande"
+            FontSize="20"
+            FontWeight="Bold" />
 
-        <!--  Contenu principal  -->
-        <Grid Margin="20,60,20,20">
-            <!--  Titre  -->
-            <TextBlock
-                Margin="0,0,0,30"
-                FontSize="24"
-                FontWeight="Bold"
-                Foreground="#374151"
-                Text="Créer une commande" />
-
-            <!--  DataGrid des vins  -->
-
-            <!--  Section Résumé de la commande  -->
-
-            <Button
-                x:Name="btnValiderCommande"
-                Width="200"
-                Height="40"
-                Padding="20,12"
-                HorizontalAlignment="Right"
-                VerticalAlignment="Bottom"
-                Background="#6366F1"
-                BorderThickness="0"
-                Content="✓ Valider la commande"
-                Cursor="Hand"
-                FontSize="14"
-                FontWeight="SemiBold"
-                Foreground="White">
-                <Button.Template>
-                    <ControlTemplate TargetType="Button">
-                        <Border
-                            Padding="{TemplateBinding Padding}"
-                            Background="{TemplateBinding Background}"
-                            CornerRadius="6">
-                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
-                        </Border>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Setter Property="Background" Value="#5856EB" />
-                            </Trigger>
-                            <Trigger Property="IsPressed" Value="True">
-                                <Setter Property="Background" Value="#4F46E5" />
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Button.Template>
-            </Button>
-            <DataGrid
-                x:Name="dgCommande"
-                Margin="10,42,10,72"
-                AlternatingRowBackground="#FFF8F8"
-                AutoGenerateColumns="False"
-                Background="White"
-                BorderBrush="#8B0000"
-                BorderThickness="2"
-                GridLinesVisibility="Horizontal"
-                HeadersVisibility="Column"
-                HorizontalGridLinesBrush="#E0E0E0"
-                IsReadOnly="True"
-                ItemsSource="{Binding LesDemandes}"
-                RowBackground="White">
-                <DataGrid.ColumnHeaderStyle>
-                    <Style TargetType="{x:Type DataGridColumnHeader}">
-                        <Setter Property="Background" Value="#8B0000" />
-                        <Setter Property="Foreground" Value="White" />
-                        <Setter Property="FontWeight" Value="Bold" />
-                        <Setter Property="Padding" Value="8,5" />
-                        <Setter Property="BorderBrush" Value="#660000" />
-                        <Setter Property="BorderThickness" Value="0,0,1,0" />
-                    </Style>
-                </DataGrid.ColumnHeaderStyle>
-                <DataGrid.Columns>
-                    <DataGridTextColumn
-                        Width="2*"
-                        Binding="{Binding Vin}"
-                        Header="Vin" />
-                    <DataGridTextColumn
-                        Width="*"
-                        Binding="{Binding PrenomClient}"
-                        Header="Fournisseur" />
-                    <DataGridTextColumn
-                        Width="*"
-                        Binding="{Binding MailClient}"
-                        Header="Demandé par " />
-                    <DataGridTextColumn
-                        Width="*"
-                        Binding="{Binding MailClient}"
-                        Header="Date" />
-                    <DataGridTextColumn
-                        Width="*"
-                        Binding="{Binding MailClient}"
-                        Header="Choix " />
-                </DataGrid.Columns>
-            </DataGrid>
-        </Grid>
+        <StackPanel Margin="20,409,20,99">
+            <Label
+                Margin="10,10,0,0"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Top"
+                Content="Resumé de la commande"
+                FontSize="18"
+                FontWeight="Bold" />
+        </StackPanel>
+        <Button
+            x:Name="butValiderCommande"
+            Background="#8B0000"
+            BorderThickness="1"
+            Click="butValider_Click"
+            Content="Valider Commande"
+            Cursor="Hand"
+            FontWeight="SemiBold"
+            Foreground="White"
+            IsDefault="True" Margin="629,877,39,30" />
     </Grid>
 </UserControl>
