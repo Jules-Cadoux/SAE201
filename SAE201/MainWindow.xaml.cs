@@ -23,27 +23,18 @@ namespace SAE201
         {
             Connection co = new Connection();
             bool? result = co.ShowDialog();
-
             if (result == true)
             {
                 InitializeComponent();
             }
             else
             {
-
                 Application.Current.Shutdown();
             }
-        }
-            // Afficher MainWindow
+            MainWindow mainWindow = this;
             mainWindow.Show();
-            Vins = new ObservableCollection<Vin>();
-            var vins = Vin.FindAll();
-            foreach (var vin in vins)
-            {
-                Vins.Add(vin);
-            }
+            Vins = new ObservableCollection<Vin>(Vin.FindAll());
             DataContext = this;
-            InitializeComponent();
         }
     }
 }
