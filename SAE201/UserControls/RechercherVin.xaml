@@ -63,8 +63,14 @@
                     </StackPanel>
                 </StackPanel>
             </TabItem>
-            <TabItem Header="TabItem">
-                <Grid Background="#FFE5E5E5" />
+            <TabItem Header="TabItem" Margin="-2,-2,2,2">
+                <Button Background="#6366F1" Foreground="White" BorderThickness="0" Padding="20,12"  FontWeight="Normal" Cursor="Hand" FontSize="14" Height="44" Margin="0,0,525,0">
+                    <StackPanel Orientation="Horizontal">
+                        <!-- Icône check -->
+                        <Path Width="16" Height="16" Fill="White" Margin="0,0,8,0" VerticalAlignment="Center" Data="M9 12L11 14L15 10M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z"/>
+                        <TextBlock Text="Valider la demande" FontSize="14" VerticalAlignment="Center"/>
+                    </StackPanel>
+                </Button>
             </TabItem>
         </TabControl>
     </Grid>
