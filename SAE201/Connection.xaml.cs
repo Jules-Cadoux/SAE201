@@ -46,7 +46,7 @@ namespace SAE201
 
         private void seConnecter_Click(object sender, RoutedEventArgs e)
         {
-            Employe user = Employe.FindByLoginAndPassword(txLogin.Text, txMdp.Text);
+            Employe user = Employe.FindByLoginAndPassword(txLogin.Text, txMdp.Password);
             if (user is null)
             {
                 MessageBox.Show("Mot de passe ou login incorrect, réessayer");

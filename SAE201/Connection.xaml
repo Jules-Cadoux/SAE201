@@ -6,35 +6,121 @@
     xmlns:local="clr-namespace:SAE201"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     Title="Connection"
-    Width="300"
-    Height="450"
+    Width="350"
+    Height="600"
     mc:Ignorable="d">
-    <Grid>
-        <Grid>
-            <StackPanel>
+
+    
+    <Grid Background="#F5F5F5">
+        
+        <Border
+            Width="320"
+            Height="546"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            Background="White"
+            CornerRadius="15"
+            >
+
+            <StackPanel Margin="40,50,40,50">
+               
+                <Border
+                    HorizontalAlignment="Center"
+                    Background="#C41E3A"
+                    CornerRadius="8"
+                    Padding="20,10"
+                    Margin="0,0,0,40">
+                    <Label
+                        Content="NICOLAS"
+                        FontSize="36"
+                        FontWeight="Bold"
+                        Foreground="#FFC107"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center" />
+                </Border>
+
+                
                 <Label
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center"
-                    Content="Connection"
-                    FontSize="18"
+                    Content="Se connecter"
+                    FontSize="24"
                     FontWeight="Bold"
-                    IsEnabled="False" />
-                <Label Margin="25,25,0,0" Content="Identifiant" />
+                    Foreground="#666"
+                    Margin="0,0,0,30" />
+
+                
+                <Label 
+                    Content="Identifiant"
+                    FontSize="14"
+                    FontWeight="Bold"
+                    Foreground="#333"
+                    Margin="0,0,0,5" />
+
                 <TextBox
                     x:Name="txLogin"
-                    Width="200"
+                    Height="40"
+                    Padding="10,8"
+                    FontSize="14"
+                    BorderBrush="#C41E3A"
+                    BorderThickness="2"
+                    Margin="0,0,0,20"
                     TextWrapping="Wrap" />
-                <Label Margin="25,10,0,0" Content="Mot de passe " />
+
+                
+                <Label 
+                    Content="Mot de passe"
+                    FontSize="14"
+                    FontWeight="Bold"
+                    Foreground="#333"
+                    Margin="0,0,0,5" />
+
                 <PasswordBox
                     x:Name="txMdp"
-                    Width="200" />
+                    Height="40"
+                    Padding="10,8"
+                    FontSize="14"
+                    BorderBrush="#C41E3A"
+                    BorderThickness="2"
+                    Margin="0,0,0,30"
+                     />
+
                 <Button
                     x:Name="seConnecter"
-                    Width="108"
-                    Margin="0,25,0,0"
+                    Height="45"
                     Click="seConnecter_Click"
-                    Content="Se connecter" />
+                    Content="Se connecter"
+                    FontSize="16"
+                    FontWeight="SemiBold"
+                    Background="#C41E3A"
+                    Foreground="#FFC107"
+                    BorderThickness="0"
+                    Cursor="Hand">
+                    <Button.Style>
+                        <Style TargetType="Button">
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="Button">
+                                        <Border 
+                                            Background="{TemplateBinding Background}"
+                                            CornerRadius="8"
+                                            Padding="20,10">
+                                            <ContentPresenter 
+                                                HorizontalAlignment="Center"
+                                                VerticalAlignment="Center" />
+                                        </Border>
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter Property="Background" Value="#FFD54F" />
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </Button.Style>
+                </Button>
             </StackPanel>
-        </Grid>
+        </Border>
     </Grid>
 </Window>
