@@ -55,8 +55,8 @@
                         VerticalAlignment="Top"
                         Content="&#xE74D;"
                         FontFamily="Segoe MDL2 Assets"
-                        ToolTip="Supprimer" />
-                    <!--  Click="buttSupprimer_Click"  -->
+                        ToolTip="Supprimer" 
+                        Click="buttSupprimer_Click" />
 
                     <Button
                         x:Name="buttAjouter"

@@ -14,7 +14,8 @@
             HorizontalAlignment="Center"
             Content="Fiche client"
             FontSize="22"
-            IsEnabled="False" Foreground="Black" />
+            Foreground="Black"
+            IsEnabled="False" />
 
         <Label
             x:Name="labNom"
@@ -60,7 +61,8 @@
             Margin="0,25,0,0"
             HorizontalAlignment="Center"
             Click="butValider_Click"
-            Content="Button" />
+            Content="Button"
+            IsDefault="True" />
 
     </StackPanel>
 </UserControl>

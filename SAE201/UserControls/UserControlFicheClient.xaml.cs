@@ -33,7 +33,6 @@ namespace SAE201.UserControls
         public void butValider_Click(object sender, RoutedEventArgs e)
         {
             bool ok = true;
-
             foreach (UIElement uie in panelUCFormClient.Children)
             {
                 if (uie is TextBox)
@@ -77,6 +76,11 @@ namespace SAE201.UserControls
                     MessageBox.Show("Erreur lors de l'ajout : " + ex.Message);
                     return;
                 }
+            }
+            Window parentWindow = Window.GetWindow(this);
+            if (parentWindow != null)
+            {
+                parentWindow.DialogResult = true;
             }
         }
     }

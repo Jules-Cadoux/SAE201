@@ -95,6 +95,7 @@ namespace SAE201.Windows
             {
                 Client clientSelectionne = (Client)dgClients.SelectedItem;
                 Client copie = new Client(clientSelectionne.NumClient, clientSelectionne.NomClient, clientSelectionne.PrenomClient, clientSelectionne.MailClient);
+
                 UserControlFicheClient ucClient = new UserControlFicheClient(copie, ActionClient.Modifier);
 
                 Window dialogWindow = new Window()
@@ -116,11 +117,39 @@ namespace SAE201.Windows
                         clientSelectionne.NomClient = copie.NomClient;
                         clientSelectionne.PrenomClient = copie.PrenomClient;
                         clientSelectionne.MailClient = copie.MailClient;
+
+                        dgClients.Items.Refresh();
                     }
                     catch (Exception ex)
                     {
                         MessageBox.Show(this, "Le client n'a pas pu être modifié.", "Erreur", MessageBoxButton.OK, MessageBoxImage.Error);
                     }
+                }
+            }
+        }
+
+        private void buttSupprimer_Click(object sender, RoutedEventArgs e)
+        {
+            if (dgClients.SelectedItem == null)
+            {
+                MessageBox.Show(this, "Veuillez sélectionner un chien à supprimer", "Attention", MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
+
+            Client clientAsupprimer = (Client)dgClients.SelectedItem;            
+
+            MessageBoxResult result = MessageBox.Show(this, "Voulez-vous vraiment supprimer ce chien ?", "Confirmation", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+
+            if (result == MessageBoxResult.Yes)
+            {
+                try
+                {
+                    int nb = clientAsupprimer.Delete();
+                    LesClients.Remove(clientAsupprimer);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(this, "Le chien n'a pas pu être supprimé.\n" + ex.Message, "Erreur", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
         }
