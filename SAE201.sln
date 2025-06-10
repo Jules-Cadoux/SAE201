@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.10.35013.160
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SAE201", "SAE201\SAE201.csproj", "{EDC95807-BE04-4306-A857-85C1EE2031B2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SAE201", "SAE201\SAE201.csproj", "{EDC95807-BE04-4306-A857-85C1EE2031B2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

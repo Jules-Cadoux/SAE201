@@ -1,19 +1,32 @@
 ﻿using Npgsql;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Data;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace SAE201.Model
 {
-    public class Client
+    public class Client : INotifyPropertyChanged
     {
         private int numClient;
         private string nomClient;
         private string prenomClient;
         private string mailClient;
+
+        public event PropertyChangedEventHandler? PropertyChanged;
+
+        protected void OnPropertyChanged(string nomPropriete)
+        {
+            PropertyChangedEventHandler? handler = this.PropertyChanged;
+            if (handler != null)
+            {
+                handler(this, new PropertyChangedEventArgs(nomPropriete));
+            }
+        }
 
         public Client(int numClient, string nomClient, string prenomClient, string mailClient)
         {
@@ -59,6 +72,8 @@ namespace SAE201.Model
             set
             {
                 nomClient = value;
+                this.nomClient = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(value.ToLower());
+                OnPropertyChanged(nameof(NomClient));
             }
         }
 
@@ -72,6 +87,9 @@ namespace SAE201.Model
             set
             {
                 prenomClient = value;
+                this.prenomClient = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(value.ToLower());
+                OnPropertyChanged(nameof(PrenomClient));
+
             }
         }
 
@@ -85,6 +103,7 @@ namespace SAE201.Model
             set
             {
                 this.mailClient = value;
+                OnPropertyChanged(nameof(MailClient));
             }
         }
 
@@ -152,8 +171,6 @@ namespace SAE201.Model
                     string mailclient = (string)dr["mailclient"];
                     Client client = new Client(numclient, nomclient, prenomclient, mailclient);
                     lesClients.Add(client);
-                    /*lesClients.Add(new Client((Int32)dr["numclient"], (string)dr["nomclient"],
-                   (string)dr["prenomclient"], (string)dr["mailclient"]));*/
                 }
                     
             }

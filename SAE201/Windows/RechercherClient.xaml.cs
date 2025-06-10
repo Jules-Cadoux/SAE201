@@ -1,4 +1,5 @@
 ﻿using SAE201.Model;
+using SAE201.UserControls;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -26,6 +27,8 @@ namespace SAE201.Windows
         {
             InitializeComponent();            
             ChargeData();
+            dgClients.Items.Filter = RechercheMotClefClient;
+
         }
 
         public void ChargeData()
@@ -43,5 +46,83 @@ namespace SAE201.Windows
             }
         }
 
+
+        private bool RechercheMotClefClient(object obj)
+        {
+            if (String.IsNullOrEmpty(textMotClefClient.Text))
+                return true;
+            Client unClient = obj as Client;
+            return unClient != null &&
+                   (unClient.NomClient.StartsWith(textMotClefClient.Text, StringComparison.OrdinalIgnoreCase)
+                   || unClient.PrenomClient.StartsWith(textMotClefClient.Text, StringComparison.OrdinalIgnoreCase));
+        }
+
+        private void textMotClefClient_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            CollectionViewSource.GetDefaultView(dgClients.ItemsSource)?.Refresh();
+        }
+
+        private void buttAjouter_Click(object sender, RoutedEventArgs e)
+        {
+            Client unClient = new Client();
+            UserControlFicheClient ucClient = new UserControlFicheClient(unClient, ActionClient.Creer);
+
+            Window dialogWindow = new Window()
+            {
+                Title = "Nouveau Client",
+                Content = ucClient,
+                SizeToContent = SizeToContent.WidthAndHeight,
+                WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                Owner = this,
+                ResizeMode = ResizeMode.NoResize
+            };
+
+            bool? result = dialogWindow.ShowDialog();
+            if (result == true)
+            {
+                LesClients.Add(unClient);
+            }
+        }
+
+
+        private void buttEditer_Click(object sender, RoutedEventArgs e)
+        {
+            if (dgClients.SelectedItem == null)
+            {
+                MessageBox.Show(this, "Veuillez sélectionner un client", "Attention", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            else
+            {
+                Client clientSelectionne = (Client)dgClients.SelectedItem;
+                Client copie = new Client(clientSelectionne.NumClient, clientSelectionne.NomClient, clientSelectionne.PrenomClient, clientSelectionne.MailClient);
+                UserControlFicheClient ucClient = new UserControlFicheClient(copie, ActionClient.Modifier);
+
+                Window dialogWindow = new Window()
+                {
+                    Title = "Modifier Client",
+                    Content = ucClient,
+                    SizeToContent = SizeToContent.WidthAndHeight,
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                    Owner = this,
+                    ResizeMode = ResizeMode.NoResize
+                };
+
+                bool? result = dialogWindow.ShowDialog();
+                if (result == true)
+                {
+                    try
+                    {
+                        copie.Update();
+                        clientSelectionne.NomClient = copie.NomClient;
+                        clientSelectionne.PrenomClient = copie.PrenomClient;
+                        clientSelectionne.MailClient = copie.MailClient;
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(this, "Le client n'a pas pu être modifié.", "Erreur", MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
+                }
+            }
+        }
     }
 }
