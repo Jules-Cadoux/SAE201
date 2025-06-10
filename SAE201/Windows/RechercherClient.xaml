@@ -9,80 +9,186 @@
     Title="RechercherClient"
     Width="800"
     Height="450"
+    Background="#F5F5F5"
     mc:Ignorable="d">
+
+    <Window.Resources>
+        <Style x:Key="NicolasButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="#8B0000" />
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="BorderBrush" Value="#660000" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="3">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#A00000" />
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter Property="Background" Value="#660000" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="NicolasTextBoxStyle" TargetType="TextBox">
+            <Setter Property="BorderBrush" Value="#8B0000" />
+            <Setter Property="BorderThickness" Value="2" />
+            <Setter Property="Padding" Value="5" />
+            <Setter Property="FontSize" Value="12" />
+        </Style>
+
+        <Style x:Key="NicolasDataGridStyle" TargetType="DataGrid">
+            <Setter Property="Background" Value="White" />
+            <Setter Property="BorderBrush" Value="#8B0000" />
+            <Setter Property="BorderThickness" Value="2" />
+            <Setter Property="GridLinesVisibility" Value="Horizontal" />
+            <Setter Property="HorizontalGridLinesBrush" Value="#E0E0E0" />
+            <Setter Property="AlternatingRowBackground" Value="#FFF8F8" />
+            <Setter Property="RowBackground" Value="White" />
+            <Setter Property="HeadersVisibility" Value="Column" />
+        </Style>
+
+        <Style x:Key="NicolasDataGridHeaderStyle" TargetType="DataGridColumnHeader">
+            <Setter Property="Background" Value="#8B0000" />
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="FontWeight" Value="Bold" />
+            <Setter Property="Padding" Value="8,5" />
+            <Setter Property="BorderBrush" Value="#660000" />
+            <Setter Property="BorderThickness" Value="0,0,1,0" />
+        </Style>
+    </Window.Resources>
+
     <Grid>
-        <TabControl>
-            <TabItem Header="Les Clients">
-                <Grid Background="#FFFFFF">
-                    <DataGrid
-                        x:Name="dgClients"
-                        Margin="71,42,213,18"
-                        AutoGenerateColumns="False"
-                        IsReadOnly="True"
-                        ItemsSource="{Binding LesClients}">
-                        <DataGrid.Columns>
-                            <DataGridTextColumn
-                                Width="*"
-                                Binding="{Binding NomClient}"
-                                Header="Nom" />
-                            <DataGridTextColumn
-                                Width="*"
-                                Binding="{Binding PrenomClient}"
-                                Header="Prénom" />
-                            <DataGridTextColumn
-                                Width="*"
-                                Binding="{Binding MailClient}"
-                                Header="Mail " />
-                        </DataGrid.Columns>
-                    </DataGrid>
+        <Border
+            Height="60"
+            VerticalAlignment="Top"
+            Background="#8B0000">
+            <Grid>
+                <StackPanel
+                    Margin="20,0"
+                    VerticalAlignment="Center"
+                    Orientation="Horizontal">
+                    <TextBlock
+                        Margin="0,0,10,0"
+                        VerticalAlignment="Center"
+                        FontSize="24"
+                        Foreground="White"
+                        Text="🍷" />
+                    <TextBlock
+                        VerticalAlignment="Center"
+                        FontSize="24"
+                        FontWeight="Bold"
+                        Foreground="White"
+                        Text="NICOLAS" />
+                    <TextBlock
+                        Margin="10,0,0,8"
+                        VerticalAlignment="Bottom"
+                        FontSize="12"
+                        Foreground="#FFD700"
+                        Text="Caviste depuis 1822" />
+                </StackPanel>
+            </Grid>
+        </Border>
 
-                    <TextBox
-                        x:Name="textMotClefClient"
-                        Width="286"
-                        Margin="183,10,0,0"
-                        HorizontalAlignment="Left"
-                        VerticalAlignment="Top"
-                        TextChanged="textMotClefClient_TextChanged" />
+        <Grid Margin="0,60,0,30">
+            <TabControl>
+                <TabItem Header="Les Clients">
+                    <Grid Background="#FFFFFF">
+                        <DataGrid
+                            x:Name="dgClients"
+                            Margin="71,42,213,18"
+                            AutoGenerateColumns="False"
+                            ColumnHeaderStyle="{StaticResource NicolasDataGridHeaderStyle}"
+                            IsReadOnly="True"
+                            ItemsSource="{Binding LesClients}"
+                            Style="{StaticResource NicolasDataGridStyle}">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn
+                                    Width="*"
+                                    Binding="{Binding NomClient}"
+                                    Header="Nom" />
+                                <DataGridTextColumn
+                                    Width="*"
+                                    Binding="{Binding PrenomClient}"
+                                    Header="Prénom" />
+                                <DataGridTextColumn
+                                    Width="*"
+                                    Binding="{Binding MailClient}"
+                                    Header="Mail " />
+                            </DataGrid.Columns>
+                        </DataGrid>
+                        <TextBox
+                            x:Name="textMotClefClient"
+                            Width="286"
+                            Margin="183,10,0,0"
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Top"
+                            Style="{StaticResource NicolasTextBoxStyle}"
+                            TextChanged="textMotClefClient_TextChanged" />
+                        <Button
+                            x:Name="buttSupprimer"
+                            Width="30"
+                            Height="30"
+                            Margin="676,110,0,0"
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Top"
+                            Click="buttSupprimer_Click"
+                            Content="&#xE74D;"
+                            FontFamily="Segoe MDL2 Assets"
+                            Style="{StaticResource NicolasButtonStyle}"
+                            ToolTip="Supprimer" />
+                        <Button
+                            x:Name="buttAjouter"
+                            Width="30"
+                            Height="30"
+                            Margin="676,148,0,0"
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Top"
+                            Click="buttAjouter_Click"
+                            Content="&#xE710;"
+                            FontFamily="Segoe MDL2 Assets"
+                            Style="{StaticResource NicolasButtonStyle}"
+                            ToolTip="Ajouter" />
+                        <Button
+                            x:Name="buttEditer"
+                            Width="30"
+                            Height="30"
+                            Margin="676,186,0,0"
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Top"
+                            Click="buttEditer_Click"
+                            Content="&#xE70F;"
+                            FontFamily="Segoe MDL2 Assets"
+                            Style="{StaticResource NicolasButtonStyle}"
+                            ToolTip="Editer" />
+                    </Grid>
+                </TabItem>
+            </TabControl>
+        </Grid>
 
-
-
-                    <Button
-                        x:Name="buttSupprimer"
-                        Width="30"
-                        Height="30"
-                        Margin="676,110,0,0"
-                        HorizontalAlignment="Left"
-                        VerticalAlignment="Top"
-                        Content="&#xE74D;"
-                        FontFamily="Segoe MDL2 Assets"
-                        ToolTip="Supprimer" 
-                        Click="buttSupprimer_Click" />
-
-                    <Button
-                        x:Name="buttAjouter"
-                        Width="30"
-                        Height="30"
-                        Margin="676,148,0,0"
-                        HorizontalAlignment="Left"
-                        VerticalAlignment="Top"
-                        Click="buttAjouter_Click"
-                        Content="&#xE710;"
-                        FontFamily="Segoe MDL2 Assets"
-                        ToolTip="Ajouter" />
-                    <Button
-                        x:Name="buttEditer"
-                        Width="30"
-                        Height="30"
-                        Margin="676,186,0,0"
-                        HorizontalAlignment="Left"
-                        VerticalAlignment="Top"
-                        Content="&#xE70F;"
-                        FontFamily="Segoe MDL2 Assets"
-                        ToolTip="Editer" 
-                        Click="buttEditer_Click"/>  
-                </Grid>
-            </TabItem>
-
-        </TabControl>
+        <Border
+            Height="30"
+            VerticalAlignment="Bottom"
+            Background="#8B0000">
+            <TextBlock
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                FontStyle="Italic"
+                Foreground="White"
+                Text="Nicolas - L'art de bien choisir son vin" />
+        </Border>
     </Grid>
 </Window>
