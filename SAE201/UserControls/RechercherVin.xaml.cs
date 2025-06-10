@@ -180,7 +180,28 @@ namespace SAE201.UserControls
             VinsView?.Refresh();
         }
 
-        //---------------------------------------------------------------------------------------------------------------------------------------------------------------------
+        private void BtnReinitialiser_Click(object sender, RoutedEventArgs e)
+        {
+            if (textRechercheVin != null)
+            {
+                textRechercheVin.Text = "";
+                if (labRechercheVin != null)
+                    labRechercheVin.Content = "Nom du vin";
+            }
 
+            if (comboTypeVin != null)
+                comboTypeVin.SelectedIndex = 0;
+
+            if (comboAppellation != null)
+                comboAppellation.SelectedIndex = 0;
+
+            if (textAnnee != null)
+                textAnnee.Text = "";
+
+            if (textPrix != null)
+                textPrix.Text = "";
+
+            VinsView?.Refresh();
+        }
     }
 }
