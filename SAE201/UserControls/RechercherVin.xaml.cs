@@ -18,10 +18,25 @@ using System.Windows.Shapes;
 
 namespace SAE201.UserControls
 {
+    public class VinDemande
+    {
+        public string NomVin { get; set; }
+        public DateTime Date { get; set; }
+        public int Quantite { get; set; }
+
+        public VinDemande(string nomVin, DateTime date, int quantite)
+        {
+            NomVin = nomVin;
+            Date = date;
+            Quantite = quantite;
+        }
+    }
     public partial class RechercherVin : UserControl
     {
         public ObservableCollection<Vin> Vins { get; set; }
         public ICollectionView VinsView { get; set; }
+
+        public ObservableCollection<VinDemande> VinsDemande { get; set; }
 
         public RechercherVin()
         {
@@ -215,6 +230,31 @@ namespace SAE201.UserControls
                 textPrix.Text = "";
 
             VinsView?.Refresh();
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            Button btn = sender as Button;
+
+            // Vérifiez si le bouton est valide
+            if (btn != null && btn.Tag is Vin vinSelectionne)
+            {
+                // Si vinSelectionne est null ou invalide, vous évitez d'ajouter dans VinsDemande
+                if (vinSelectionne == null)
+                {
+                    MessageBox.Show("Erreur : Le vin sélectionné est invalide.");
+                    return;
+                }
+
+                // Ajoutez à la collection VinsDemande
+                VinsDemande.Add(new VinDemande(vinSelectionne.NomVin, DateTime.Now, 1));
+
+                MessageBox.Show($"Vin '{vinSelectionne.NomVin}' ajouté ! Total: {VinsDemande.Count} vins");
+            }
+            else
+            {
+                MessageBox.Show("Erreur : Aucun vin sélectionné.");
+            }
         }
     }
 }
