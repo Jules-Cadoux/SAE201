@@ -32,12 +32,11 @@ namespace SAE201.Model
             this.Accepter = accepter;
         }
 
-        public Demande(int numDemande, Vin numVin, Employe numEmploye, Commande numCommande, Client numClient)
+        public Demande(int numDemande, Vin numVin, Employe numEmploye, Client numClient)
         {
             this.NumDemande = numDemande;
             this.NumVin = numVin;
             this.NumEmploye = numEmploye;
-            this.NumCommande = numCommande;
             this.NumClient = numClient;
         }
 
@@ -118,8 +117,8 @@ namespace SAE201.Model
 
             set
             {
-                if (value != DateTime.Today)
-                    MessageBox.Show("La date du jour doit = à celle du jour", "Erreur de création demande", MessageBoxButton.OK, MessageBoxImage.Error);
+                //if (value != DateTime.Today)
+                  //  MessageBox.Show("La date du jour doit = à celle du jour", "Erreur de création demande", MessageBoxButton.OK, MessageBoxImage.Error);
                 dateDemande = value;
             }
         }
@@ -146,8 +145,8 @@ namespace SAE201.Model
 
             set
             {
-                if (value != "Accepter" && value != "En cours" && value != "Refuser")
-                    MessageBox.Show("Il faut choisir Accepter, En cours ou Refuser", "Erreur demande", MessageBoxButton.OK, MessageBoxImage.Error);
+                if (value != "accepter" && value != "en attente" && value != "refuser")
+                    MessageBox.Show("Il faut choisir accepter, en attente ou refuser", "Erreur demande", MessageBoxButton.OK, MessageBoxImage.Error);
                 this.accepter = value;
             }
         }
@@ -156,7 +155,7 @@ namespace SAE201.Model
         {
             int id = 0;
             using (NpgsqlCommand cmd = new NpgsqlCommand(
-                "INSERT INTO demande (numvin, numemploye, numcommande, numclient, datedemande, quantitedemande, accepter) " +
+                "INSERT INTO sae201_nicolas.demande (numvin, numemploye, numcommande, numclient, datedemande, quantitedemande, accepter) " +
                 "VALUES (@numvin, @numemploye, @numcommande, @numclient, @datedemande, @quantitedemande, @accepter) RETURNING numdemande"))
             {
                 cmd.Parameters.AddWithValue("numvin", this.NumVin.NumVin);
@@ -174,7 +173,7 @@ namespace SAE201.Model
 
         public void Read()
         {
-            using (NpgsqlCommand cmd = new NpgsqlCommand("SELECT * FROM demande WHERE numdemande = @numdemande"))
+            using (NpgsqlCommand cmd = new NpgsqlCommand("SELECT * FROM sae201_nicolas.demande WHERE numdemande = @numdemande"))
             {
                 cmd.Parameters.AddWithValue("id", this.NumDemande);
                 DataTable dt = DataAccess.Instance.ExecuteSelect(cmd);
@@ -201,7 +200,7 @@ namespace SAE201.Model
         public int Update()
         {
             using (NpgsqlCommand cmd = new NpgsqlCommand(
-                "UPDATE demande SET numvin = @numvin, numemploye = @numemploye, numcommande = @numcommande, numclient = @numclient, " +
+                "UPDATE sae201_nicolas.demande SET numvin = @numvin, numemploye = @numemploye, numcommande = @numcommande, numclient = @numclient, " +
                 "datedemande = @datedemande, quantitedemande = @quantitedemande, accepter = @accepter WHERE numdemande = @numdemande"))
             {
                 cmd.Parameters.AddWithValue("numvin", this.NumVin.NumVin);
@@ -218,7 +217,7 @@ namespace SAE201.Model
 
         public int Delete()
         {
-            using (NpgsqlCommand cmd = new NpgsqlCommand("DELETE FROM demande WHERE numdemande = @numdemande"))
+            using (NpgsqlCommand cmd = new NpgsqlCommand("DELETE FROM sae201_nicolas.demande WHERE numdemande = @numdemande"))
             {
                 cmd.Parameters.AddWithValue("numdemande", this.NumDemande);
                 return DataAccess.Instance.ExecuteSet(cmd);
@@ -228,7 +227,7 @@ namespace SAE201.Model
         public static List<Demande> FindAll()
         {
             List<Demande> demandes = new List<Demande>();
-            using (NpgsqlCommand cmd = new NpgsqlCommand("SELECT * FROM demande"))
+            using (NpgsqlCommand cmd = new NpgsqlCommand("SELECT * FROM sae201_nicolas.demande"))
             {
                 DataTable dt = DataAccess.Instance.ExecuteSelect(cmd);
                 foreach (DataRow row in dt.Rows)
@@ -239,9 +238,16 @@ namespace SAE201.Model
                     d.QuantiteDemande = (int)row["quantitedemande"];
                     d.Accepter = (string)row["accepter"];
 
+                    // Vérification si numvin est NULL
                     d.NumVin = new Vin { NumVin = (int)row["numvin"] };
+
+                    // Vérification si numemploye est NULL
                     d.NumEmploye = new Employe { NumEmploye = (int)row["numemploye"] };
-                    d.NumCommande = new Commande { NumCommande = (int)row["numcommande"] };
+
+                    // Vérification si numcommande est NULL (ici, on gère les valeurs NULL)
+                    d.NumCommande = row["numcommande"] == DBNull.Value ? null : new Commande { NumCommande = (int)row["numcommande"] };
+
+                    // Vérification si numclient est NULL
                     d.NumClient = new Client { NumClient = (int)row["numclient"] };
 
                     demandes.Add(d);
@@ -250,10 +256,11 @@ namespace SAE201.Model
             return demandes;
         }
 
+
         public static List<Demande> FindBySelection(string criteres)
         {
             List<Demande> demandes = new List<Demande>();
-            using (NpgsqlCommand cmd = new NpgsqlCommand($"SELECT * FROM demande WHERE {criteres}"))
+            using (NpgsqlCommand cmd = new NpgsqlCommand($"SELECT * FROM sae201_nicolas.demande WHERE {criteres}"))
             {
                 DataTable dt = DataAccess.Instance.ExecuteSelect(cmd);
                 foreach (DataRow row in dt.Rows)

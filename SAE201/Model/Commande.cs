@@ -29,6 +29,7 @@ namespace SAE201.Model
             this.PrixTotal = prixTotal;
         }
 
+
         public int NumCommande
         {
             get
