@@ -18,6 +18,10 @@ namespace SAE201
     {
         public MainWindow()
         {
+            Connection mainWindow = new Connection();
+
+            // Afficher MainWindow
+            mainWindow.Show();
             InitializeComponent();
         }
     }
