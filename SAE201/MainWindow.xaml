@@ -17,7 +17,7 @@
                 <StackPanel Background="#FFE5E5E5">
                     <TextBox
                         Grid.Row="1"
-                        Height="35"
+                        Height="40"
                         Margin="0,0,0,10"
                         Padding="10"
                         FontSize="14"
@@ -28,100 +28,45 @@
                         Grid.Row="2"
                         Margin="0,0,0,10"
                         Orientation="Horizontal">
-                        <ComboBox
-                            Width="120"
-                            Height="30"
-                            Text="Type de vin" />
-                        <ComboBox
-                            Width="120"
-                            Height="30"
-                            Text="Appellation" />
-                        <ComboBox
-                            Width="120"
-                            Height="30"
-                            Text="Année" />
-                        <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
-                            <TextBlock
-                                Margin="0,0,5,0"
-                                VerticalAlignment="Center"
-                                Text="Prix max (€)" />
-                            <TextBox
-                                Width="80"
-                                Height="30"
-                                Text="50" />
-                        </StackPanel>
+                        <ComboBox Width="120" Height="30" Text="Type de vin" >
+                            <ComboBoxItem>Blanc</ComboBoxItem>
+                            <ComboBoxItem>Rose</ComboBoxItem>
+                            <ComboBoxItem>Rouge</ComboBoxItem>
+                        </ComboBox>
+                        <ComboBox Width="120" Height="30" Text="Appellation" >
+                            <ComboBoxItem>AOC</ComboBoxItem>
+                            <ComboBoxItem>AOP</ComboBoxItem>
+                            <ComboBoxItem>IGP</ComboBoxItem>
+                        </ComboBox>
+                        <TextBlock Margin="5,0,5,0" VerticalAlignment="Center" Text="Année de production" />
+                        <TextBox Width="80" Height="30" Text="" VerticalContentAlignment="Center" />
+                        <TextBlock Margin="5,0,5,0" VerticalAlignment="Center" Text="Prix max (€)" />
+                        <TextBox Width="80" Height="30" Text="" VerticalContentAlignment="Center" />
                     </StackPanel>
 
                     <!--  Résultats  -->
                     <StackPanel Grid.Row="3">
-                        <TextBlock
-                            Margin="0,0,0,10"
-                            FontSize="16"
-                            FontWeight="Bold"
-                            Text="Résultats (3)" />
-
-                        <UniformGrid
-                            Margin="0,0,0,10"
-                            HorizontalAlignment="Stretch"
-                            VerticalAlignment="Top"
-                            Columns="3">
-                            <!--  Carte Vin 1  -->
-                            <Border
-                                Padding="10"
-                                Background="White"
-                                CornerRadius="5">
-                                <StackPanel>
-                                    <Rectangle Height="100" Fill="#DDD" />
-                                    <TextBlock
-                                        Margin="0,10,0,0"
-                                        FontWeight="Bold"
-                                        Text="Château Margaux 2015" />
-                                    <TextBlock Foreground="Gray" Text="Bordeaux - Rouge" />
-                                    <TextBlock
-                                        FontWeight="Bold"
-                                        Foreground="#5C6AC4"
-                                        Text="89,90 €" />
-                                </StackPanel>
-                            </Border>
-
-                            <!--  Carte Vin 2  -->
-                            <Border
-                                Padding="10"
-                                Background="White"
-                                CornerRadius="5">
-                                <StackPanel>
-                                    <Rectangle Height="100" Fill="#DDD" />
-                                    <TextBlock
-                                        Margin="0,10,0,0"
-                                        FontWeight="Bold"
-                                        Text="Domaine de la Romanée–Conti 2018" />
-                                    <TextBlock Foreground="Gray" Text="Bourgogne - Rouge" />
-                                    <TextBlock
-                                        FontWeight="Bold"
-                                        Foreground="#5C6AC4"
-                                        Text="1 250,00 €" />
-                                </StackPanel>
-                            </Border>
-
-                            <!--  Carte Vin 3  -->
-                            <Border
-                                Padding="10"
-                                Background="White"
-                                CornerRadius="5">
-                                <StackPanel>
-                                    <Rectangle Height="100" Fill="#DDD" />
-                                    <TextBlock
-                                        Margin="0,10,0,0"
-                                        FontWeight="Bold"
-                                        Text="Sancerre Blanc 2021" />
-                                    <TextBlock Foreground="Gray" Text="Loire - Blanc" />
-                                    <TextBlock
-                                        FontWeight="Bold"
-                                        Foreground="#5C6AC4"
-                                        Text="24,90 €" />
-                                </StackPanel>
-                            </Border>
-                        </UniformGrid>
+                        <TextBlock Margin="0,0,0,10" FontSize="16" FontWeight="Bold" Text="{Binding Vins.Count, StringFormat='Résultats ({0})'}" />
+                        <ListBox ItemsSource="{Binding Vins}" HorizontalAlignment="Stretch" VerticalAlignment="Top" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                            <ListBox.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <UniformGrid Columns="3" />
+                                </ItemsPanelTemplate>
+                            </ListBox.ItemsPanel>
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <!-- Contenu de chaque vin dans un bloc distinct -->
+                                    <Border Padding="10" Background="White" CornerRadius="5" Margin="5" BorderBrush="#E0E0E0" BorderThickness="1" Height="200" Width="250">
+                                        <StackPanel>
+                                            <Rectangle Height="100" Fill="#DDD" Margin="0,0,0,10"/>
+                                            <TextBlock Margin="0,10,0,0" FontWeight="Bold" Text="{Binding NomVin}" TextWrapping="Wrap" />
+                                            <TextBlock Foreground="Gray" Text="{Binding Description}" TextWrapping="Wrap" />
+                                            <TextBlock FontWeight="Bold" Foreground="#5C6AC4" Text="{Binding PrixVin, StringFormat='{}{0:C}'}" />
+                                        </StackPanel>
+                                    </Border>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
                     </StackPanel>
                 </StackPanel>
             </TabItem>
