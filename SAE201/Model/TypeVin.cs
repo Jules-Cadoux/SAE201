@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SAE201.Model
 {
-    public enum TypeDeVin { Rosé,Blanc,Rouge}
+    public enum TypeDeVin { Rose,Blanc,Rouge}
     public class TypeVin
     {
         int numType;

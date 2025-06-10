@@ -1,5 +1,6 @@
 ﻿using SAE201.Model;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
@@ -19,6 +20,8 @@ namespace SAE201
     public partial class MainWindow : Window
     {
         public ObservableCollection<Vin> Vins { get; set; }
+        public ICollectionView VinsView { get; set; }
+
         public MainWindow()
         {
             Connection co = new Connection();
@@ -31,10 +34,38 @@ namespace SAE201
             {
                 Application.Current.Shutdown();
             }
-            MainWindow mainWindow = this;
-            mainWindow.Show();
-            Vins = new ObservableCollection<Vin>(Vin.FindAll());
+            Vins = new ObservableCollection<Vin>();
+            VinsView = CollectionViewSource.GetDefaultView(Vins);
+            VinsView.Filter = RechercheMotClefVin;
+            List<Vin> vinsFromDb = Vin.FindAll();
+            if (vinsFromDb != null)
+            {
+                foreach (Vin vin in vinsFromDb)
+                {
+                    Vins.Add(vin);
+                }
+            }
             DataContext = this;
+        }
+
+        private bool RechercheMotClefVin(object obj)
+        {
+            if (String.IsNullOrEmpty(textRechercheVin.Text))
+                return true;
+            Vin unVin = obj as Vin;
+            return (unVin.NomVin.StartsWith(textRechercheVin.Text, StringComparison.OrdinalIgnoreCase));
+        }
+        private void RefreshRecherche(object sender, TextChangedEventArgs e)
+        {
+            if (VinsView != null)
+            {
+                CollectionViewSource.GetDefaultView(VinsView).Refresh();
+            }
+        }
+
+        private void textRechercheVin_GotFocus(object sender, RoutedEventArgs e)
+        {
+            labRechercheVin.Content = "";
         }
     }
 }
