@@ -46,7 +46,7 @@ namespace SAE201.Model
 
             set
             {
-                if (value != TypeDeVin.Rosé && value != TypeDeVin.Blanc && value != TypeDeVin.Rouge)
+                if (value != TypeDeVin.Rose && value != TypeDeVin.Blanc && value != TypeDeVin.Rouge)
                     throw new ArgumentException("Le NomType doit être Rosé ou Blanc ou Rouge");
                 this.nomType = value;
             }

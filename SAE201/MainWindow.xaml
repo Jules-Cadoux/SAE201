@@ -19,31 +19,30 @@
                         <TextBox x:Name="textRechercheVin" Grid.Row="1" Height="40" Margin="0,0,0,0" Padding="10" FontSize="14" Text="" TextChanged="RefreshRecherche" GotFocus="textRechercheVin_GotFocus" />
                         <Label x:Name="labRechercheVin" Height="40" Content="Nom du vin" VerticalContentAlignment="Center" Width="80" HorizontalAlignment="Left"/>
                     </Grid>
+                    
 
                     <!--  Filtres  -->
                     <StackPanel
                         Grid.Row="2"
                         Margin="0,0,0,10"
                         Orientation="Horizontal">
-                        <ComboBox x:Name="comboTypeVin" Width="120" Height="30" Text="Type de vin" VerticalContentAlignment="Center" SelectionChanged="RefreshComboFilters">
-                            <ComboBoxItem>Tous</ComboBoxItem>
+                        <ComboBox x:Name="comboTypeVin" Width="120" Height="30" Text="Type de vin" VerticalContentAlignment="Center" >
                             <ComboBoxItem>Blanc</ComboBoxItem>
                             <ComboBoxItem>Rose</ComboBoxItem>
                             <ComboBoxItem>Rouge</ComboBoxItem>
                         </ComboBox>
-                        <ComboBox x:Name="comboAppellation" Width="120" Height="30" Text="Appellation" VerticalContentAlignment="Center" SelectionChanged="RefreshComboFilters">
-                            <ComboBoxItem>Toutes</ComboBoxItem>
+                        <ComboBox x:Name="comboAppellation" Width="120" Height="30" Text="Appellation" VerticalContentAlignment="Center" >
                             <ComboBoxItem>AOC</ComboBoxItem>
                             <ComboBoxItem>AOP</ComboBoxItem>
                             <ComboBoxItem>IGP</ComboBoxItem>
                         </ComboBox>
                         <TextBlock Margin="5,0,5,0" VerticalAlignment="Center" Text="Année de production" />
-                        <TextBox x:Name="textAnnee" Width="80" Height="30" Text="" VerticalContentAlignment="Center" TextChanged="RefreshRecherche" />
+                        <TextBox Width="80" Height="30" Text="" VerticalContentAlignment="Center" />
                         <TextBlock Margin="5,0,5,0" VerticalAlignment="Center" Text="Prix max (€)" />
-                        <TextBox x:Name="textPrixMax" Width="80" Height="30" Text="" VerticalContentAlignment="Center" TextChanged="RefreshRecherche" />
+                        <TextBox Width="80" Height="30" Text="" VerticalContentAlignment="Center" />
                     </StackPanel>
                     <StackPanel Grid.Row="3">
-                        <TextBlock Margin="0,0,0,10" FontSize="16" FontWeight="Bold" Text="{Binding VinsCount, StringFormat='Résultats ({0})'}" />
+                        <TextBlock Margin="0,0,0,10" FontSize="16" FontWeight="Bold" Text="{Binding VinsView.Count, StringFormat='Résultats ({0})'}" />
                         <ListBox ItemsSource="{Binding Vins}" HorizontalAlignment="Stretch" VerticalAlignment="Top" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
                             <ListBox.ItemsPanel>
                                 <ItemsPanelTemplate>
