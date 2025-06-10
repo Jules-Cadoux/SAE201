@@ -12,65 +12,6 @@
     Background="#F5F5F5"
     mc:Ignorable="d">
 
-    <Window.Resources>
-        <Style x:Key="NicolasButtonStyle" TargetType="Button">
-            <Setter Property="Background" Value="#8B0000" />
-            <Setter Property="Foreground" Value="White" />
-            <Setter Property="BorderBrush" Value="#660000" />
-            <Setter Property="BorderThickness" Value="1" />
-            <Setter Property="FontWeight" Value="SemiBold" />
-            <Setter Property="Cursor" Value="Hand" />
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="Button">
-                        <Border
-                            Background="{TemplateBinding Background}"
-                            BorderBrush="{TemplateBinding BorderBrush}"
-                            BorderThickness="{TemplateBinding BorderThickness}"
-                            CornerRadius="3">
-                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
-                        </Border>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Setter Property="Background" Value="#A00000" />
-                            </Trigger>
-                            <Trigger Property="IsPressed" Value="True">
-                                <Setter Property="Background" Value="#660000" />
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-
-        <Style x:Key="NicolasTextBoxStyle" TargetType="TextBox">
-            <Setter Property="BorderBrush" Value="#8B0000" />
-            <Setter Property="BorderThickness" Value="2" />
-            <Setter Property="Padding" Value="5" />
-            <Setter Property="FontSize" Value="12" />
-        </Style>
-
-        <Style x:Key="NicolasDataGridStyle" TargetType="DataGrid">
-            <Setter Property="Background" Value="White" />
-            <Setter Property="BorderBrush" Value="#8B0000" />
-            <Setter Property="BorderThickness" Value="2" />
-            <Setter Property="GridLinesVisibility" Value="Horizontal" />
-            <Setter Property="HorizontalGridLinesBrush" Value="#E0E0E0" />
-            <Setter Property="AlternatingRowBackground" Value="#FFF8F8" />
-            <Setter Property="RowBackground" Value="White" />
-            <Setter Property="HeadersVisibility" Value="Column" />
-        </Style>
-
-        <Style x:Key="NicolasDataGridHeaderStyle" TargetType="DataGridColumnHeader">
-            <Setter Property="Background" Value="#8B0000" />
-            <Setter Property="Foreground" Value="White" />
-            <Setter Property="FontWeight" Value="Bold" />
-            <Setter Property="Padding" Value="8,5" />
-            <Setter Property="BorderBrush" Value="#660000" />
-            <Setter Property="BorderThickness" Value="0,0,1,0" />
-        </Style>
-    </Window.Resources>
-
     <Grid>
         <Border
             Height="60"
@@ -110,11 +51,27 @@
                         <DataGrid
                             x:Name="dgClients"
                             Margin="71,42,213,18"
+                            AlternatingRowBackground="#FFF8F8"
                             AutoGenerateColumns="False"
-                            ColumnHeaderStyle="{StaticResource NicolasDataGridHeaderStyle}"
+                            Background="White"
+                            BorderBrush="#8B0000"
+                            BorderThickness="2"
+                            GridLinesVisibility="Horizontal"
+                            HeadersVisibility="Column"
+                            HorizontalGridLinesBrush="#E0E0E0"
                             IsReadOnly="True"
                             ItemsSource="{Binding LesClients}"
-                            Style="{StaticResource NicolasDataGridStyle}">
+                            RowBackground="White">
+                            <DataGrid.ColumnHeaderStyle>
+                                <Style TargetType="DataGridColumnHeader">
+                                    <Setter Property="Background" Value="#8B0000" />
+                                    <Setter Property="Foreground" Value="White" />
+                                    <Setter Property="FontWeight" Value="Bold" />
+                                    <Setter Property="Padding" Value="8,5" />
+                                    <Setter Property="BorderBrush" Value="#660000" />
+                                    <Setter Property="BorderThickness" Value="0,0,1,0" />
+                                </Style>
+                            </DataGrid.ColumnHeaderStyle>
                             <DataGrid.Columns>
                                 <DataGridTextColumn
                                     Width="*"
@@ -134,9 +91,12 @@
                             x:Name="textMotClefClient"
                             Width="286"
                             Margin="183,10,0,0"
+                            Padding="5"
                             HorizontalAlignment="Left"
                             VerticalAlignment="Top"
-                            Style="{StaticResource NicolasTextBoxStyle}"
+                            BorderBrush="#8B0000"
+                            BorderThickness="2"
+                            FontSize="12"
                             TextChanged="textMotClefClient_TextChanged" />
                         <Button
                             x:Name="buttSupprimer"
@@ -145,11 +105,17 @@
                             Margin="676,110,0,0"
                             HorizontalAlignment="Left"
                             VerticalAlignment="Top"
+                            Background="#8B0000"
+                            BorderBrush="#660000"
+                            BorderThickness="1"
                             Click="buttSupprimer_Click"
                             Content="&#xE74D;"
+                            Cursor="Hand"
                             FontFamily="Segoe MDL2 Assets"
-                            Style="{StaticResource NicolasButtonStyle}"
+                            FontWeight="SemiBold"
+                            Foreground="White"
                             ToolTip="Supprimer" />
+
                         <Button
                             x:Name="buttAjouter"
                             Width="30"
@@ -157,10 +123,15 @@
                             Margin="676,148,0,0"
                             HorizontalAlignment="Left"
                             VerticalAlignment="Top"
+                            Background="#8B0000"
+                            BorderBrush="#660000"
+                            BorderThickness="1"
                             Click="buttAjouter_Click"
                             Content="&#xE710;"
+                            Cursor="Hand"
                             FontFamily="Segoe MDL2 Assets"
-                            Style="{StaticResource NicolasButtonStyle}"
+                            FontWeight="SemiBold"
+                            Foreground="White"
                             ToolTip="Ajouter" />
                         <Button
                             x:Name="buttEditer"
@@ -169,10 +140,15 @@
                             Margin="676,186,0,0"
                             HorizontalAlignment="Left"
                             VerticalAlignment="Top"
+                            Background="#8B0000"
+                            BorderBrush="#660000"
+                            BorderThickness="1"
                             Click="buttEditer_Click"
                             Content="&#xE70F;"
+                            Cursor="Hand"
                             FontFamily="Segoe MDL2 Assets"
-                            Style="{StaticResource NicolasButtonStyle}"
+                            FontWeight="SemiBold"
+                            Foreground="White"
                             ToolTip="Editer" />
                     </Grid>
                 </TabItem>
