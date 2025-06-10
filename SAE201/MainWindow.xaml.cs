@@ -18,11 +18,18 @@ namespace SAE201
     {
         public MainWindow()
         {
-            Connection mainWindow = new Connection();
+            Connection co = new Connection();
+            bool? result = co.ShowDialog();
 
-            // Afficher MainWindow
-            mainWindow.Show();
-            InitializeComponent();
+            if (result == true)
+            {
+                InitializeComponent();
+            }
+            else
+            {
+
+                Application.Current.Shutdown();
+            }
         }
     }
 }
