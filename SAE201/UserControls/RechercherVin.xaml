@@ -23,7 +23,7 @@
                           VerticalContentAlignment="Center" SelectionChanged="ComboTypeVin_SelectionChanged">
                     <ComboBoxItem Content="Tous les types" IsSelected="True"/>
                     <ComboBoxItem Content="Blanc"/>
-                    <ComboBoxItem Content="Rose"/>
+                    <ComboBoxItem Content="Rosé"/>
                     <ComboBoxItem Content="Rouge"/>
                 </ComboBox>
 
