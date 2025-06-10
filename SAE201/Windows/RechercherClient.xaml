@@ -78,8 +78,8 @@
                         VerticalAlignment="Top"
                         Content="&#xE70F;"
                         FontFamily="Segoe MDL2 Assets"
-                        ToolTip="Editer" />
-                    <!--  Click="buttEditer_Click"  -->
+                        ToolTip="Editer" 
+                        Click="buttEditer_Click"/>  
                 </Grid>
             </TabItem>
 

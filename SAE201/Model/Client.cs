@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -71,6 +72,7 @@ namespace SAE201.Model
             set
             {
                 nomClient = value;
+                this.nomClient = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(value.ToLower());
                 OnPropertyChanged(nameof(NomClient));
             }
         }
@@ -85,6 +87,7 @@ namespace SAE201.Model
             set
             {
                 prenomClient = value;
+                this.prenomClient = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(value.ToLower());
                 OnPropertyChanged(nameof(PrenomClient));
 
             }
@@ -168,8 +171,6 @@ namespace SAE201.Model
                     string mailclient = (string)dr["mailclient"];
                     Client client = new Client(numclient, nomclient, prenomclient, mailclient);
                     lesClients.Add(client);
-                    /*lesClients.Add(new Client((Int32)dr["numclient"], (string)dr["nomclient"],
-                   (string)dr["prenomclient"], (string)dr["mailclient"]));*/
                 }
                     
             }

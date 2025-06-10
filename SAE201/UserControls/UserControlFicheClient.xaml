@@ -12,9 +12,9 @@
         <Label
             x:Name="LabTitre"
             HorizontalAlignment="Center"
-            Content="Ajouter un client"
+            Content="Fiche client"
             FontSize="22"
-            IsEnabled="False" />
+            IsEnabled="False" Foreground="Black" />
 
         <Label
             x:Name="labNom"
@@ -26,7 +26,7 @@
             x:Name="textNom"
             Width="200"
             Margin="0,5,0,0"
-            Text="{Binding Nom, ValidatesOnExceptions=True}"
+            Text="{Binding NomClient, ValidatesOnExceptions=True}"
             TextWrapping="Wrap" />
 
         <Label
@@ -39,7 +39,7 @@
             x:Name="textPrenom"
             Width="200"
             Margin="0,5,0,0"
-            Text="{Binding Maitre, ValidatesOnExceptions=True}"
+            Text="{Binding PrenomClient, ValidatesOnExceptions=True}"
             TextWrapping="Wrap" />
 
         <Label
@@ -52,7 +52,7 @@
             x:Name="textMail"
             Width="200"
             Margin="0,5,0,0"
-            Text="{Binding Poids, ValidatesOnExceptions=True}"
+            Text="{Binding MailClient, ValidatesOnExceptions=True}"
             TextWrapping="Wrap" />
         <Button
             x:Name="butValider"
