@@ -1,6 +1,7 @@
 ﻿using Npgsql;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Data;
 using System.Linq;
 using System.Text;
@@ -8,12 +9,23 @@ using System.Threading.Tasks;
 
 namespace SAE201.Model
 {
-    public class Client
+    public class Client : INotifyPropertyChanged
     {
         private int numClient;
         private string nomClient;
         private string prenomClient;
         private string mailClient;
+
+        public event PropertyChangedEventHandler? PropertyChanged;
+
+        protected void OnPropertyChanged(string nomPropriete)
+        {
+            PropertyChangedEventHandler? handler = this.PropertyChanged;
+            if (handler != null)
+            {
+                handler(this, new PropertyChangedEventArgs(nomPropriete));
+            }
+        }
 
         public Client(int numClient, string nomClient, string prenomClient, string mailClient)
         {
@@ -59,6 +71,7 @@ namespace SAE201.Model
             set
             {
                 nomClient = value;
+                OnPropertyChanged(nameof(NomClient));
             }
         }
 
@@ -72,6 +85,8 @@ namespace SAE201.Model
             set
             {
                 prenomClient = value;
+                OnPropertyChanged(nameof(PrenomClient));
+
             }
         }
 
@@ -85,6 +100,7 @@ namespace SAE201.Model
             set
             {
                 this.mailClient = value;
+                OnPropertyChanged(nameof(MailClient));
             }
         }
 
