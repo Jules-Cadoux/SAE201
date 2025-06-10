@@ -44,17 +44,16 @@
                 <TextBox x:Name="textPrix" Width="80" Height="30" VerticalContentAlignment="Center" 
                          TextChanged="TextPrix_TextChanged"/>
                 <Button x:Name="btnReinitialiser" Content="Réinitialiser filtres" 
-            Width="140" Height="30" Margin="20,0,0,0"
-            Click="BtnReinitialiser_Click"/>
+            Width="140" Height="30" Margin="20,0,0,0" Click="BtnReinitialiser_Click"/>
             </StackPanel>
-            
 
-                <!-- Zone d'affichage des résultats -->
+
+            <!-- Zone d'affichage des résultats -->
             <StackPanel>
                 <TextBlock Margin="0,0,0,10" FontSize="16" FontWeight="Bold" 
                            Text="{Binding VinsView.Count, StringFormat='Résultats ({0})'}" />
                 <ListBox x:Name="listBoxVins" ItemsSource="{Binding VinsView}" 
-                         ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                         ScrollViewer.HorizontalScrollBarVisibility="Disabled" Height="274" Width="728">
                     <ListBox.ItemsPanel>
                         <ItemsPanelTemplate>
                             <UniformGrid Columns="3" />
@@ -68,13 +67,6 @@
                                     <Rectangle Height="100" Fill="#DDD" Margin="0,0,0,10"/>
                                     <TextBlock Margin="0,5,0,0" FontWeight="Bold" Text="{Binding NomVin}" 
                                                TextWrapping="Wrap" FontSize="14"/>
-                                    <TextBlock Margin="0,5,0,0" Foreground="Gray" Text="{Binding TypeVin}" 
-                                               FontStyle="Italic"/>
-                                    <TextBlock Margin="0,2,0,0" Foreground="Gray" Text="{Binding Appellation}" 
-                                               FontSize="12"/>
-                                    <TextBlock Margin="0,2,0,0" Foreground="Gray" 
-                                               Text="{Binding AnneeProduction, StringFormat='Année: {0}'}" 
-                                               FontSize="12"/>
                                     <TextBlock Margin="0,5,0,0" Foreground="Gray" Text="{Binding Description}" 
                                                TextWrapping="Wrap" FontSize="11" MaxHeight="30"/>
                                     <TextBlock Margin="0,5,0,0" FontWeight="Bold" Foreground="#5C6AC4" 
