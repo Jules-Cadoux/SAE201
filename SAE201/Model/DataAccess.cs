@@ -5,13 +5,14 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace SAE201.Model
 {
     public class DataAccess
     {
-        private static readonly DataAccess instance = new DataAccess();
-        private readonly string connectionString = "Host=srv-peda-new;Port=5433;Username=allixh;Password=W0sElR;Database=sae201_Nicolas;Options='-c search_path=sae201_nicolas'";
+        private static DataAccess instance;
+        public static string connectionString;
         private NpgsqlConnection connection;
 
         public static DataAccess Instance
@@ -23,19 +24,21 @@ namespace SAE201.Model
         }
 
         //  Constructeur privé pour empêcher l'instanciation multiple
-        private DataAccess()
+        public DataAccess(string user, string password)
         {
-
+            connectionString = $"Host=srv-peda-new;Port=5433;Username={user};Password={password};Database=sae201_Nicolas;Options='-c search_path=sae201_nicolas'";
             try
             {
                 connection = new NpgsqlConnection(connectionString);
+                instance = this;
+                GetConnection();
             }
             catch (Exception ex)
             {
                 LogError.Log(ex, "Pb de connexion GetConnection \n" + connectionString);
                 throw;
             }
-                             }
+        }
 
 
         // pour récupérer la connexion (et l'ouvrir si nécessaire)
@@ -47,14 +50,11 @@ namespace SAE201.Model
                 {
                     connection.Open();
                 }
-                catch (Exception ex)
+                catch
                 {
-                    LogError.Log(ex, "Pb de connexion GetConnection \n" + connectionString);
-                    throw;
+                    MessageBox.Show("Mauvais mot de passe ou nom d'utilisateur", "Probleme de connection");
                 }
             }
-
-
             return connection;
         }
 

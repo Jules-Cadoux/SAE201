@@ -291,6 +291,11 @@ namespace SAE201.UserControls
 
             MessageBox.Show("La demande a été validée", "Validation demande", MessageBoxButton.OK, MessageBoxImage.Information);
 
+            foreach(VinDemande vin in  VinsDemande)
+            {
+
+            }
+
             VinsDemande.Clear();
         }
 
