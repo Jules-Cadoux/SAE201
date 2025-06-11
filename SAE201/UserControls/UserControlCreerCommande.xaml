@@ -167,7 +167,6 @@
                                     Background="#8B0000"
                                     BorderBrush="#660000"
                                     BorderThickness="1"
-                                    Click="ValiderCommande_Click"
                                     Content="Valider la commande" />
                             </StackPanel>
                         </StackPanel>
