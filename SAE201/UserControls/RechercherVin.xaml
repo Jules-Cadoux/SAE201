@@ -12,118 +12,122 @@
     <UserControl.Resources>
         <converters:MontantToColor x:Key="MontantColorConverter" />
     </UserControl.Resources>
-    
-    <TabControl>
-        <TabItem Header="Rechercher Vin">
-            <Grid Margin="20">
-
-                <StackPanel Background="#FFE5E5E5">
-                    <!-- Zone de recherche par nom -->
-                    <Grid>
-                        <TextBox x:Name="textRechercheVin" Height="40" Padding="10" FontSize="14" 
-                         TextChanged="RefreshRecherche" GotFocus="textRechercheVin_GotFocus" />
-                        <Label x:Name="labRechercheVin" Height="40" Content="Nom du vin" 
-                       VerticalContentAlignment="Center" Width="80" HorizontalAlignment="Left"/>
-                    </Grid>
-
-                    <!-- Zone de filtres -->
-                    <StackPanel Margin="0,10,0,10" Orientation="Horizontal">
-                        <ComboBox x:Name="comboTypeVin" Width="120" Height="30" Text="Type de vin" 
-                          VerticalContentAlignment="Center" SelectionChanged="ComboTypeVin_SelectionChanged">
-                            <ComboBoxItem Content="Tous les types" IsSelected="True"/>
-                            <ComboBoxItem Content="Blanc"/>
-                            <ComboBoxItem Content="Rosé"/>
-                            <ComboBoxItem Content="Rouge"/>
-                        </ComboBox>
-
-                        <ComboBox x:Name="comboAppellation" Width="135" Height="30" Text="Appellation" 
-                          VerticalContentAlignment="Center" Margin="10,0,0,0"
-                          SelectionChanged="ComboAppellation_SelectionChanged">
-                            <ComboBoxItem Content="Toutes appellations" IsSelected="True"/>
-                            <ComboBoxItem Content="AOC"/>
-                            <ComboBoxItem Content="AOP"/>
-                            <ComboBoxItem Content="IGP"/>
-                        </ComboBox>
-
-                        <TextBlock Margin="10,0,5,0" VerticalAlignment="Center" Text="Année :" />
-                        <TextBox x:Name="textAnnee" Width="60" Height="30" VerticalContentAlignment="Center" 
-                         TextChanged="TextAnnee_TextChanged"/>
-
-                        <TextBlock Margin="10,0,5,0" VerticalAlignment="Center" Text="Prix (€):" />
-                        <TextBox x:Name="textPrix" Width="80" Height="30" VerticalContentAlignment="Center" 
-                         TextChanged="TextPrix_TextChanged"/>
-                        <Button x:Name="btnReinitialiser" Content="Réinitialiser filtres" 
-            Width="140" Height="30" Margin="20,0,0,0" Click="BtnReinitialiser_Click"/>
-                    </StackPanel>
-
-
-                    <!-- Zone d'affichage des résultats -->
-                    <StackPanel>
-                        <TextBlock Margin="0,0,0,10" FontSize="16" FontWeight="Bold" 
-                           Text="{Binding VinsView.Count, StringFormat='Résultats ({0})'}" />
-                        <ListBox x:Name="listBoxVins" ItemsSource="{Binding VinsView}" 
-                         ScrollViewer.HorizontalScrollBarVisibility="Disabled" Height="355" Width="826">
-                            <ListBox.ItemsPanel>
-                                <ItemsPanelTemplate>
-                                    <UniformGrid Columns="3" />
-                                </ItemsPanelTemplate>
-                            </ListBox.ItemsPanel>
-                            <ListBox.ItemTemplate>
-                                <DataTemplate>
-                                    <Border Padding="10" Background="White" CornerRadius="5" Margin="5" 
-                                    BorderBrush="#E0E0E0" BorderThickness="1" Height="250" Width="240">
-                                        <StackPanel>
-                                            <Rectangle Height="100" Fill="#DDD" Margin="0,0,0,10"/>
-                                            <TextBlock Margin="0,5,0,0" FontWeight="Bold" Text="{Binding NomVin}" 
-                                               TextWrapping="Wrap" FontSize="14"/>
-                                            <TextBlock Margin="0,5,0,0" Foreground="Gray" Text="{Binding Description}" 
-                                               TextWrapping="Wrap" FontSize="11" MaxHeight="30"/>
-                                            <TextBlock Margin="0,5,0,0" FontWeight="Bold" Foreground="#5C6AC4" 
-                                               Text="{Binding PrixVin, StringFormat='{}{0:C}'}" 
-                                               HorizontalAlignment="Center"/>
-                                            <Button Width="25" Height="25" Content="&#xE710;" 
-                                            FontFamily="Segoe MDL2 Assets" ToolTip="Ajouter au panier" 
-                                            HorizontalAlignment="Right" Margin="0,5,0,0" Tag="{Binding}" Click="Button_Click"/>
-                                        </StackPanel>
-                                    </Border>
-                                </DataTemplate>
-                            </ListBox.ItemTemplate>
-                        </ListBox>
-                    </StackPanel>
+    <StackPanel>
+        <Border
+    Height="60"
+    VerticalAlignment="Top"
+    Background="#8B0000">
+            <Grid>
+                <StackPanel
+            Margin="20,0"
+            VerticalAlignment="Center"
+            Orientation="Horizontal">
+                    <TextBlock
+                Margin="0,0,10,0"
+                VerticalAlignment="Center"
+                FontSize="24"
+                Foreground="White"
+                Text="🍷" />
+                    <TextBlock
+                VerticalAlignment="Center"
+                FontSize="24"
+                FontWeight="Bold"
+                Foreground="White"
+                Text="NICOLAS" />
+                    <TextBlock
+                Margin="10,0,0,8"
+                VerticalAlignment="Bottom"
+                FontSize="12"
+                Foreground="#FFD700"
+                Text="Caviste depuis 1822" />
                 </StackPanel>
             </Grid>
-        </TabItem>
-        
-                <TabItem Header="Créer Demande" Margin="-2,0,2,0" Height="22" VerticalAlignment="Bottom">
-            <StackPanel>
-                <Label Content="Créer une demande" Width="730" FontSize="18" FontWeight="Bold" Margin="0,10,0,0"/>
-                <DataGrid Height="235" Width="734" Margin="0,30,0,0" ItemsSource="{Binding VinsDemande}" AutoGenerateColumns="False">
-                    <DataGrid.ColumnHeaderStyle>
-                        <Style TargetType="{x:Type DataGridColumnHeader}">
-                            <Setter Property="Background" Value="#8B0000" />
-                            <Setter Property="Foreground" Value="White" />
-                            <Setter Property="FontWeight" Value="Bold" />
-                            <Setter Property="Padding" Value="8,5" />
-                            <Setter Property="BorderBrush" Value="#660000" />
-                            <Setter Property="BorderThickness" Value="0,0,1,0" />
-                        </Style>
-                    </DataGrid.ColumnHeaderStyle>
-                    <DataGrid.Columns>
-                        <DataGridTextColumn Header="Vin" Binding="{Binding NomVin}" Width="3*"/>
-                        <DataGridTextColumn x:Name="dttxtNumClient" Header="Numéro client" Binding="{Binding NumClient}" Width="*"/>
-                        <DataGridTextColumn Header="Date" Binding="{Binding Date}" Width="*"/>
-                        <DataGridTextColumn Header="Quantité" Binding="{Binding Quantite}" Width="*"/>
-                    </DataGrid.Columns>
-                </DataGrid>
-                <Button x:Name="butAjouterClient" Content="Ajouter le client" Width="120" Margin="600,25,0,0" Height="25" Click="butAjouterClient_Click"/>
-                <Button x:Name="butValiderCommande" Content="Valider la demande" Width="120" Margin="600,25,0,0" Height="25" Click="butValiderCommande_Click"/>
-            </StackPanel>
-        </TabItem>
-        <TabItem Header="Etat demande">
-            <Grid>
+        </Border>
+        <TabControl>
+            <TabItem Header="Rechercher Vin">
+                <Grid Margin="20">
+
+                    <StackPanel Background="DarkRed">
+                        <!-- Zone de recherche par nom -->
+                        <Grid>
+                            <TextBox x:Name="textRechercheVin" Height="40" Padding="10"
+                         TextChanged="RefreshRecherche" GotFocus="textRechercheVin_GotFocus" VerticalAlignment="Top" BorderBrush="#8B0000" BorderThickness="2" FontSize="12"/>
+                            <Label x:Name="labRechercheVin" Height="40" Content="Nom du vin" 
+                       VerticalContentAlignment="Center" Width="80" HorizontalAlignment="Left"/>
+                        </Grid>
+
+                        <!-- Zone de filtres -->
+                        <StackPanel Margin="0,10,0,10" Orientation="Horizontal">
+                            <ComboBox x:Name="comboTypeVin" Width="120" Height="30" Text="Type de vin" 
+                          VerticalContentAlignment="Center" SelectionChanged="ComboTypeVin_SelectionChanged" Background="DarkRed">
+                                <ComboBoxItem Content="Tous les types" IsSelected="True"/>
+                                <ComboBoxItem Content="Blanc"/>
+                                <ComboBoxItem Content="Rosé"/>
+                                <ComboBoxItem Content="Rouge"/>
+                            </ComboBox>
+
+                            <ComboBox x:Name="comboAppellation" Width="135" Height="30" Text="Appellation" 
+                          VerticalContentAlignment="Center" Margin="10,0,0,0"
+                          SelectionChanged="ComboAppellation_SelectionChanged">
+                                <ComboBoxItem Content="Toutes appellations" IsSelected="True"/>
+                                <ComboBoxItem Content="AOC"/>
+                                <ComboBoxItem Content="AOP"/>
+                                <ComboBoxItem Content="IGP"/>
+                            </ComboBox>
+
+                            <TextBlock Margin="10,0,5,0" VerticalAlignment="Center" Text="Année :" />
+                            <TextBox x:Name="textAnnee" Width="60" Height="30" VerticalContentAlignment="Center" 
+                         TextChanged="TextAnnee_TextChanged"/>
+
+                            <TextBlock Margin="10,0,5,0" VerticalAlignment="Center" Text="Prix (€):" />
+                            <TextBox x:Name="textPrix" Width="80" Height="30" VerticalContentAlignment="Center" 
+                         TextChanged="TextPrix_TextChanged"/>
+                            <Button x:Name="btnReinitialiser" Content="Réinitialiser filtres" 
+            Width="140" Height="30" Margin="20,0,0,0" Click="BtnReinitialiser_Click"/>
+                        </StackPanel>
+
+
+                        <!-- Zone d'affichage des résultats -->
+                        <StackPanel>
+                            <TextBlock Margin="0,0,0,10" FontSize="16" FontWeight="Bold" 
+                           Text="{Binding VinsView.Count, StringFormat='Résultats ({0})'}" />
+                            <ListBox x:Name="listBoxVins" ItemsSource="{Binding VinsView}" 
+                         ScrollViewer.HorizontalScrollBarVisibility="Disabled" Height="355" Width="826" Background="Transparent">
+                                <ListBox.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <UniformGrid Columns="3" />
+                                    </ItemsPanelTemplate>
+                                </ListBox.ItemsPanel>
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border Padding="10" Background="White" CornerRadius="5" Margin="5" 
+                                    BorderBrush="#E0E0E0" BorderThickness="1" Height="250" Width="240">
+                                            <StackPanel>
+                                                <Rectangle Height="100" Fill="#DDD" Margin="0,0,0,10"/>
+                                                <TextBlock Margin="0,5,0,0" FontWeight="Bold" Text="{Binding NomVin}" 
+                                               TextWrapping="Wrap" FontSize="14"/>
+                                                <TextBlock Margin="0,5,0,0" Foreground="Gray" Text="{Binding Description}" 
+                                               TextWrapping="Wrap" FontSize="11" MaxHeight="30"/>
+                                                <TextBlock Margin="0,5,0,0" FontWeight="Bold" Foreground="#5C6AC4" 
+                                               Text="{Binding PrixVin, StringFormat='{}{0:C}'}" 
+                                               HorizontalAlignment="Center"/>
+                                                <Button Width="25" Height="25" Content="&#xE710;" 
+                                            FontFamily="Segoe MDL2 Assets" ToolTip="Ajouter au panier" 
+                                            HorizontalAlignment="Right" Margin="0,5,0,0" Tag="{Binding}" Click="Button_Click"/>
+                                            </StackPanel>
+                                        </Border>
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                            </ListBox>
+                        </StackPanel>
+                    </StackPanel>
+                </Grid>
+            </TabItem>
+
+            <TabItem Header="Créer Demande" Margin="-2,0,2,0" Height="22" VerticalAlignment="Bottom">
                 <StackPanel>
-                    <Label Content="Etat Demande" Width="730" FontSize="18" FontWeight="Bold" Margin="0,10,0,0"></Label>
-                    <DataGrid x:Name="dgCommandes" Margin="57,30,57,124" AlternatingRowBackground="#FFF8F8" AutoGenerateColumns="False" Background="White" BorderBrush="#8B0000" BorderThickness="2" GridLinesVisibility="Horizontal" HeadersVisibility="Column" HorizontalGridLinesBrush="#E0E0E0" IsReadOnly="True" ItemsSource="{Binding LesDemandes}" RowBackground="White" Height="269">
+                    <Label Content="Créer une demande" Width="730" FontSize="18" FontWeight="Bold" Margin="0,10,0,0"/>
+                    <DataGrid Height="235" Width="734" Margin="0,30,0,0" ItemsSource="{Binding VinsDemande}" AutoGenerateColumns="False">
                         <DataGrid.ColumnHeaderStyle>
                             <Style TargetType="{x:Type DataGridColumnHeader}">
                                 <Setter Property="Background" Value="#8B0000" />
@@ -135,21 +139,59 @@
                             </Style>
                         </DataGrid.ColumnHeaderStyle>
                         <DataGrid.Columns>
-                            <DataGridTextColumn Width="2*" Binding="{Binding NumVin.NomVin}" Header="Vin" />
-                            <DataGridTextColumn Width="*" Binding="{Binding NumVin.NumFournisseur.NomFournisseur}" Header="Fournisseur" />
-                            <DataGridTextColumn Width="*" Binding="{Binding NumEmploye.Nom}" Header="Demandé par " />
-                            <DataGridTextColumn Width="*" Binding="{Binding DateDemande}" Header="Date" />
-                            <DataGridTextColumn Width="*" Binding="{Binding Accepter}" Header="Choix ">
-                                <DataGridTextColumn.CellStyle>
-                                    <Style TargetType="DataGridCell">
-                                        <Setter Property="Foreground" Value="{Binding Accepter, Converter={StaticResource MontantColorConverter}}" />
-                                    </Style>
-                                </DataGridTextColumn.CellStyle>
-                            </DataGridTextColumn>
+                            <DataGridTextColumn Header="Vin" Binding="{Binding NomVin}" Width="3*"/>
+                            <DataGridTextColumn x:Name="dttxtNumClient" Header="Numéro client" Binding="{Binding NumClient}" Width="*"/>
+                            <DataGridTextColumn Header="Date" Binding="{Binding Date}" Width="*"/>
+                            <DataGridTextColumn Header="Quantité" Binding="{Binding Quantite}" Width="*"/>
                         </DataGrid.Columns>
                     </DataGrid>
+                    <Button x:Name="butAjouterClient" Content="Ajouter le client" Width="120" Margin="600,25,0,0" Height="25" Click="butAjouterClient_Click"/>
+                    <Button x:Name="butValiderCommande" Content="Valider la demande" Width="120" Margin="600,25,0,0" Height="25" Click="butValiderCommande_Click"/>
                 </StackPanel>
-            </Grid>
-        </TabItem>
-    </TabControl>
+            </TabItem>
+            <TabItem Header="Etat demande">
+                <Grid>
+                    <StackPanel>
+                        <Label Content="Etat Demande" Width="730" FontSize="18" FontWeight="Bold" Margin="0,10,0,0"></Label>
+                        <DataGrid x:Name="dgCommandes" Margin="57,30,57,124" AlternatingRowBackground="#FFF8F8" AutoGenerateColumns="False" Background="White" BorderBrush="#8B0000" BorderThickness="2" GridLinesVisibility="Horizontal" HeadersVisibility="Column" HorizontalGridLinesBrush="#E0E0E0" IsReadOnly="True" ItemsSource="{Binding LesDemandes}" RowBackground="White" Height="269">
+                            <DataGrid.ColumnHeaderStyle>
+                                <Style TargetType="{x:Type DataGridColumnHeader}">
+                                    <Setter Property="Background" Value="#8B0000" />
+                                    <Setter Property="Foreground" Value="White" />
+                                    <Setter Property="FontWeight" Value="Bold" />
+                                    <Setter Property="Padding" Value="8,5" />
+                                    <Setter Property="BorderBrush" Value="#660000" />
+                                    <Setter Property="BorderThickness" Value="0,0,1,0" />
+                                </Style>
+                            </DataGrid.ColumnHeaderStyle>
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Width="2*" Binding="{Binding NumVin.NomVin}" Header="Vin" />
+                                <DataGridTextColumn Width="*" Binding="{Binding NumVin.NumFournisseur.NomFournisseur}" Header="Fournisseur" />
+                                <DataGridTextColumn Width="*" Binding="{Binding NumEmploye.Nom}" Header="Demandé par " />
+                                <DataGridTextColumn Width="*" Binding="{Binding DateDemande}" Header="Date" />
+                                <DataGridTextColumn Width="*" Binding="{Binding Accepter}" Header="Choix ">
+                                    <DataGridTextColumn.CellStyle>
+                                        <Style TargetType="DataGridCell">
+                                            <Setter Property="Foreground" Value="{Binding Accepter, Converter={StaticResource MontantColorConverter}}" />
+                                        </Style>
+                                    </DataGridTextColumn.CellStyle>
+                                </DataGridTextColumn>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </StackPanel>
+                </Grid>
+            </TabItem>
+        </TabControl>
+        <Border
+    Height="30"
+    VerticalAlignment="Bottom"
+    Background="#8B0000">
+            <TextBlock
+        HorizontalAlignment="Center"
+        VerticalAlignment="Center"
+        FontStyle="Italic"
+        Foreground="White"
+        Text="Nicolas - L'art de bien choisir son vin" />
+        </Border>
+    </StackPanel>
 </UserControl>
