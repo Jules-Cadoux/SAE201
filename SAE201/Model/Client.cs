@@ -6,6 +6,7 @@ using System.Data;
 using System.Globalization;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace SAE201.Model
@@ -102,6 +103,8 @@ namespace SAE201.Model
 
             set
             {
+                if (!Regex.IsMatch(value, "^[a-zA-Z0-9]@gmail.com$") && !Regex.IsMatch(value, "^[a-zA-Z0-9]@email.com$"))
+                    throw new FormatException("Mail correspond pas !");
                 this.mailClient = value;
                 OnPropertyChanged(nameof(MailClient));
             }
