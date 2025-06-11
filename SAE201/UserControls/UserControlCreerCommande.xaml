@@ -89,6 +89,7 @@
             Background="#8B0000"
             BorderBrush="#660000"
             BorderThickness="1"
+            Click="buttEditerDemande_Click"
             Content="&#xE70F;"
             Cursor="Hand"
             FontFamily="Segoe MDL2 Assets"
@@ -96,24 +97,83 @@
             Foreground="White"
             ToolTip="Editer" />
 
-        <StackPanel Margin="20,409,20,99">
+        <StackPanel x:Name="lesCommandesAPasser" Margin="20,409,20,99">
             <Label
                 Margin="10,10,0,0"
                 HorizontalAlignment="Left"
                 VerticalAlignment="Top"
-                Content="Resumé de la commande"
+                Content="Commandes"
                 FontSize="18"
                 FontWeight="Bold" />
+
+            <!--  ItemsControl pour afficher les commandes groupées par fournisseur  -->
+            <ItemsControl ItemsSource="{Binding LesCommandesParFournisseur}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <!--  StackPanel pour chaque fournisseur  -->
+                        <StackPanel Margin="10,10">
+                            <!--  Nom du fournisseur  -->
+                            <TextBlock
+                                FontSize="16"
+                                FontWeight="Bold"
+                                Text="{Binding NomFournisseur}" />
+
+                            <!--  Affichage des commandes pour ce fournisseur  -->
+                            <StackPanel>
+                                <ItemsControl ItemsSource="{Binding Commandes}">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <Grid Margin="0,5">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="2*" />
+                                                    <ColumnDefinition Width="*" />
+                                                    <ColumnDefinition Width="*" />
+                                                    <ColumnDefinition Width="*" />
+                                                </Grid.ColumnDefinitions>
+
+                                                <!--  Nom du vin  -->
+                                                <TextBlock
+                                                    Grid.Column="0"
+                                                    VerticalAlignment="Center"
+                                                    Text="{Binding NumVin.NomVin}" />
+
+                                                <!--  Prix unitaire  -->
+                                                <TextBlock
+                                                    Grid.Column="1"
+                                                    VerticalAlignment="Center"
+                                                    Text="{Binding PrixUnitaire}" />
+
+                                                <!--  Quantité  -->
+                                                <TextBlock
+                                                    Grid.Column="2"
+                                                    VerticalAlignment="Center"
+                                                    Text="{Binding Quantite}" />
+
+                                                <!--  Prix total  -->
+                                                <TextBlock
+                                                    Grid.Column="3"
+                                                    VerticalAlignment="Center"
+                                                    Text="{Binding PrixTotal}" />
+                                            </Grid>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+
+                                <!--  Bouton pour valider la commande  -->
+                                <Button
+                                    Margin="5,10,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    Background="#8B0000"
+                                    BorderBrush="#660000"
+                                    BorderThickness="1"
+                                    Click="ValiderCommande_Click"
+                                    Content="Valider la commande" />
+                            </StackPanel>
+                        </StackPanel>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
         </StackPanel>
-        <Button
-            x:Name="butValiderCommande"
-            Margin="629,877,39,30"
-            Background="#8B0000"
-            BorderThickness="1"
-            Content="Valider Commande"
-            Cursor="Hand"
-            FontWeight="SemiBold"
-            Foreground="White"
-            IsDefault="True" />
     </Grid>
 </UserControl>
