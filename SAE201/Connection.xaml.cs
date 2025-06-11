@@ -26,9 +26,25 @@ namespace SAE201
         public Connection()
         {
             InitializeComponent();
-            ChargeData();
+            
         }
-        
+
+        public void seConnecter_Click(object sender, RoutedEventArgs e)
+        {
+            new DataAccess(txLogin.Text, txMdp.Password);
+            ChargeData();
+            Employe user = Employe.FindByLoginAndPassword(txLogin.Text, txMdp.Password);
+            if (user is null)
+            {
+                MessageBox.Show("Mot de passe ou login incorrect, réessayer");
+            }
+            else
+            {
+                
+                EmployeConnecte = user; 
+                DialogResult = true;
+            }
+        }
         public void ChargeData()
         {
             try
@@ -37,25 +53,11 @@ namespace SAE201
                 LesEmployes = new ObservableCollection<Employe>(employes);
                 this.DataContext = this;
             }
-            catch(Exception ex) 
+            catch (Exception ex)
             {
                 MessageBox.Show("Problème lors de la récupération des données,veuillez consulter votre admin");
                 LogError.Log(ex, "Erreur SQL");
                 Application.Current.Shutdown();
-            }   
-        }
-
-        public void seConnecter_Click(object sender, RoutedEventArgs e)
-        {
-            Employe user = Employe.FindByLoginAndPassword(txLogin.Text, txMdp.Password);
-            if (user is null)
-            {
-                MessageBox.Show("Mot de passe ou login incorrect, réessayer");
-            }
-            else
-            {
-                EmployeConnecte = user; 
-                DialogResult = true;
             }
         }
 

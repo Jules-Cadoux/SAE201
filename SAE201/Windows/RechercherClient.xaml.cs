@@ -23,6 +23,7 @@ namespace SAE201.Windows
     public partial class RechercherClient : Window
     {
         public ObservableCollection<Client> LesClients { get; set; }
+        public int? NumClientSelectionne { get; private set; }
         public RechercherClient()
         {
             InitializeComponent();            
@@ -45,7 +46,6 @@ namespace SAE201.Windows
                 LogError.Log(ex, "Erreur SQL");
             }
         }
-
 
         private bool RechercheMotClefClient(object obj)
         {
@@ -153,5 +153,16 @@ namespace SAE201.Windows
                 }
             }
         }
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            if (dgClients.SelectedItem != null)
+            {
+                Client client = (Client)dgClients.SelectedItem;
+                NumClientSelectionne = client.NumClient;
+                this.DialogResult = true;
+                this.Close();
+            }
+        }
+        
     }
 }
