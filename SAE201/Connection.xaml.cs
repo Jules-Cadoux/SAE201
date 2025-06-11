@@ -58,5 +58,13 @@ namespace SAE201
                 DialogResult = true;
             }
         }
+
+        private void Window_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                seConnecter_Click(sender, e);
+            }
+        }
     }
 }
