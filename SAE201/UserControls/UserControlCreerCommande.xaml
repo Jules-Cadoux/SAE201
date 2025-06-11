@@ -1,5 +1,5 @@
 ﻿<UserControl
-    x:Class="SAE201.UserControls.UserControlCréerCommande"
+    x:Class="SAE201.UserControls.UserControlCreerCommande"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -26,8 +26,8 @@
 
         </TabControl>
         <DataGrid
-            x:Name="dgCommande"
-            Margin="30,103,30,561"
+            x:Name="dgCommandes"
+            Margin="30,103,84,561"
             AlternatingRowBackground="#FFF8F8"
             AutoGenerateColumns="False"
             Background="White"
@@ -52,15 +52,15 @@
             <DataGrid.Columns>
                 <DataGridTextColumn
                     Width="2*"
-                    Binding="{Binding NumVin.NumVin}"
+                    Binding="{Binding NumVin.NomVin}"
                     Header="Vin" />
                 <DataGridTextColumn
                     Width="*"
-                    Binding="{Binding NumFournisseur}"
+                    Binding="{Binding NumVin.NumFournisseur.NomFournisseur}"
                     Header="Fournisseur" />
                 <DataGridTextColumn
                     Width="*"
-                    Binding="{Binding NumEmploye.NumEmploye}"
+                    Binding="{Binding NumEmploye.Nom}"
                     Header="Demandé par " />
                 <DataGridTextColumn
                     Width="*"
@@ -79,6 +79,22 @@
             Content="Créer une commande"
             FontSize="20"
             FontWeight="Bold" />
+        <Button
+            x:Name="buttEditerDemande"
+            Width="30"
+            Height="30"
+            Margin="0,241,30,0"
+            HorizontalAlignment="Right"
+            VerticalAlignment="Top"
+            Background="#8B0000"
+            BorderBrush="#660000"
+            BorderThickness="1"
+            Content="&#xE70F;"
+            Cursor="Hand"
+            FontFamily="Segoe MDL2 Assets"
+            FontWeight="SemiBold"
+            Foreground="White"
+            ToolTip="Editer" />
 
         <StackPanel Margin="20,409,20,99">
             <Label

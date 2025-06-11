@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -19,6 +20,9 @@ namespace SAE201.Model
         private DateTime dateDemande;
         private int quantiteDemande;
         private string accepter;
+
+        public Vin Vin { get;set; }
+        public Employe Employe { get; set; }
 
         public Demande(int numDemande, Vin numVin, Employe numEmploye, Commande numCommande, Client numClient, DateTime dateDemande, int quantiteDemande, string accepter)
         {
@@ -145,8 +149,9 @@ namespace SAE201.Model
 
             set
             {
-                if (value != "accepter" && value != "en attente" && value != "refuser")
-                    MessageBox.Show("Il faut choisir accepter, en attente ou refuser", "Erreur demande", MessageBoxButton.OK, MessageBoxImage.Error);
+                value = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(value.ToLower());
+                if (value != "Accepter" && value != "En Attente" && value != "Refuser")
+                    MessageBox.Show("Il faut choisir Accepter, En Attente ou Refuser", "Erreur demande", MessageBoxButton.OK, MessageBoxImage.Error);
                 this.accepter = value;
             }
         }
@@ -224,37 +229,71 @@ namespace SAE201.Model
             }
         }
 
+
         public static List<Demande> FindAll()
         {
             List<Demande> demandes = new List<Demande>();
-            using (NpgsqlCommand cmd = new NpgsqlCommand("SELECT * FROM sae201_nicolas.demande"))
+
+            using (NpgsqlCommand cmd = new NpgsqlCommand(@"
+        SELECT 
+            d.numdemande, d.datedemande, d.quantitedemande, d.accepter, 
+            d.numvin, v.nomvin, v.numfournisseur,
+            d.numemploye, e.nom AS nomemploye,
+            d.numcommande,
+            d.numclient,
+            f.nomfournisseur
+        FROM sae201_nicolas.demande d
+        JOIN sae201_nicolas.vin v ON v.numvin = d.numvin
+        JOIN sae201_nicolas.fournisseur f ON f.numfournisseur = v.numfournisseur
+        JOIN sae201_nicolas.employe e ON e.numemploye = d.numemploye
+    "))
             {
                 DataTable dt = DataAccess.Instance.ExecuteSelect(cmd);
                 foreach (DataRow row in dt.Rows)
                 {
-                    Demande d = new Demande();
-                    d.NumDemande = (int)row["numdemande"];
-                    d.DateDemande = (DateTime)row["datedemande"];
-                    d.QuantiteDemande = (int)row["quantitedemande"];
-                    d.Accepter = (string)row["accepter"];
+                    Demande d = new Demande
+                    {
+                        NumDemande = (int)row["numdemande"],
+                        DateDemande = (DateTime)row["datedemande"],
+                        QuantiteDemande = (int)row["quantitedemande"],
+                        Accepter = (string)row["accepter"],
 
-                    // Vérification si numvin est NULL
-                    d.NumVin = new Vin { NumVin = (int)row["numvin"] };
+                        NumVin = new Vin
+                        {
+                            NumVin = (int)row["numvin"],
+                            NomVin = (string)row["nomvin"],
+                            NumFournisseur = new Fournisseur
+                            {
+                                NumFournisseur = (int)row["numfournisseur"],
+                                NomFournisseur = (string)row["nomfournisseur"]
+                            }
+                        },
 
-                    // Vérification si numemploye est NULL
-                    d.NumEmploye = new Employe { NumEmploye = (int)row["numemploye"] };
+                        NumEmploye = new Employe
+                        {
+                            NumEmploye = (int)row["numemploye"],
+                            Nom = (string)row["nomemploye"]
+                        },
 
-                    // Vérification si numcommande est NULL (ici, on gère les valeurs NULL)
-                    d.NumCommande = row["numcommande"] == DBNull.Value ? null : new Commande { NumCommande = (int)row["numcommande"] };
+                        NumCommande = row["numcommande"] == DBNull.Value
+                            ? null
+                            : new Commande { NumCommande = (int)row["numcommande"] },
 
-                    // Vérification si numclient est NULL
-                    d.NumClient = new Client { NumClient = (int)row["numclient"] };
+                        NumClient = new Client
+                        {
+                            NumClient = (int)row["numclient"]
+                        }
+                    };
 
                     demandes.Add(d);
                 }
             }
+
             return demandes;
         }
+
+
+
 
 
         public static List<Demande> FindBySelection(string criteres)
@@ -281,6 +320,8 @@ namespace SAE201.Model
             }
             return demandes;
         }
+
+
 
         public override bool Equals(object? obj)
         {
