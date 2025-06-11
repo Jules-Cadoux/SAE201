@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -37,6 +38,7 @@ namespace SAE201.UserControls
         public ICollectionView VinsView { get; set; }
 
         public ObservableCollection<VinDemande> VinsDemande { get; set; } = new ObservableCollection<VinDemande>();
+        public ObservableCollection<Demande> LesDemandes { get; set; }
 
         public RechercherVin()
         {
@@ -46,6 +48,7 @@ namespace SAE201.UserControls
             VinsView.Filter = RechercheMotClefVin;
             ChargerVins();
             DataContext = this;
+            ChargeData();
         }
 
         private void ChargerVins()
@@ -64,6 +67,22 @@ namespace SAE201.UserControls
             catch (Exception ex)
             {
                 MessageBox.Show($"Erreur lors du chargement des vins : {ex.Message}");
+            }
+        }
+
+
+        public void ChargeData()
+        {
+            try
+            {
+                List<Demande> demandes = Demande.FindAll();
+                LesDemandes = new ObservableCollection<Demande>(demandes);
+                this.DataContext = this;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Problème lors de récupération des données" + ex.Message);
+                LogError.Log(ex, "Erreur SQL");
             }
         }
 
@@ -119,7 +138,7 @@ namespace SAE201.UserControls
                 appellationItem.Content.ToString() != "Toutes appellations")
             {
                 string appellationSelectionnee = appellationItem.Content.ToString();
-                
+
                 // Mapping selon votre base de données : 1=AOP, 2=AOC, 3=IGP
                 string appellationVin = "";
                 if (unVin.NumType2 != null)
@@ -140,7 +159,7 @@ namespace SAE201.UserControls
                             break;
                     }
                 }
-                
+
                 if (!appellationVin.Equals(appellationSelectionnee, StringComparison.OrdinalIgnoreCase))
                 {
                     return false;
@@ -255,5 +274,7 @@ namespace SAE201.UserControls
                 MessageBox.Show("Erreur : Aucun vin sélectionné.");
             }
         }
+
+        
     }
 }
