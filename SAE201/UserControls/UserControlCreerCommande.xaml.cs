@@ -45,26 +45,22 @@ namespace SAE201.UserControls
             }
         }
 
-        /*private void buttEditerDemande_Click(object sender, RoutedEventArgs e)
+        private void buttEditerDemande_Click(object sender, RoutedEventArgs e)
         {
             if (dgCommandes.SelectedItem == null)
             {
-                MessageBox.Show("Veuillez sélectionner un client", "Attention", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show("Veuillez sélectionner une demande", "Attention", MessageBoxButton.OK, MessageBoxImage.Information);
             }
             else
             {
-                Demande demandeSelectionne = (Demande)dgCommandes.SelectedItem;
-                Demande copie = new Demande(demandeSelectionne.NumDemande, demandeSelectionne.NumVin, demandeSelectionne.NumEmploye, demandeSelectionne.NumClient);
-
-                UserControlCréerCommande ucCommande = new UserControlCréerCommande();
-
+                Demande demandeSelectionnee = (Demande)dgCommandes.SelectedItem;
+                UserControlModifierDemande ucModifierDemande = new UserControlModifierDemande(demandeSelectionnee);
                 Window dialogWindow = new Window()
                 {
-                    Title = "Modifier Demande",
-                    Content = ucCommande,
+                    Title = "Modifier le statut de la demande",
+                    Content = ucModifierDemande,
                     SizeToContent = SizeToContent.WidthAndHeight,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner,
-                    Owner = this,
                     ResizeMode = ResizeMode.NoResize
                 };
 
@@ -73,17 +69,16 @@ namespace SAE201.UserControls
                 {
                     try
                     {
-                        copie.Update();
-                        demandeSelectionne.Accepter = copie.Accepter;
-
-                        dgCommandes.Items.Refresh();
+                        demandeSelectionnee.Update();  
+                        dgCommandes.Items.Refresh();   
                     }
                     catch (Exception ex)
                     {
-                        MessageBox.Show("Le client n'a pas pu être modifié.", "Erreur", MessageBoxButton.OK, MessageBoxImage.Error);
+                        MessageBox.Show("La demande n'a pas pu être modifiée.", "Erreur", MessageBoxButton.OK, MessageBoxImage.Error);
                     }
                 }
             }
-        }*/
+        }
+
     }
 }

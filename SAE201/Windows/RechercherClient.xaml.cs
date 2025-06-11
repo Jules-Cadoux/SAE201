@@ -132,13 +132,13 @@ namespace SAE201.Windows
         {
             if (dgClients.SelectedItem == null)
             {
-                MessageBox.Show(this, "Veuillez sélectionner un chien à supprimer", "Attention", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show(this, "Veuillez sélectionner un client à supprimer", "Attention", MessageBoxButton.OK, MessageBoxImage.Information);
                 return;
             }
 
             Client clientAsupprimer = (Client)dgClients.SelectedItem;            
 
-            MessageBoxResult result = MessageBox.Show(this, "Voulez-vous vraiment supprimer ce chien ?", "Confirmation", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+            MessageBoxResult result = MessageBox.Show(this, "Voulez-vous vraiment supprimer ce client ?", "Confirmation", MessageBoxButton.YesNo, MessageBoxImage.Warning);
 
             if (result == MessageBoxResult.Yes)
             {
