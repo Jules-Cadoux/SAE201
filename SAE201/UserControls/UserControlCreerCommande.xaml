@@ -7,24 +7,10 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     Height="965"
     d:DesignWidth="800"
-    Background="#F9F9F9"
+    Background="#FFFFFF"
     mc:Ignorable="d">
 
     <Grid>
-        <TabControl Margin="20">
-            <TabItem Header="Créer Commande" IsSelected="True">
-                <TabItem.HeaderTemplate>
-                    <DataTemplate>
-                        <TextBlock
-                            Margin="10,5"
-                            FontWeight="SemiBold"
-                            Foreground="#6366F1"
-                            Text="Créer Commande" />
-                    </DataTemplate>
-                </TabItem.HeaderTemplate>
-            </TabItem>
-
-        </TabControl>
         <DataGrid
             x:Name="dgCommandes"
             Margin="30,103,84,561"
@@ -97,82 +83,195 @@
             Foreground="White"
             ToolTip="Editer" />
 
-        <StackPanel x:Name="lesCommandesAPasser" Margin="20,409,20,99">
-            <Label
-                Margin="10,10,0,0"
-                HorizontalAlignment="Left"
-                VerticalAlignment="Top"
-                Content="Commandes"
-                FontSize="18"
-                FontWeight="Bold" />
+        <ScrollViewer x:Name="lesCommandesAPasser" Margin="20,409,20,99">
+            <StackPanel>
+                <Label
+                    Margin="10,10,0,10"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Top"
+                    Content="Commandes"
+                    FontSize="18"
+                    FontWeight="Bold" />
 
-            <!--  ItemsControl pour afficher les commandes groupées par fournisseur  -->
-            <ItemsControl ItemsSource="{Binding LesCommandesParFournisseur}">
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate>
-                        <!--  StackPanel pour chaque fournisseur  -->
-                        <StackPanel Margin="10,10">
-                            <!--  Nom du fournisseur  -->
-                            <TextBlock
-                                FontSize="16"
-                                FontWeight="Bold"
-                                Text="{Binding NomFournisseur}" />
+                <ListBox
+                    x:Name="lbCommandesFournisseurs"
+                    Height="397"
+                    Background="Transparent"
+                    BorderThickness="0"
+                    ItemsSource="{Binding LesDemandes}"
+                    ScrollViewer.HorizontalScrollBarVisibility="Disabled">
 
-                            <!--  Affichage des commandes pour ce fournisseur  -->
-                            <StackPanel>
-                                <ItemsControl ItemsSource="{Binding Commandes}">
-                                    <ItemsControl.ItemTemplate>
-                                        <DataTemplate>
-                                            <Grid Margin="0,5">
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width="2*" />
-                                                    <ColumnDefinition Width="*" />
-                                                    <ColumnDefinition Width="*" />
-                                                    <ColumnDefinition Width="*" />
-                                                </Grid.ColumnDefinitions>
+                    <ListBox.ItemContainerStyle>
+                        <Style TargetType="ListBoxItem">
+                            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                            <Setter Property="Padding" Value="0" />
+                            <Setter Property="Margin" Value="0" />
+                            <Setter Property="BorderThickness" Value="0" />
+                            <Setter Property="Background" Value="Transparent" />
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="ListBoxItem">
+                                        <ContentPresenter />
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </ListBox.ItemContainerStyle>
 
-                                                <!--  Nom du vin  -->
-                                                <TextBlock
-                                                    Grid.Column="0"
-                                                    VerticalAlignment="Center"
-                                                    Text="{Binding NumVin.NomVin}" />
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <Border
+                                Margin="0,10,0,20"
+                                Padding="15"
+                                Background="White"
+                                BorderBrush="#E0E0E0"
+                                BorderThickness="1"
+                                CornerRadius="8">
+                                <StackPanel>
+                                    <Grid Margin="0,0,0,15">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="Auto" />
+                                        </Grid.ColumnDefinitions>
 
-                                                <!--  Prix unitaire  -->
-                                                <TextBlock
-                                                    Grid.Column="1"
-                                                    VerticalAlignment="Center"
-                                                    Text="{Binding PrixUnitaire}" />
+                                        <TextBlock
+                                            Grid.Column="0"
+                                            VerticalAlignment="Center"
+                                            FontSize="14"
+                                            FontWeight="Bold"
+                                            Foreground="#333"
+                                            Text="{Binding NumVin.NumFournisseur.NomFournisseur}" />
 
-                                                <!--  Quantité  -->
-                                                <TextBlock
-                                                    Grid.Column="2"
-                                                    VerticalAlignment="Center"
-                                                    Text="{Binding Quantite}" />
+                                        <TextBlock
+                                            x:Name="tbNomVin"
+                                            Grid.Column="1"
+                                            Width="200"
+                                            HorizontalAlignment="Center"
+                                            FontSize="12"
+                                            FontWeight="SemiBold"
+                                            Foreground="#666"
+                                            Text="VIN" />
+                                        <TextBlock
+                                            x:Name="tbPrixUnitaire"
+                                            Grid.Column="2"
+                                            Width="100"
+                                            HorizontalAlignment="Center"
+                                            FontSize="12"
+                                            FontWeight="SemiBold"
+                                            Foreground="#666"
+                                            Text="PRIX UNITAIRE" />
+                                        <TextBlock
+                                            x:Name="tbQuantite"
+                                            Grid.Column="3"
+                                            Width="80"
+                                            HorizontalAlignment="Center"
+                                            FontSize="12"
+                                            FontWeight="SemiBold"
+                                            Foreground="#666"
+                                            Text="QUANTITÉ" />
+                                        <TextBlock
+                                            x:Name="tbPrixTot"
+                                            Grid.Column="4"
+                                            Width="80"
+                                            HorizontalAlignment="Center"
+                                            FontSize="12"
+                                            FontWeight="SemiBold"
+                                            Foreground="#666"
+                                            Text="PRIX TOT" />
+                                    </Grid>
 
-                                                <!--  Prix total  -->
-                                                <TextBlock
-                                                    Grid.Column="3"
-                                                    VerticalAlignment="Center"
-                                                    Text="{Binding PrixTotal}" />
-                                            </Grid>
-                                        </DataTemplate>
-                                    </ItemsControl.ItemTemplate>
-                                </ItemsControl>
+                                    <ListBox
+                                        Background="Transparent"
+                                        BorderThickness="0"
+                                        ItemsSource="{Binding LesDemandes}"
+                                        ScrollViewer.HorizontalScrollBarVisibility="Disabled">
 
-                                <!--  Bouton pour valider la commande  -->
-                                <Button
-                                    Margin="5,10,0,0"
-                                    HorizontalAlignment="Left"
-                                    VerticalAlignment="Top"
-                                    Background="#8B0000"
-                                    BorderBrush="#660000"
-                                    BorderThickness="1"
-                                    Content="Valider la commande" />
-                            </StackPanel>
-                        </StackPanel>
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-            </ItemsControl>
-        </StackPanel>
+                                        <ListBox.ItemTemplate>
+                                            <DataTemplate>
+                                                <Grid Margin="0,5,0,5" Cursor="">
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="*" />
+                                                        <ColumnDefinition Width="*" />
+                                                        <ColumnDefinition Width="*" />
+                                                        <ColumnDefinition Width="*" />
+                                                        <ColumnDefinition Width="*" />
+                                                    </Grid.ColumnDefinitions>
+
+                                                    
+
+                                                    <StackPanel Grid.Column="1" Margin="10,0,0,0">
+                                                        <TextBlock
+                                                            x:Name="NomVin"
+                                                            FontSize="13"
+                                                            FontWeight="SemiBold"
+                                                            Text="{Binding NumVin.NomVin}" />
+                                                    </StackPanel>
+
+                                                    <TextBlock
+                                                        x:Name="tbPrixUnitaire"
+                                                        Grid.Column="2"
+                                                        HorizontalAlignment="Center"
+                                                        VerticalAlignment="Center"
+                                                        FontSize="12"
+                                                        Text="{Binding NumVin.PrixVin, StringFormat={}{0:C}}" />
+
+                                                    <TextBox
+                                                        x:Name="tbQuantite"
+                                                        Grid.Column="3"
+                                                        Width="50"
+                                                        Height="25"
+                                                        HorizontalAlignment="Center"
+                                                        VerticalAlignment="Center"
+                                                        BorderBrush="#CCC"
+                                                        BorderThickness="1"
+                                                        FontSize="12"
+                                                        Text="{Binding Quantite}"
+                                                        TextAlignment="Center" />
+
+                                                    <TextBlock
+                                                        x:Name="tbPrixTot"
+                                                        Grid.Column="4"
+                                                        HorizontalAlignment="Center"
+                                                        VerticalAlignment="Center"
+                                                        FontSize="12"
+                                                        FontWeight="SemiBold"
+                                                        Text="Test" />
+                                                </Grid>
+                                            </DataTemplate>
+                                        </ListBox.ItemTemplate>
+                                    </ListBox>
+
+                                    <Grid
+                                        Margin="0,15,0,0"
+                                        Background="#F8F9FA"
+                                        Cursor="">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+
+
+
+                                        <Button
+                                            x:Name="buttValiderCommande"
+                                            Grid.Column="2"
+                                            Padding="15,8"
+                                            Content="✓ Valider la commande"
+                                            Cursor="Hand"
+                                            FontSize="12"
+                                            FontWeight="SemiBold" Foreground="#FFFFFF" Background="#FF770000"
+                                             />
+                                    </Grid>
+                                </StackPanel>
+                            </Border>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </StackPanel>
+        </ScrollViewer>
     </Grid>
 </UserControl>

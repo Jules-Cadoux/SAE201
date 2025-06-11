@@ -37,7 +37,7 @@ namespace SAE201
         }
         private void Responsable()
         {
-            Main.Content = new RechercherVin();
+            Main.Content = new UserControlCreerCommande();
         }
         private void Login()
         {
@@ -53,11 +53,12 @@ namespace SAE201
             switch(employeConnecte.NumRole)
             {
                 case 1:
-                    Vendeur(); 
+                    Vendeur();
                     break;
 
                 case 2:
                     Responsable();
+                    
                     break;
                 default:
                     // Gérer le cas où le rôle n'est pas reconnu

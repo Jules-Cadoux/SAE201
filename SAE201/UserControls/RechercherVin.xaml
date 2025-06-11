@@ -109,12 +109,14 @@
                         </Style>
                     </DataGrid.ColumnHeaderStyle>
                     <DataGrid.Columns>
-                        <DataGridTextColumn Header="Vin" Binding="{Binding NomVin}" Width="450"/>
+                        <DataGridTextColumn Header="Vin" Binding="{Binding NomVin}" Width="3*"/>
+                        <DataGridTextColumn x:Name="dttxtNumClient" Header="Numéro client" Binding="{Binding NumClient}" Width="*"/>
                         <DataGridTextColumn Header="Date" Binding="{Binding Date}" Width="*"/>
                         <DataGridTextColumn Header="Quantité" Binding="{Binding Quantite}" Width="*"/>
                     </DataGrid.Columns>
                 </DataGrid>
-                <Button Content="Valider la demande" Width="120" Margin="600,25,0,0" Height="25"/>
+                <Button x:Name="butAjouterClient" Content="Ajouter le client" Width="120" Margin="600,25,0,0" Height="25" Click="butAjouterClient_Click"/>
+                <Button x:Name="butValiderCommande" Content="Valider la demande" Width="120" Margin="600,25,0,0" Height="25" Click="butValiderCommande_Click"/>
             </StackPanel>
         </TabItem>
         <TabItem Header="Etat demande">

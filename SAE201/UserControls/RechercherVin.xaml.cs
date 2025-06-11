@@ -1,10 +1,13 @@
-﻿using SAE201.Model;
+﻿using Npgsql;
+using SAE201.Model;
+using SAE201.Windows;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
+using System.Reflection.Metadata;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -24,6 +27,8 @@ namespace SAE201.UserControls
         public string NomVin { get; set; }
         public DateTime Date { get; set; }
         public int Quantite { get; set; }
+        public int NumClient { get; set; }
+        public int NumVin { get; set; }
 
         public VinDemande(string nomVin, DateTime date, int quantite)
         {
@@ -273,6 +278,44 @@ namespace SAE201.UserControls
             {
                 MessageBox.Show("Erreur : Aucun vin sélectionné.");
             }
+        }
+        private void butAjouterClient_Click(object sender, RoutedEventArgs e)
+        {
+            if (VinsDemande.Count == 0)
+            {
+                MessageBox.Show("Aucune demande à valider.");
+                return;
+            }
+
+            RechercherClient fenetreRecherche = new RechercherClient();
+
+            if (fenetreRecherche.ShowDialog() == true)
+            {
+                int numClientSelectionne = fenetreRecherche.NumClientSelectionne.Value;
+                foreach (VinDemande demande in VinsDemande)
+                {
+                    demande.NumClient = numClientSelectionne;
+                }
+                dgDemande.Items.Refresh();
+            }
+        }
+
+        private void butValiderCommande_Click(object sender, RoutedEventArgs e)
+        {
+            if (VinsDemande.Count == 0)
+            {
+                MessageBox.Show("Aucune demande à valider.");
+                return;
+            }
+
+            MessageBox.Show("La demande a été validée", "Validation demande", MessageBoxButton.OK, MessageBoxImage.Information);
+
+            foreach(VinDemande vin in  VinsDemande)
+            {
+
+            }
+
+            VinsDemande.Clear();
         }
 
         

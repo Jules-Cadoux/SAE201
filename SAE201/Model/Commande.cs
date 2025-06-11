@@ -11,7 +11,7 @@ namespace SAE201.Model
     public class Commande
     {
         private int numCommande;
-        private Employe numEmploye;
+        private int numEmploye;
         private DateTime dateCommande;
         private bool valider;
         private double prixTotal;
@@ -20,7 +20,7 @@ namespace SAE201.Model
         {
         }
 
-        public Commande(int numCommande, Employe numEmploye, DateTime dateCommande, bool valider, double prixTotal)
+        public Commande(int numCommande, int numEmploye, DateTime dateCommande, bool valider, double prixTotal)
         {
             this.NumCommande = numCommande;
             this.NumEmploye = numEmploye;
@@ -43,7 +43,7 @@ namespace SAE201.Model
             }
         }
 
-        public Employe NumEmploye
+        public int NumEmploye
         {
             get
             {
@@ -108,7 +108,7 @@ namespace SAE201.Model
                 "INSERT INTO commande (numemploye, datecommande, valider, prixtotal) " +
                 "VALUES (@numemploye, @datecommande, @valider, @prixtotal) RETURNING numcommande"))
             {
-                cmd.Parameters.AddWithValue("numemploye", this.NumEmploye.NumEmploye);
+                cmd.Parameters.AddWithValue("numemploye", this.NumEmploye);
                 cmd.Parameters.AddWithValue("datecommande", this.DateCommande);
                 cmd.Parameters.AddWithValue("valider", this.Valider);
                 cmd.Parameters.AddWithValue("prixtotal", this.PrixTotal);
@@ -132,9 +132,7 @@ namespace SAE201.Model
                     this.Valider = (bool)row["valider"];
                     this.PrixTotal = Convert.ToDouble(row["prixtotal"]);
 
-                    int idEmploye = (int)row["numemploye"];
-                    this.NumEmploye = new Employe(idEmploye);
-                    this.NumEmploye.Read(); // suppose que Employe a une méthode Read()
+                    this.NumEmploye = (int)row["numemploye"];
                 }
             }
         }
@@ -145,7 +143,7 @@ namespace SAE201.Model
                 "UPDATE commande SET numemploye = @numemploye, datecommande = @datecommande, valider = @valider, prixtotal = @prixtotal " +
                 "WHERE numcommande = @numcommande"))
             {
-                cmd.Parameters.AddWithValue("numemploye", this.NumEmploye.NumEmploye);
+                cmd.Parameters.AddWithValue("numemploye", this.NumEmploye);
                 cmd.Parameters.AddWithValue("datecommande", this.DateCommande);
                 cmd.Parameters.AddWithValue("valider", this.Valider);
                 cmd.Parameters.AddWithValue("prixtotal", this.PrixTotal);
@@ -173,15 +171,12 @@ namespace SAE201.Model
                 foreach (DataRow row in dt.Rows)
                 {
                     int id = (int)row["numcommande"];
-                    int idEmploye = (int)row["numemploye"];
+                    int numEmploye = (int)row["numemploye"];
                     DateTime date = (DateTime)row["datecommande"];
                     bool valider = (bool)row["valider"];
                     double prix = Convert.ToDouble(row["prixtotal"]);
 
-                    Employe emp = new Employe(idEmploye);
-                    emp.Read();
-
-                    commandes.Add(new Commande(id, emp, date, valider, prix));
+                    commandes.Add(new Commande(id, numEmploye, date, valider, prix));
                 }
             }
             return commandes;
@@ -196,15 +191,13 @@ namespace SAE201.Model
                 foreach (DataRow row in dt.Rows)
                 {
                     int id = (int)row["numcommande"];
-                    int idEmploye = (int)row["numemploye"];
+                    int numEmploye = (int)row["numemploye"];
                     DateTime date = (DateTime)row["datecommande"];
                     bool valider = (bool)row["valider"];
                     double prix = Convert.ToDouble(row["prixtotal"]);
 
-                    Employe emp = new Employe(idEmploye);
-                    emp.Read();
 
-                    commandes.Add(new Commande(id, emp, date, valider, prix));
+                    commandes.Add(new Commande(id, numEmploye, date, valider, prix));
                 }
             }
             return commandes;
