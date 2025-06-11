@@ -53,11 +53,12 @@ namespace SAE201
             switch(employeConnecte.NumRole)
             {
                 case 1:
-                    Responsable();
+                    Vendeur();
                     break;
 
                 case 2:
-                    Vendeur();
+                    Responsable();
+                    
                     break;
                 default:
                     // Gérer le cas où le rôle n'est pas reconnu

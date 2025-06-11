@@ -298,6 +298,5 @@ namespace SAE201.UserControls
 
             VinsDemande.Clear();
         }
-
     }
 }
