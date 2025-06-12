@@ -269,7 +269,7 @@
                         Content="Valider la demande" />
                 </StackPanel>
             </TabItem>
-            <TabItem Header="Etat demande">
+            <TabItem Header="Etat demande" Margin="-2,0,2,0">
                 <Grid>
                     <StackPanel>
                         <Label

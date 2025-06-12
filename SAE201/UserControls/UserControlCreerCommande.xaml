@@ -89,7 +89,32 @@
                 <DataGridTextColumn
                     Width="*"
                     Binding="{Binding Accepter}"
-                    Header="Choix " />
+                    Header="Choix " >
+                    <DataGridTextColumn.ElementStyle>
+                        <Style TargetType="TextBlock">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Accepter}" Value="En Attente">
+                                    <Setter Property="Background" Value="Orange" />
+                                    <Setter Property="Foreground" Value="White" />
+                                    <Setter Property="FontWeight" Value="Bold" />
+                                    <Setter Property="Padding" Value="5,2" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Accepter}" Value="Accepter">
+                                    <Setter Property="Background" Value="Green" />
+                                    <Setter Property="Foreground" Value="White" />
+                                    <Setter Property="FontWeight" Value="Bold" />
+                                    <Setter Property="Padding" Value="5,2" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Accepter}" Value="Refuser">
+                                    <Setter Property="Background" Value="Red" />
+                                    <Setter Property="Foreground" Value="White" />
+                                    <Setter Property="FontWeight" Value="Bold" />
+                                    <Setter Property="Padding" Value="5,2" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </DataGridTextColumn.ElementStyle>
+                </DataGridTextColumn>
             </DataGrid.Columns>
         </DataGrid>
         <Label
