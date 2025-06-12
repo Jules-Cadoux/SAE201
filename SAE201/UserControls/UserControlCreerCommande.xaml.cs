@@ -1,4 +1,5 @@
-﻿using SAE201.Model;
+﻿using Npgsql;
+using SAE201.Model;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -43,11 +44,10 @@ namespace SAE201.UserControls
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Problème lors de récupération des données" + ex.Message);
+                MessageBox.Show("Problème lors de récupération des données: " + ex.Message);
                 LogError.Log(ex, "Erreur SQL");
             }
         }
-
 
         private void RegrouperDemandesParFournisseur()
         {
@@ -76,7 +76,7 @@ namespace SAE201.UserControls
             {
                 GroupeFournisseur groupeFournisseur = new GroupeFournisseur();
                 groupeFournisseur.NomFournisseur = kvp.Value[0].NumVin.NumFournisseur.NomFournisseur;
-                groupeFournisseur.NumFournisseur = kvp.Key; // 
+                groupeFournisseur.NumFournisseur = kvp.Key;
                 groupeFournisseur.DemandesVins = new ObservableCollection<Demande>();
 
                 foreach (Demande demande in kvp.Value)
@@ -98,7 +98,6 @@ namespace SAE201.UserControls
             }
             return total;
         }
-
 
         private void buttEditerDemande_Click(object sender, RoutedEventArgs e)
         {
@@ -124,63 +123,108 @@ namespace SAE201.UserControls
                 {
                     try
                     {
-                        demandeSelectionnee.Update();  
-                        dgCommandes.Items.Refresh();   
+                        demandeSelectionnee.Update();
+                        dgCommandes.Items.Refresh();
                     }
                     catch (Exception ex)
                     {
                         MessageBox.Show("La demande n'a pas pu être modifiée.", "Erreur", MessageBoxButton.OK, MessageBoxImage.Error);
+                        LogError.Log(ex, "Erreur lors de la modification de demande");
                     }
                 }
             }
         }
+
         private void buttValiderCommande_Click(object sender, RoutedEventArgs e)
         {
-            Button button = sender as Button;
-            GroupeFournisseur groupeFournisseur = button.DataContext as GroupeFournisseur;
-
-            if (groupeFournisseur != null)
+            try
             {
-                try
+                Button bouton = sender as Button;
+                if (bouton == null)
                 {
-                    // Créer une nouvelle commande
-                    Commande nouvelleCommande = new Commande();
-                    nouvelleCommande.NumEmploye = 1; // À adapter selon votre logique d'employé connecté
-                    nouvelleCommande.DateCommande = DateTime.Now;
-                    nouvelleCommande.Valider = true;
-                    nouvelleCommande.PrixTotal = groupeFournisseur.PrixTotal;
+                    MessageBox.Show("Erreur: impossible de récupérer le bouton", "Erreur", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
 
-                    // Insérer la commande en base
-                    int idCommande = nouvelleCommande.Create();
+                GroupeFournisseur groupeFournisseur = bouton.DataContext as GroupeFournisseur;
+                if (groupeFournisseur == null)
+                {
+                    MessageBox.Show("Erreur: impossible de récupérer les informations du fournisseur", "Erreur", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
 
-                    // Mettre à jour les demandes avec l'ID de la commande créée
-                    foreach (Demande demande in groupeFournisseur.DemandesVins)
+                MessageBoxResult result = MessageBox.Show(
+                    $"Êtes-vous sûr de vouloir valider la commande pour {groupeFournisseur.NomFournisseur} ?\n" +
+                    $"Nombre d'articles : {groupeFournisseur.DemandesVins.Count}\n" +
+                    $"Prix total : {groupeFournisseur.PrixTotal:C2}",
+                    "Confirmation",
+                    MessageBoxButton.YesNo,
+                    MessageBoxImage.Question
+                );
+
+                if (result == MessageBoxResult.Yes)
+                {
+                    try
                     {
-                        demande.NumCommande = new Commande();
-                        demande.NumCommande.NumCommande = idCommande;
-                        demande.Update();
+                        // Créer la commande en base de données
+                        using NpgsqlCommand cmdCommande = new NpgsqlCommand(@"INSERT INTO sae201_nicolas.commande
+                        (numemploye, datecommande, valider, prixtotal)
+                        VALUES (@numemploye, @datecommande, @valider, @prixtotal)
+                        RETURNING numcommande");
+
+                        cmdCommande.Parameters.AddWithValue("numemploye", 101); 
+                        cmdCommande.Parameters.AddWithValue("datecommande", DateTime.Now);
+                        cmdCommande.Parameters.AddWithValue("valider", true); 
+                        cmdCommande.Parameters.AddWithValue("prixtotal", groupeFournisseur.PrixTotal);
+
+                        int numeroCommande = DataAccess.Instance.ExecuteInsert(cmdCommande);
+
+                        Commande commande = new Commande
+                        {
+                            NumCommande = numeroCommande,
+                            DateCommande = DateTime.Now,
+                            NumEmploye = 101,
+                            Valider = true,
+                            PrixTotal = groupeFournisseur.PrixTotal
+                        };
+
+                        if (numeroCommande > 0)
+                        {
+                            MessageBox.Show(
+                                $"Commande #{numeroCommande} créée avec succès pour {groupeFournisseur.NomFournisseur}!\n" +
+                                $"Prix total : {groupeFournisseur.PrixTotal:C2}",
+                                "Succès",
+                                MessageBoxButton.OK,
+                                MessageBoxImage.Information
+                            );
+
+                            // Recharger les données pour mettre à jour l'affichage
+                            ChargeData();
+                        }
+                        else
+                        {
+                            MessageBox.Show("Erreur: La commande n'a pas pu être créée (numéro invalide)", "Erreur", MessageBoxButton.OK, MessageBoxImage.Error);
+                        }
                     }
-
-                    MessageBox.Show("Commande validée avec succès pour " + groupeFournisseur.NomFournisseur + "!",
-                                  "Succès", MessageBoxButton.OK, MessageBoxImage.Information);
-
-                    // Recharger les données
-                    ChargeData();
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"Erreur lors de l'insertion de la commande : {ex.Message}", "Erreur", MessageBoxButton.OK, MessageBoxImage.Error);
+                        LogError.Log(ex, "Erreur SQL lors de l'insertion de commande");
+                    }
                 }
-                catch (Exception ex)
-                {
-                    MessageBox.Show("Erreur lors de la validation de la commande : " + ex.Message,
-                                  "Erreur", MessageBoxButton.OK, MessageBoxImage.Error);
-                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Erreur lors de la création de la commande : {ex.Message}", "Erreur", MessageBoxButton.OK, MessageBoxImage.Error);
+                LogError.Log(ex, "Erreur lors de la création de commande");
             }
         }
     }
 
-    // Classe pour regrouper les demandes par fournisseur
     public class GroupeFournisseur
     {
         public string NomFournisseur { get; set; }
-        public int NumFournisseur { get; set; } // Utiliser directement NumFournisseur au lieu d'IdFournisseur
+        public int NumFournisseur { get; set; }
         public ObservableCollection<Demande> DemandesVins { get; set; }
         public double PrixTotal { get; set; }
 
@@ -190,5 +234,3 @@ namespace SAE201.UserControls
         }
     }
 }
-
-

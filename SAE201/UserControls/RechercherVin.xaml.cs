@@ -308,16 +308,69 @@ namespace SAE201.UserControls
                 return;
             }
 
-            MessageBox.Show("La demande a été validée", "Validation demande", MessageBoxButton.OK, MessageBoxImage.Information);
-
-            foreach(VinDemande vin in  VinsDemande)
+            // Vérifie que chaque demande possède un client associé
+            if (VinsDemande.Any(v => v.NumClient == 0))
             {
+                MessageBox.Show("Veuillez sélectionner un client pour chaque demande.",
+                                "Client manquant", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
 
+            try
+            {
+                foreach (VinDemande vin in VinsDemande)
+                {
+                    // Recherche du vin correspondant afin d'obtenir son identifiant
+                    Vin? vinBdd = Vins.FirstOrDefault(v => v.NomVin == vin.NomVin);
+                    if (vinBdd == null)
+                    {
+                        MessageBox.Show($"Le vin {vin.NomVin} n'existe pas dans la base.");
+                        continue;
+                    }
+
+                    // Insertion de la demande en base sans créer la commande
+                    using NpgsqlCommand cmd = new NpgsqlCommand(@"INSERT INTO sae201_nicolas.demande
+                            (numvin, numemploye, numcommande, numclient, datedemande, quantitedemande, accepter)
+                            VALUES (@numvin, @numemploye, @numcommande, @numclient, @datedemande, @quantite, 'En Attente')
+                            RETURNING numdemande");
+
+                    cmd.Parameters.AddWithValue("numvin", vinBdd.NumVin);
+                    cmd.Parameters.AddWithValue("numemploye", 1); // Employé connecté (à adapter)
+                    cmd.Parameters.AddWithValue("numcommande", DBNull.Value); // Commande créée ultérieurement
+                    cmd.Parameters.AddWithValue("numclient", vin.NumClient);
+                    cmd.Parameters.AddWithValue("datedemande", vin.Date);
+                    cmd.Parameters.AddWithValue("quantite", vin.Quantite);
+
+                    int idDemande = DataAccess.Instance.ExecuteInsert(cmd);
+
+                    // Mise à jour de la liste d'affichage
+                    Demande demande = new Demande
+                    {
+                        NumDemande = idDemande,
+                        DateDemande = vin.Date,
+                        QuantiteDemande = vin.Quantite,
+                        Accepter = "En Attente",
+                        NumVin = vinBdd,
+                        NumEmploye = new Employe { NumEmploye = 1 },
+                        NumCommande = null,
+                        NumClient = new Client { NumClient = vin.NumClient }
+                    };
+
+                    LesDemandes.Add(demande);
+                }
+
+                MessageBox.Show("La demande a été validée", "Validation demande",
+                                MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Erreur lors de l'enregistrement des demandes : " + ex.Message);
+                LogError.Log(ex, "Erreur SQL");
             }
 
             VinsDemande.Clear();
         }
 
-        
+
     }
 }

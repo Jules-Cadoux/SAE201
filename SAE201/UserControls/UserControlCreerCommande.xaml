@@ -43,11 +43,11 @@
         </Border>
         <TabControl>
             <TabItem Header="Les commandes">
-                <Grid>
+                <Grid Width="795" Height="960">
 
                     <DataGrid
                         x:Name="dgCommandes"
-                        Margin="30,103,84,561"
+                        Margin="30,55,84,609"
                         AlternatingRowBackground="#FFF8F8"
                         AutoGenerateColumns="False"
                         Background="White"
@@ -58,7 +58,7 @@
                         HorizontalGridLinesBrush="#E0E0E0"
                         IsReadOnly="True"
                         ItemsSource="{Binding LesDemandes}"
-                        RowBackground="White">
+                        RowBackground="White" Width="680" Height="295">
                         <DataGrid.ColumnHeaderStyle>
                             <Style TargetType="{x:Type DataGridColumnHeader}">
                                 <Setter Property="Background" Value="#8B0000" />
@@ -122,7 +122,7 @@
                         </DataGrid.Columns>
                     </DataGrid>
                     <Label
-                        Margin="30,61,0,0"
+                        Margin="30,15,0,0"
                         HorizontalAlignment="Left"
                         VerticalAlignment="Top"
                         Content="Créer une commande"
@@ -146,7 +146,7 @@
                         Foreground="White"
                         ToolTip="Editer" />
 
-                    <ScrollViewer x:Name="lesCommandesAPasser" Margin="20,409,20,99">
+                    <ScrollViewer x:Name="lesCommandesAPasser" Margin="20,377,20,131">
                         <StackPanel Cursor="">
                             <Label
                                 Margin="10,10,0,10"
