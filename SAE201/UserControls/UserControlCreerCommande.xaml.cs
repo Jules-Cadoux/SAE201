@@ -76,7 +76,7 @@ namespace SAE201.UserControls
             {
                 GroupeFournisseur groupeFournisseur = new GroupeFournisseur();
                 groupeFournisseur.NomFournisseur = kvp.Value[0].NumVin.NumFournisseur.NomFournisseur;
-                groupeFournisseur.NumFournisseur = kvp.Key; 
+                groupeFournisseur.NumFournisseur = kvp.Key; // 
                 groupeFournisseur.DemandesVins = new ObservableCollection<Demande>();
 
                 foreach (Demande demande in kvp.Value)
