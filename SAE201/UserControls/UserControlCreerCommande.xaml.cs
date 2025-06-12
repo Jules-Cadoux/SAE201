@@ -1,4 +1,5 @@
-﻿using SAE201.Model;
+﻿using Npgsql;
+using SAE201.Model;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -163,21 +164,32 @@ namespace SAE201.UserControls
 
                 if (result == MessageBoxResult.Yes)
                 {
-                    Commande commande = new Commande();
-
-                    commande.NumEmploye = 101; // Vous pourriez vouloir récupérer l'employé connecté
-                    commande.DateCommande = DateTime.Now;
-                    commande.Valider = true;
-                    commande.PrixTotal = groupeFournisseur.PrixTotal;
-
                     try
                     {
-                        // Créer la commande en base
-                        int numeroCommande = commande.Create();
+                        // Créer la commande en base de données
+                        using NpgsqlCommand cmdCommande = new NpgsqlCommand(@"INSERT INTO sae201_nicolas.commande
+                        (numemploye, datecommande, valider, prixtotal)
+                        VALUES (@numemploye, @datecommande, @valider, @prixtotal)
+                        RETURNING numcommande");
+
+                        cmdCommande.Parameters.AddWithValue("numemploye", 101); 
+                        cmdCommande.Parameters.AddWithValue("datecommande", DateTime.Now);
+                        cmdCommande.Parameters.AddWithValue("valider", true); 
+                        cmdCommande.Parameters.AddWithValue("prixtotal", groupeFournisseur.PrixTotal);
+
+                        int numeroCommande = DataAccess.Instance.ExecuteInsert(cmdCommande);
+
+                        Commande commande = new Commande
+                        {
+                            NumCommande = numeroCommande,
+                            DateCommande = DateTime.Now,
+                            NumEmploye = 101,
+                            Valider = true,
+                            PrixTotal = groupeFournisseur.PrixTotal
+                        };
 
                         if (numeroCommande > 0)
                         {
-
                             MessageBox.Show(
                                 $"Commande #{numeroCommande} créée avec succès pour {groupeFournisseur.NomFournisseur}!\n" +
                                 $"Prix total : {groupeFournisseur.PrixTotal:C2}",
@@ -186,6 +198,7 @@ namespace SAE201.UserControls
                                 MessageBoxImage.Information
                             );
 
+                            // Recharger les données pour mettre à jour l'affichage
                             ChargeData();
                         }
                         else
@@ -195,20 +208,15 @@ namespace SAE201.UserControls
                     }
                     catch (Exception ex)
                     {
-                        MessageBox.Show($"Erreur lors de la création de la commande : {ex.Message}", "Erreur", MessageBoxButton.OK, MessageBoxImage.Error);
-                        LogError.Log(ex, "Erreur lors de la création de commande");
+                        MessageBox.Show($"Erreur lors de l'insertion de la commande : {ex.Message}", "Erreur", MessageBoxButton.OK, MessageBoxImage.Error);
+                        LogError.Log(ex, "Erreur SQL lors de l'insertion de commande");
                     }
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show(
-                    $"Erreur inattendue lors de la validation de la commande : {ex.Message}",
-                    "Erreur",
-                    MessageBoxButton.OK,
-                    MessageBoxImage.Error
-                );
-                LogError.Log(ex, "Erreur lors de la validation de commande");
+                MessageBox.Show($"Erreur lors de la création de la commande : {ex.Message}", "Erreur", MessageBoxButton.OK, MessageBoxImage.Error);
+                LogError.Log(ex, "Erreur lors de la création de commande");
             }
         }
     }

@@ -263,6 +263,7 @@ namespace SAE201.Model
         JOIN sae201_nicolas.vin v ON v.numvin = d.numvin
         JOIN sae201_nicolas.fournisseur f ON f.numfournisseur = v.numfournisseur
         JOIN sae201_nicolas.employe e ON e.numemploye = d.numemploye
+        Order by d.datedemande DESC;
     "))
             {
                 DataTable dt = DataAccess.Instance.ExecuteSelect(cmd);
