@@ -200,7 +200,7 @@
                                                         <ColumnDefinition Width="*" />
                                                     </Grid.ColumnDefinitions>
 
-                                                    
+
 
                                                     <StackPanel Grid.Column="1" Margin="10,0,0,0">
                                                         <TextBlock
@@ -260,11 +260,12 @@
                                             x:Name="buttValiderCommande"
                                             Grid.Column="2"
                                             Padding="15,8"
+                                            Background="#FF770000"
                                             Content="✓ Valider la commande"
                                             Cursor="Hand"
                                             FontSize="12"
-                                            FontWeight="SemiBold" Foreground="#FFFFFF" Background="#FF770000"
-                                             />
+                                            FontWeight="SemiBold"
+                                            Foreground="#FFFFFF" />
                                     </Grid>
                                 </StackPanel>
                             </Border>
