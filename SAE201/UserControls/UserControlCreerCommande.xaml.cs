@@ -42,7 +42,7 @@ namespace SAE201.UserControls
 
                 // Filtrer les demandes qui sont "Accepter" mais qui n'ont pas encore été associées à une commande
                 LesDemandes = new ObservableCollection<Demande>(
-                    demandes.Where(d => d.Accepter == "Accepter" && d.NumCommande == null).ToList()
+                    demandes.Where(d => d.Accepter == "Accepter" && d.NumCommande == null || d.Accepter == "En Attente" || d.Accepter == "Refuser").ToList()
                 );
 
                 RegrouperDemandesParFournisseur();  // Regrouper les demandes restantes par fournisseur
@@ -131,7 +131,7 @@ namespace SAE201.UserControls
                     try
                     {
                         demandeSelectionnee.Update();
-                        dgCommandes.Items.Refresh();
+                        dgCommandes.Items.Refresh();  // Force un rafraîchissement
                     }
                     catch (Exception ex)
                     {
@@ -224,6 +224,9 @@ namespace SAE201.UserControls
                             // Mettre à jour la liste pour ne plus afficher ce fournisseur
                             LesCommandesParFournisseur.Remove(groupeFournisseur);
 
+                            // Forcer le rafraîchissement de l'affichage de la DataGrid
+                            dgCommandes.Items.Refresh();  // Force un rafraîchissement
+
                             // Recharger les données pour mettre à jour l'affichage
                             ChargeData();
                         }
@@ -245,6 +248,7 @@ namespace SAE201.UserControls
                 LogError.Log(ex, "Erreur lors de la création de commande");
             }
         }
+
 
     }
 
