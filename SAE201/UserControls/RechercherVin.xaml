@@ -11,9 +11,7 @@
     d:DesignWidth="800"
     mc:Ignorable="d">
 
-    <UserControl.Resources>
-        <converters:MontantToColor x:Key="MontantColorConverter" />
-    </UserControl.Resources>
+    
     <StackPanel>
         <Border
             Height="60"
@@ -326,11 +324,30 @@
                                     Width="*"
                                     Binding="{Binding Accepter}"
                                     Header="Choix ">
-                                    <DataGridTextColumn.CellStyle>
-                                        <Style TargetType="DataGridCell">
-                                            <Setter Property="Foreground" Value="{Binding Accepter, Converter={StaticResource MontantColorConverter}}" />
-                                        </Style>
-                                    </DataGridTextColumn.CellStyle>
+                                    <DataGridTextColumn.ElementStyle>
+                                    <Style TargetType="TextBlock">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding Accepter}" Value="En Attente">
+                                                <Setter Property="Background" Value="Orange" />
+                                                <Setter Property="Foreground" Value="White" />
+                                                <Setter Property="FontWeight" Value="Bold" />
+                                                <Setter Property="Padding" Value="5,2" />
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding Accepter}" Value="Accepter">
+                                                <Setter Property="Background" Value="Green" />
+                                                <Setter Property="Foreground" Value="White" />
+                                                <Setter Property="FontWeight" Value="Bold" />
+                                                <Setter Property="Padding" Value="5,2" />
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding Accepter}" Value="Refuser">
+                                                <Setter Property="Background" Value="Red" />
+                                                <Setter Property="Foreground" Value="White" />
+                                                <Setter Property="FontWeight" Value="Bold" />
+                                                <Setter Property="Padding" Value="5,2" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </DataGridTextColumn.ElementStyle>
                                 </DataGridTextColumn>
                             </DataGrid.Columns>
                         </DataGrid>
