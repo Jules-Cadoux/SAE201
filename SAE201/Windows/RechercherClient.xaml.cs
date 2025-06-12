@@ -149,7 +149,7 @@ namespace SAE201.Windows
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show(this, "Le chien n'a pas pu être supprimé.\n" + ex.Message, "Erreur", MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show(this, "Le client n'a pas pu être supprimé.\n" + ex.Message, "Erreur", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
         }
