@@ -367,7 +367,7 @@
                                 Header="N° Commande" />
                             <DataGridTextColumn
                                 Width="*"
-                                Binding="{Binding NumVin.NumFournisseur.NomFournisseur}"
+                                Binding="{Binding NomFournisseurPrincipal}"
                                 Header="Fournisseur" />
                             <DataGridTextColumn
                                 Width="*"
@@ -375,8 +375,8 @@
                                 Header="Date de Commande" />
                             <DataGridTextColumn
                                 Width="*"
-                                Binding="{Binding QuantiteDemande}"
-                                Header="Nombre de Vin" />
+                                Binding="{Binding PrixTotal}"
+                                Header="Prix commande" />
 
                         </DataGrid.Columns>
                     </DataGrid>

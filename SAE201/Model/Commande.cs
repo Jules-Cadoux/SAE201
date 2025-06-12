@@ -15,6 +15,7 @@ namespace SAE201.Model
         private DateTime dateCommande;
         private bool valider;
         private double prixTotal;
+        private string nomFournisseurPrincipal;
 
         public Commande()
         {
@@ -103,6 +104,30 @@ namespace SAE201.Model
                 this.prixTotal = value;
             }
         }
+
+
+        public string NomFournisseurPrincipal
+        {
+            get
+            {
+                try
+                {
+                    // Trouver la première demande liée à cette commande
+                    Demande demande = Demande.FindAll().FirstOrDefault(d => d.NumCommande?.NumCommande == this.NumCommande);
+
+                    if (demande != null && demande.NumVin?.NumFournisseur != null)
+                    {
+                        return demande.NumVin.NumFournisseur.NomFournisseur;
+                    }
+                    return "N/A";
+                }
+                catch
+                {
+                    return "N/A";
+                }
+            }
+        }
+
 
         public override bool Equals(object? obj)
         {

@@ -150,7 +150,12 @@
                             FontWeight="SemiBold"
                             Foreground="White"
                             ToolTip="Editer" />
-                        <Button Content="Button" HorizontalAlignment="Left" Margin="673,260,0,0" VerticalAlignment="Top" Click="Button_Click"/>
+                        <Button
+                            Margin="673,260,0,0"
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Top"
+                            Click="Button_Click"
+                            Content="Lier client" />
                     </Grid>
                 </TabItem>
             </TabControl>

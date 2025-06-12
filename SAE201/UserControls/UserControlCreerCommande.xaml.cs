@@ -25,7 +25,7 @@ namespace SAE201.UserControls
     {
         public ObservableCollection<Demande> LesDemandes { get; set; }
         public ObservableCollection<Commande> LesCommandes { get; set; }
-        public ObservableCollection<GroupeFournisseur> LesCommandesParFournisseur { get; set; }
+        public ObservableCollection<GroupeFournisseur> LesCommandesParFournisseur { get; set; } = new ObservableCollection<GroupeFournisseur>();
 
 
         public UserControlCreerCommande()
