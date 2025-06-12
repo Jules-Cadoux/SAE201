@@ -353,17 +353,7 @@
 
             </TabItem>
         </TabControl>
-        <Border
-            Height="30"
-            VerticalAlignment="Bottom"
-            Background="#8B0000">
-            <TextBlock
-                HorizontalAlignment="Center"
-                VerticalAlignment="Center"
-                FontStyle="Italic"
-                Foreground="White"
-                Text="Nicolas - L'art de bien choisir son vin" />
-        </Border>
+
 
     </StackPanel>
 </UserControl>

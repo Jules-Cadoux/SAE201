@@ -198,6 +198,20 @@ namespace SAE201.UserControls
                                 MessageBoxImage.Information
                             );
 
+                            foreach (Demande demande in groupeFournisseur.DemandesVins)
+                            {
+                                demande.NumCommande = new Commande { NumCommande = numeroCommande };
+                                try
+                                {
+                                    demande.UpdateCommande();
+                                }
+                                catch (Exception ex)
+                                {
+                                    MessageBox.Show($"Erreur lors de la mise à jour d'une demande : {ex.Message}", "Erreur", MessageBoxButton.OK, MessageBoxImage.Error);
+                                    LogError.Log(ex, "Erreur lors de la mise à jour de demande");
+                                }
+                            }
+
                             // Recharger les données pour mettre à jour l'affichage
                             ChargeData();
                         }
