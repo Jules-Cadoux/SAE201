@@ -103,7 +103,7 @@ namespace SAE201.Model
 
             set
             {
-                if (!Regex.IsMatch(value, "^[a-zA-Z0-9]@gmail.com$") && !Regex.IsMatch(value, "^[a-zA-Z0-9]@email.com$"))
+                if (!Regex.IsMatch(value, @"^[a-zA-Z0-9._-]+@gmail\.com$") && !Regex.IsMatch(value, @"^[a-zA-Z0-9._-]+@email\.com$"))
                     throw new FormatException("Mail correspond pas !");
                 this.mailClient = value;
                 OnPropertyChanged(nameof(MailClient));
