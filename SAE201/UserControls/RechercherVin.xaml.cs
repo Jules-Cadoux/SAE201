@@ -271,7 +271,7 @@ namespace SAE201.UserControls
                 }
 
                 // Ajoutez à la collection VinsDemande
-                VinsDemande.Add(new VinDemande(vinSelectionne.NomVin, DateTime.Now, 6));
+                VinsDemande.Add(new VinDemande(vinSelectionne.NomVin, DateTime.Now, 1));
                 MessageBox.Show($"Vin '{vinSelectionne.NomVin}' ajouté ! Total: {VinsDemande.Count} vins");
             }
             else

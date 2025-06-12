@@ -70,7 +70,7 @@
                         </Grid>
 
                         <!--  Zone de filtres  -->
-                        <StackPanel Margin="0,10,0,10" Orientation="Horizontal">
+                        <StackPanel Margin="0,10,0,10" Orientation="Horizontal" HorizontalAlignment="Center">
                             <ComboBox
                                 x:Name="comboTypeVin"
                                 Width="120"
@@ -135,7 +135,7 @@
                             <ListBox
                                 x:Name="listBoxVins"
                                 Width="826"
-                                Height="355"
+                                Height="722"
                                 Background="Transparent"
                                 ItemsSource="{Binding VinsView}"
                                 ScrollViewer.HorizontalScrollBarVisibility="Disabled">
@@ -264,12 +264,12 @@
                                 Header="Quantité" />
                         </DataGrid.Columns>
                     </DataGrid>
-                    <StackPanel Orientation="Horizontal">
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                         <Button
                             x:Name="butAjouterClient"
                             Width="120"
                             Height="30"
-                            Margin="180,5,0,0"
+                            Margin="10,5,0,0"
                             Click="butAjouterClient_Click"
                             Content="Ajouter le client" />
                         <Button x:Name="buttSupprimer" Width="30" Height="30" Margin="100,5,0,0" Background="#8B0000" BorderBrush="#660000" BorderThickness="1" Content="&#xE74D;" Cursor="Hand" FontFamily="Segoe MDL2 Assets" FontWeight="SemiBold" Foreground="White" ToolTip="Supprimer" Click="buttSupprimer_Click"/>
@@ -293,7 +293,7 @@
                             Margin="0,10,0,0"
                             Content="Etat Demande"
                             FontSize="18"
-                            FontWeight="Bold" />
+                            FontWeight="Bold" HorizontalContentAlignment="Center" />
                         <DataGrid
                             x:Name="dgCommandes"
                             Height="269"
