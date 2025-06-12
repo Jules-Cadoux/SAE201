@@ -62,10 +62,10 @@ namespace SAE201.UserControls
 
         private void RegrouperDemandesParFournisseur()
         {
-            // Filtrer les demandes acceptées
+            // 1. Filtrer les demandes acceptées depuis la liste principale
             List<Demande> demandesAcceptees = LesDemandes.Where(d => d.Accepter == "Accepter").ToList();
 
-            // Regrouper par fournisseur
+            // 2. Regrouper ces demandes par fournisseur dans un dictionnaire
             Dictionary<int, List<Demande>> demandesParFournisseur = new Dictionary<int, List<Demande>>();
 
             foreach (Demande demande in demandesAcceptees)
@@ -80,9 +80,10 @@ namespace SAE201.UserControls
                 demandesParFournisseur[numFournisseur].Add(demande);
             }
 
-            // Créer la collection pour l'affichage
-            LesCommandesParFournisseur = new ObservableCollection<GroupeFournisseur>();
+            // 3. (LA CORRECTION) Vider la collection existante au lieu d'en créer une nouvelle
+            LesCommandesParFournisseur.Clear();
 
+            // 4. Remplir la collection (maintenant vide) avec les nouveaux groupes
             foreach (KeyValuePair<int, List<Demande>> kvp in demandesParFournisseur)
             {
                 GroupeFournisseur groupeFournisseur = new GroupeFournisseur();
@@ -135,7 +136,11 @@ namespace SAE201.UserControls
                     try
                     {
                         demandeSelectionnee.Update();
-                        dgCommandes.Items.Refresh();  // Force un rafraîchissement
+
+                        // /// CORRECTION ///
+                        // On remplace le simple refresh par un rechargement complet des données.
+                        // Cela va mettre à jour la liste du haut ET la liste des groupes en bas.
+                        ChargeData();
                     }
                     catch (Exception ex)
                     {
