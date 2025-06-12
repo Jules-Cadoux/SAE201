@@ -19,6 +19,15 @@ namespace SAE201.Model
         public Commande()
         {
         }
+        public Commande(int numEmploye, DateTime dateCommande, bool valider, double prixTotal)
+        {
+
+            this.NumEmploye = numEmploye;
+            this.DateCommande = dateCommande;
+            this.Valider = valider;
+            this.PrixTotal = prixTotal;
+        }
+
 
         public Commande(int numCommande, int numEmploye, DateTime dateCommande, bool valider, double prixTotal)
         {
@@ -105,7 +114,7 @@ namespace SAE201.Model
         {
             int id = 0;
             using (NpgsqlCommand cmd = new NpgsqlCommand(
-                "INSERT INTO sae201_nicolas.commande (numemploye, datecommande, valider, prixtotal) " +
+                "INSERT INTO commande (numemploye, datecommande, valider, prixtotal) " +
                 "VALUES (@numemploye, @datecommande, @valider, @prixtotal) RETURNING numcommande"))
             {
                 cmd.Parameters.AddWithValue("numemploye", this.NumEmploye);
@@ -113,24 +122,15 @@ namespace SAE201.Model
                 cmd.Parameters.AddWithValue("valider", this.Valider);
                 cmd.Parameters.AddWithValue("prixtotal", this.PrixTotal);
 
-                try
-                {
-                    id = DataAccess.Instance.ExecuteInsert(cmd);
-                    this.NumCommande = id;
-                }
-                catch (Exception ex)
-                {
-                    // Log l'erreur pour debugging
-                    System.Diagnostics.Debug.WriteLine($"Erreur Create Commande: {ex.Message}");
-                    throw; // Re-lancer l'exception pour la gérer au niveau supérieur
-                }
+                id = DataAccess.Instance.ExecuteInsert(cmd);
+                this.NumCommande = id;
             }
             return id;
         }
 
         public void Read()
         {
-            using (NpgsqlCommand cmd = new NpgsqlCommand("SELECT * FROM sae201_nicolas.commande WHERE numcommande = @id"))
+            using (NpgsqlCommand cmd = new NpgsqlCommand("SELECT * FROM commande WHERE numcommande = @id"))
             {
                 cmd.Parameters.AddWithValue("id", this.NumCommande);
                 DataTable dt = DataAccess.Instance.ExecuteSelect(cmd);
@@ -149,7 +149,7 @@ namespace SAE201.Model
         public int Update()
         {
             using (NpgsqlCommand cmd = new NpgsqlCommand(
-                "UPDATE sae201_nicolas.commande SET numemploye = @numemploye, datecommande = @datecommande, valider = @valider, prixtotal = @prixtotal " +
+                "UPDATE commande SET numemploye = @numemploye, datecommande = @datecommande, valider = @valider, prixtotal = @prixtotal " +
                 "WHERE numcommande = @numcommande"))
             {
                 cmd.Parameters.AddWithValue("numemploye", this.NumEmploye);
@@ -164,7 +164,7 @@ namespace SAE201.Model
 
         public int Delete()
         {
-            using (NpgsqlCommand cmd = new NpgsqlCommand("DELETE FROM sae201_nicolas.commande WHERE numcommande = @numcommande"))
+            using (NpgsqlCommand cmd = new NpgsqlCommand("DELETE FROM commande WHERE numcommande = @numcommande"))
             {
                 cmd.Parameters.AddWithValue("numcommande", this.NumCommande);
                 return DataAccess.Instance.ExecuteSet(cmd);
@@ -174,7 +174,7 @@ namespace SAE201.Model
         public static List<Commande> FindAll()
         {
             List<Commande> commandes = new List<Commande>();
-            using (NpgsqlCommand cmd = new NpgsqlCommand("SELECT * FROM sae201_nicolas.commande"))
+            using (NpgsqlCommand cmd = new NpgsqlCommand("SELECT * FROM commande"))
             {
                 DataTable dt = DataAccess.Instance.ExecuteSelect(cmd);
                 foreach (DataRow row in dt.Rows)
@@ -194,7 +194,7 @@ namespace SAE201.Model
         public static List<Commande> FindBySelection(string criteres)
         {
             List<Commande> commandes = new List<Commande>();
-            using (NpgsqlCommand cmd = new NpgsqlCommand($"SELECT * FROM sae201_nicolas.commande WHERE {criteres}"))
+            using (NpgsqlCommand cmd = new NpgsqlCommand($"SELECT * FROM commande WHERE {criteres}"))
             {
                 DataTable dt = DataAccess.Instance.ExecuteSelect(cmd);
                 foreach (DataRow row in dt.Rows)

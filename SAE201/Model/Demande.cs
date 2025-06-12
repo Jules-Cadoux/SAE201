@@ -263,6 +263,7 @@ namespace SAE201.Model
         JOIN sae201_nicolas.vin v ON v.numvin = d.numvin
         JOIN sae201_nicolas.fournisseur f ON f.numfournisseur = v.numfournisseur
         JOIN sae201_nicolas.employe e ON e.numemploye = d.numemploye
+        Order by d.datedemande DESC;
     "))
             {
                 DataTable dt = DataAccess.Instance.ExecuteSelect(cmd);
@@ -338,7 +339,6 @@ namespace SAE201.Model
             }
             return demandes;
         }
-
         public int UpdateCommande()
         {
             using (NpgsqlCommand cmd = new NpgsqlCommand("UPDATE sae201_nicolas.demande SET numcommande = @numcommande WHERE numdemande = @numdemande"))
@@ -355,8 +355,6 @@ namespace SAE201.Model
                 return DataAccess.Instance.ExecuteSet(cmd);
             }
         }
-
-
 
         public override bool Equals(object? obj)    
         {
