@@ -58,7 +58,6 @@ namespace SAE201
 
                 case 2:
                     Responsable();
-                    
                     break;
                 default:
                     // Gérer le cas où le rôle n'est pas reconnu
