@@ -19,6 +19,7 @@ namespace SAE201.Model
         private double prixVin;
         private string description;
         private int millesime;
+        private string imagePath;
 
         public Vin(int numVin, Fournisseur numFournisseur, int numType, Appelation numType2, string nomVin, double prixVin, string description, int millesime)
         {
@@ -151,6 +152,28 @@ namespace SAE201.Model
                     MessageBox.Show("Le millésime doit être < à la date actuelle", "Erreur création vin",MessageBoxButton.OK,MessageBoxImage.Error);
                 }
                 this.millesime = value;
+            }
+        }
+
+        public string ImagePath
+        {
+            get
+            {
+                string abdelkader="";
+                switch (NumType)
+                {
+                    case 1:
+                        abdelkader = "rouge";
+                        break;
+                    case 2:
+                        abdelkader = "blanc";
+                        break;
+                    case 3:
+                        abdelkader = "rosé";
+                        break;
+                }
+                Console.WriteLine($"/Fichier/Vin{abdelkader}.png");
+                return $"/img/vin_{abdelkader}.png";
             }
         }
 

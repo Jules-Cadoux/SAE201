@@ -161,10 +161,11 @@
                                             BorderThickness="1"
                                             CornerRadius="5">
                                             <StackPanel>
-                                                <Rectangle
+                                                <Image
                                                     Height="100"
                                                     Margin="0,0,0,10"
-                                                    Fill="#DDD" />
+                                                    Source="{Binding ImagePath}"
+                                                    />
                                                 <TextBlock
                                                     Margin="0,5,0,0"
                                                     FontSize="14"
