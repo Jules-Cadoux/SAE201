@@ -191,112 +191,110 @@
                                             BorderThickness="1"
                                             CornerRadius="8">
                                             <StackPanel>
-                                                <Grid Margin="0,0,0,15">
+                                                <!--  En-tête avec nom du fournisseur  -->
+                                                <TextBlock
+                                                    Margin="0,0,0,15"
+                                                    VerticalAlignment="Center"
+                                                    FontSize="16"
+                                                    FontWeight="Bold"
+                                                    Foreground="#333"
+                                                    Text="{Binding NomFournisseur}" />
+
+                                                <!--  En-têtes des colonnes  -->
+                                                <Grid Margin="0,0,0,10">
                                                     <Grid.ColumnDefinitions>
-                                                        <ColumnDefinition Width="*" />
-                                                        <ColumnDefinition Width="*" />
-                                                        <ColumnDefinition Width="*" />
-                                                        <ColumnDefinition Width="*" />
-                                                        <ColumnDefinition Width="*" />
+                                                        <ColumnDefinition Width="3*" />
+                                                        <ColumnDefinition Width="2*" />
+                                                        <ColumnDefinition Width="1.5*" />
+                                                        <ColumnDefinition Width="1.5*" />
                                                     </Grid.ColumnDefinitions>
 
                                                     <TextBlock
                                                         Grid.Column="0"
-                                                        VerticalAlignment="Center"
-                                                        FontSize="14"
-                                                        FontWeight="Bold"
-                                                        Foreground="#333"
-                                                        Text="{Binding NomFournisseur}" />
-
-                                                    <TextBlock
-                                                        Grid.Column="1"
-                                                        Width="200"
-                                                        HorizontalAlignment="Center"
                                                         FontSize="12"
                                                         FontWeight="SemiBold"
                                                         Foreground="#666"
                                                         Text="VIN" />
                                                     <TextBlock
-                                                        Grid.Column="2"
-                                                        Width="100"
+                                                        Grid.Column="1"
                                                         HorizontalAlignment="Center"
                                                         FontSize="12"
                                                         FontWeight="SemiBold"
                                                         Foreground="#666"
                                                         Text="PRIX UNITAIRE" />
                                                     <TextBlock
-                                                        Grid.Column="3"
-                                                        Width="80"
+                                                        Grid.Column="2"
                                                         HorizontalAlignment="Center"
                                                         FontSize="12"
                                                         FontWeight="SemiBold"
                                                         Foreground="#666"
                                                         Text="QUANTITÉ" />
                                                     <TextBlock
-                                                        Grid.Column="4"
-                                                        Width="80"
+                                                        Grid.Column="3"
                                                         HorizontalAlignment="Center"
                                                         FontSize="12"
                                                         FontWeight="SemiBold"
                                                         Foreground="#666"
-                                                        Text="PRIX TOT" />
+                                                        Text="PRIX LIGNE" />
                                                 </Grid>
 
-                                                <ListBox
-                                                    Background="Transparent"
-                                                    BorderThickness="0"
-                                                    ItemsSource="{Binding DemandesVins}"
-                                                    ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                                                <!--  Séparateur  -->
+                                                <Border
+                                                    Height="1"
+                                                    Margin="0,0,0,10"
+                                                    Background="#E0E0E0" />
 
-                                                    <ListBox.ItemTemplate>
+                                                <!--  Liste des vins  -->
+                                                <ItemsControl ItemsSource="{Binding DemandesVins}">
+                                                    <ItemsControl.ItemTemplate>
                                                         <DataTemplate>
                                                             <Grid Margin="0,5,0,5">
                                                                 <Grid.ColumnDefinitions>
-                                                                    <ColumnDefinition Width="*" />
-                                                                    <ColumnDefinition Width="*" />
-                                                                    <ColumnDefinition Width="*" />
-                                                                    <ColumnDefinition Width="*" />
-                                                                    <ColumnDefinition Width="*" />
+                                                                    <ColumnDefinition Width="3*" />
+                                                                    <ColumnDefinition Width="2*" />
+                                                                    <ColumnDefinition Width="1.5*" />
+                                                                    <ColumnDefinition Width="1.5*" />
                                                                 </Grid.ColumnDefinitions>
 
-                                                                <StackPanel Grid.Column="1" Margin="10,0,0,0">
-                                                                    <TextBlock
-                                                                        FontSize="13"
-                                                                        FontWeight="SemiBold"
-                                                                        Text="{Binding NumVin.NomVin}" />
-                                                                </StackPanel>
+                                                                <TextBlock
+                                                                    Grid.Column="0"
+                                                                    VerticalAlignment="Center"
+                                                                    FontSize="13"
+                                                                    FontWeight="SemiBold"
+                                                                    Text="{Binding NumVin.NomVin}" />
+
+                                                                <TextBlock
+                                                                    Grid.Column="1"
+                                                                    HorizontalAlignment="Center"
+                                                                    VerticalAlignment="Center"
+                                                                    FontSize="12"
+                                                                    Text="{Binding NumVin.PrixVin, StringFormat={}{0:C2}, ConverterCulture='fr-FR'}" />
 
                                                                 <TextBlock
                                                                     Grid.Column="2"
                                                                     HorizontalAlignment="Center"
                                                                     VerticalAlignment="Center"
                                                                     FontSize="12"
-                                                                    Text="{Binding NumVin.PrixVin, StringFormat={}{0:C}}" />
+                                                                    Text="{Binding QuantiteDemande}" />
 
                                                                 <TextBlock
                                                                     Grid.Column="3"
                                                                     HorizontalAlignment="Center"
                                                                     VerticalAlignment="Center"
                                                                     FontSize="12"
-                                                                    Text="{Binding QuantiteDemande}" />
-
-                                                                <TextBlock
-                                                                    Grid.Column="4"
-                                                                    HorizontalAlignment="Center"
-                                                                    VerticalAlignment="Center"
-                                                                    FontSize="12"
                                                                     FontWeight="SemiBold"
-                                                                    Text="{Binding PrixLigne, StringFormat={}{0:C}}" />
+                                                                    Text="{Binding PrixLigne, StringFormat={}{0:C2}, ConverterCulture='fr-FR'}" />
+
                                                             </Grid>
                                                         </DataTemplate>
-                                                    </ListBox.ItemTemplate>
-                                                </ListBox>
+                                                    </ItemsControl.ItemTemplate>
+                                                </ItemsControl>
 
+                                                <!--  Pied avec total et bouton  -->
                                                 <Grid Margin="0,15,0,0" Background="#F8F9FA">
                                                     <Grid.ColumnDefinitions>
                                                         <ColumnDefinition Width="*" />
-                                                        <ColumnDefinition Width="*" />
-                                                        <ColumnDefinition Width="*" />
+                                                        <ColumnDefinition Width="Auto" />
                                                     </Grid.ColumnDefinitions>
 
                                                     <TextBlock
@@ -305,11 +303,11 @@
                                                         VerticalAlignment="Center"
                                                         FontSize="14"
                                                         FontWeight="Bold"
-                                                        Text="{Binding CalculerPrixTotal, StringFormat=Total: {0:C}}" />
+                                                        Text="{Binding PrixTotal, StringFormat='Total: {0:C2}', ConverterCulture='fr-FR'}" />
 
                                                     <Button
                                                         x:Name="buttValiderCommande"
-                                                        Grid.Column="2"
+                                                        Grid.Column="1"
                                                         Padding="15,8"
                                                         Background="#FF770000"
                                                         Click="buttValiderCommande_Click"
