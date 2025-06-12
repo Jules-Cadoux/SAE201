@@ -21,6 +21,7 @@ namespace SAE201.Model
         private DateTime dateDemande;
         private int quantiteDemande;
         private string accepter;
+        private double prixLigne;
 
         public event PropertyChangedEventHandler? PropertyChanged;
         protected void OnPropertyChanged(string nomPropriete)
@@ -135,8 +136,6 @@ namespace SAE201.Model
 
             set
             {
-                //if (value != DateTime.Today)
-                  //  MessageBox.Show("La date du jour doit = à celle du jour", "Erreur de création demande", MessageBoxButton.OK, MessageBoxImage.Error);
                 dateDemande = value;
             }
         }
@@ -170,6 +169,18 @@ namespace SAE201.Model
                 OnPropertyChanged(nameof(Accepter));
 
 
+            }
+        }
+
+        public double PrixLigne
+        {
+            get
+            {
+                if (this.NumVin != null)
+                {
+                    return this.NumVin.PrixVin * this.QuantiteDemande;
+                }
+                return 0;
             }
         }
 
