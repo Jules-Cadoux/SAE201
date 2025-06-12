@@ -183,7 +183,7 @@
                                                     HorizontalAlignment="Center"
                                                     FontWeight="Bold"
                                                     Foreground="#5C6AC4"
-                                                    Text="{Binding PrixVin, StringFormat='{}{0:C}'}" />
+                                                    Text="{Binding PrixVin, StringFormat=' {0:C2}', ConverterCulture='fr-FR'}" />
                                                 <Button
                                                     Width="25"
                                                     Height="25"

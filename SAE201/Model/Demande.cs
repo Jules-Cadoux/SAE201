@@ -257,7 +257,7 @@ namespace SAE201.Model
             using (NpgsqlCommand cmd = new NpgsqlCommand(@"
         SELECT 
             d.numdemande, d.datedemande, d.quantitedemande, d.accepter, 
-            d.numvin, v.nomvin, v.numfournisseur,
+            d.numvin, v.nomvin, v.numfournisseur, v.prixvin,
             d.numemploye, e.nom AS nomemploye,
             d.numcommande,
             d.numclient,
@@ -282,6 +282,7 @@ namespace SAE201.Model
                         {
                             NumVin = (int)row["numvin"],
                             NomVin = (string)row["nomvin"],
+                            PrixVin = Convert.ToDouble(row["prixvin"]),  
                             NumFournisseur = new Fournisseur
                             {
                                 NumFournisseur = (int)row["numfournisseur"],
@@ -343,7 +344,7 @@ namespace SAE201.Model
 
 
 
-        public override bool Equals(object? obj)
+        public override bool Equals(object? obj)    
         {
             return obj is Demande demande && this.NumDemande == demande.NumDemande;
         }    
