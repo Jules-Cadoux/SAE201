@@ -156,10 +156,11 @@
                                             BorderThickness="1"
                                             CornerRadius="5">
                                             <StackPanel>
-                                                <Rectangle
+                                                <Image
                                                     Height="100"
                                                     Margin="0,0,0,10"
-                                                    Fill="#DDD" />
+                                                    Source="{Binding ImagePath}"
+                                                    />
                                                 <TextBlock
                                                     Margin="0,5,0,0"
                                                     FontSize="14"
@@ -243,9 +244,9 @@
                                 <Setter Property="BorderThickness" Value="0,0,1,0" />
                             </Style>
                         </DataGrid.ColumnHeaderStyle>
-                        <DataGrid.Columns>
+                        <DataGrid.Columns>                                                                                                            
                             <DataGridTextColumn
-                                Width="3*"
+                                Width="2*"
                                 Binding="{Binding NomVin}"
                                 Header="Vin" />
                             <DataGridTextColumn
