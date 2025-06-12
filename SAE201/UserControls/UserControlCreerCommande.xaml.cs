@@ -37,9 +37,15 @@ namespace SAE201.UserControls
         {
             try
             {
+                // Charger toutes les demandes mais exclure celles qui ont déjà été associées à une commande
                 List<Demande> demandes = Demande.FindAll();
-                LesDemandes = new ObservableCollection<Demande>(demandes);
-                RegrouperDemandesParFournisseur();
+
+                // Filtrer les demandes qui sont "Accepter" mais qui n'ont pas encore été associées à une commande
+                LesDemandes = new ObservableCollection<Demande>(
+                    demandes.Where(d => d.Accepter == "Accepter" && d.NumCommande == null).ToList()
+                );
+
+                RegrouperDemandesParFournisseur();  // Regrouper les demandes restantes par fournisseur
                 this.DataContext = this;
             }
             catch (Exception ex)
@@ -48,6 +54,7 @@ namespace SAE201.UserControls
                 LogError.Log(ex, "Erreur SQL");
             }
         }
+
 
         private void RegrouperDemandesParFournisseur()
         {
@@ -168,13 +175,13 @@ namespace SAE201.UserControls
                     {
                         // Créer la commande en base de données
                         using NpgsqlCommand cmdCommande = new NpgsqlCommand(@"INSERT INTO sae201_nicolas.commande
-                        (numemploye, datecommande, valider, prixtotal)
-                        VALUES (@numemploye, @datecommande, @valider, @prixtotal)
-                        RETURNING numcommande");
+                (numemploye, datecommande, valider, prixtotal)
+                VALUES (@numemploye, @datecommande, @valider, @prixtotal)
+                RETURNING numcommande");
 
-                        cmdCommande.Parameters.AddWithValue("numemploye", 101); 
+                        cmdCommande.Parameters.AddWithValue("numemploye", 101);
                         cmdCommande.Parameters.AddWithValue("datecommande", DateTime.Now);
-                        cmdCommande.Parameters.AddWithValue("valider", true); 
+                        cmdCommande.Parameters.AddWithValue("valider", true);
                         cmdCommande.Parameters.AddWithValue("prixtotal", groupeFournisseur.PrixTotal);
 
                         int numeroCommande = DataAccess.Instance.ExecuteInsert(cmdCommande);
@@ -200,9 +207,11 @@ namespace SAE201.UserControls
 
                             foreach (Demande demande in groupeFournisseur.DemandesVins)
                             {
+                                // Associer la demande à la nouvelle commande créée
                                 demande.NumCommande = new Commande { NumCommande = numeroCommande };
                                 try
                                 {
+                                    // Enregistrer cette association en base
                                     demande.UpdateCommande();
                                 }
                                 catch (Exception ex)
@@ -211,6 +220,9 @@ namespace SAE201.UserControls
                                     LogError.Log(ex, "Erreur lors de la mise à jour de demande");
                                 }
                             }
+
+                            // Mettre à jour la liste pour ne plus afficher ce fournisseur
+                            LesCommandesParFournisseur.Remove(groupeFournisseur);
 
                             // Recharger les données pour mettre à jour l'affichage
                             ChargeData();
@@ -233,6 +245,7 @@ namespace SAE201.UserControls
                 LogError.Log(ex, "Erreur lors de la création de commande");
             }
         }
+
     }
 
     public class GroupeFournisseur
