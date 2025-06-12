@@ -271,7 +271,7 @@ namespace SAE201.UserControls
                 }
 
                 // Ajoutez à la collection VinsDemande
-                VinsDemande.Add(new VinDemande(vinSelectionne.NomVin, DateTime.Now, 1));
+                VinsDemande.Add(new VinDemande(vinSelectionne.NomVin, DateTime.Now, 6));
                 MessageBox.Show($"Vin '{vinSelectionne.NomVin}' ajouté ! Total: {VinsDemande.Count} vins");
             }
             else
@@ -320,23 +320,20 @@ namespace SAE201.UserControls
             {
                 foreach (VinDemande vin in VinsDemande)
                 {
-                    // Recherche du vin correspondant afin d'obtenir son identifiant
                     Vin? vinBdd = Vins.FirstOrDefault(v => v.NomVin == vin.NomVin);
                     if (vinBdd == null)
                     {
                         MessageBox.Show($"Le vin {vin.NomVin} n'existe pas dans la base.");
                         continue;
                     }
-
-                    // Insertion de la demande en base sans créer la commande
                     using NpgsqlCommand cmd = new NpgsqlCommand(@"INSERT INTO sae201_nicolas.demande
                             (numvin, numemploye, numcommande, numclient, datedemande, quantitedemande, accepter)
                             VALUES (@numvin, @numemploye, @numcommande, @numclient, @datedemande, @quantite, 'En Attente')
                             RETURNING numdemande");
 
                     cmd.Parameters.AddWithValue("numvin", vinBdd.NumVin);
-                    cmd.Parameters.AddWithValue("numemploye", 1); // Employé connecté (à adapter)
-                    cmd.Parameters.AddWithValue("numcommande", DBNull.Value); // Commande créée ultérieurement
+                    cmd.Parameters.AddWithValue("numemploye", 1);
+                    cmd.Parameters.AddWithValue("numcommande", DBNull.Value);
                     cmd.Parameters.AddWithValue("numclient", vin.NumClient);
                     cmd.Parameters.AddWithValue("datedemande", vin.Date);
                     cmd.Parameters.AddWithValue("quantite", vin.Quantite);
@@ -371,6 +368,29 @@ namespace SAE201.UserControls
             VinsDemande.Clear();
         }
 
+        private void buttSupprimer_Click(object sender, RoutedEventArgs e)
+        {
+            if (dgDemande.SelectedItem == null)
+            {
+                MessageBox.Show("Veuillez sélectionner une demande à supprimer", "Attention", MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
 
+            VinDemande demandeAsupprimer = (VinDemande)dgDemande.SelectedItem;
+
+            MessageBoxResult result = MessageBox.Show("Voulez-vous vraiment supprimer ce demande ?", "Confirmation", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+
+            if (result == MessageBoxResult.Yes)
+            {
+                try
+                {
+                    VinsDemande.Remove(demandeAsupprimer);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Le chien n'a pas pu être supprimé.\n" + ex.Message, "Erreur", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
+        }
     }
 }
