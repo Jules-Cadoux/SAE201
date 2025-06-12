@@ -329,7 +329,7 @@
             <TabItem Header="Etat des commandes" >
                 <Grid>
                     <Label Margin="10,6,584,279" Content="Etat Des Commandes" FontSize="18" FontWeight="Bold" />
-                    <DataGrid x:Name="dgCommandes_Copy" Height="269" AlternatingRowBackground="#FFF8F8" AutoGenerateColumns="False" Background="White" BorderBrush="#8B0000" BorderThickness="2" GridLinesVisibility="Horizontal" HeadersVisibility="Column" HorizontalGridLinesBrush="#E0E0E0" IsReadOnly="True" ItemsSource="{Binding LesDemandes}" RowBackground="White" SelectionChanged="dgCommandes_Copy_SelectionChanged" Margin="0,40,0,0">
+                    <DataGrid x:Name="dgCommandes_Copy" Height="269" AlternatingRowBackground="#FFF8F8" AutoGenerateColumns="False" Background="White" BorderBrush="#8B0000" BorderThickness="2" GridLinesVisibility="Horizontal" HeadersVisibility="Column" HorizontalGridLinesBrush="#E0E0E0" IsReadOnly="True" ItemsSource="{Binding LesDemandes}" RowBackground="White" Margin="0,40,0,0">
                         <DataGrid.ColumnHeaderStyle>
                             <Style TargetType="{x:Type DataGridColumnHeader}">
                                 <Setter Property="Background" Value="#8B0000" />
