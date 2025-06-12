@@ -11,6 +11,36 @@
     mc:Ignorable="d">
 
     <Grid>
+        <Border
+            Height="60"
+            VerticalAlignment="Top"
+            Background="#8B0000">
+            <Grid>
+                <StackPanel
+                    Margin="20,0"
+                    VerticalAlignment="Center"
+                    Orientation="Horizontal">
+                    <TextBlock
+                        Margin="0,0,10,0"
+                        VerticalAlignment="Center"
+                        FontSize="24"
+                        Foreground="White"
+                        Text="🍷" />
+                    <TextBlock
+                        VerticalAlignment="Center"
+                        FontSize="24"
+                        FontWeight="Bold"
+                        Foreground="White"
+                        Text="NICOLAS" />
+                    <TextBlock
+                        Margin="10,0,0,8"
+                        VerticalAlignment="Bottom"
+                        FontSize="12"
+                        Foreground="#FFD700"
+                        Text="Caviste depuis 1822" />
+                </StackPanel>
+            </Grid>
+        </Border>
         <DataGrid
             x:Name="dgCommandes"
             Margin="30,103,84,561"
@@ -274,5 +304,16 @@
                 </ListBox>
             </StackPanel>
         </ScrollViewer>
+        <Border
+            Height="30"
+            VerticalAlignment="Bottom"
+            Background="#8B0000">
+            <TextBlock
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                FontStyle="Italic"
+                Foreground="White"
+                Text="Nicolas - L'art de bien choisir son vin" />
+        </Border>
     </Grid>
 </UserControl>
