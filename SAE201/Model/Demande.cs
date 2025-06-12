@@ -35,21 +35,18 @@ namespace SAE201.Model
         public Vin Vin { get;set; }
         public Employe Employe { get; set; }
 
-        public Demande(int numDemande, Vin numVin, Employe numEmploye, Commande numCommande, Client numClient, DateTime dateDemande, int quantiteDemande, string accepter)
+        public Demande(Vin numVin, Employe numEmploye,Client numClient, DateTime dateDemande, int quantiteDemande, string accepter)
         {
-            this.NumDemande = numDemande;
             this.NumVin = numVin;
             this.NumEmploye = numEmploye;
-            this.NumCommande = numCommande;
             this.NumClient = numClient;
             this.DateDemande = dateDemande;
             this.QuantiteDemande = quantiteDemande;
             this.Accepter = accepter;
         }
 
-        public Demande(int numDemande, Vin numVin, Employe numEmploye, Client numClient)
+        public Demande(Vin numVin, Employe numEmploye, Client numClient)
         {
-            this.NumDemande = numDemande;
             this.NumVin = numVin;
             this.NumEmploye = numEmploye;
             this.NumClient = numClient;
