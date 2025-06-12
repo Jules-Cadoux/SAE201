@@ -24,6 +24,7 @@ namespace SAE201.UserControls
     public partial class UserControlCreerCommande : UserControl
     {
         public ObservableCollection<Demande> LesDemandes { get; set; }
+        public ObservableCollection<Commande> LesCommandes { get; set; }
         public ObservableCollection<GroupeFournisseur> LesCommandesParFournisseur { get; set; }
 
 
@@ -32,6 +33,7 @@ namespace SAE201.UserControls
             InitializeComponent();
             ChargeData();
         }
+
 
         public void ChargeData()
         {
@@ -45,6 +47,8 @@ namespace SAE201.UserControls
                     demandes.Where(d => d.Accepter == "Accepter" && d.NumCommande == null || d.Accepter == "En Attente" || d.Accepter == "Refuser").ToList()
                 );
 
+                List<Commande> commandes = Commande.FindAll();
+                LesCommandes = new ObservableCollection<Commande>(commandes);
                 RegrouperDemandesParFournisseur();  // Regrouper les demandes restantes par fournisseur
                 this.DataContext = this;
             }

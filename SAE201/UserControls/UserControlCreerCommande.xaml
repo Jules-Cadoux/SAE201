@@ -348,7 +348,7 @@
                         HeadersVisibility="Column"
                         HorizontalGridLinesBrush="#E0E0E0"
                         IsReadOnly="True"
-                        ItemsSource="{Binding LesDemandes}"
+                        ItemsSource="{Binding LesCommandes}"
                         RowBackground="White">
                         <DataGrid.ColumnHeaderStyle>
                             <Style TargetType="{x:Type DataGridColumnHeader}">
