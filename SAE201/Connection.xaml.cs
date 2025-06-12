@@ -31,20 +31,35 @@ namespace SAE201
 
         public void seConnecter_Click(object sender, RoutedEventArgs e)
         {
-            new DataAccess(txLogin.Text, txMdp.Password);
-            ChargeData();
-            Employe user = Employe.FindByLoginAndPassword(txLogin.Text, txMdp.Password);
-            if (user is null)
+            if (string.IsNullOrWhiteSpace(txLogin.Text) || string.IsNullOrWhiteSpace(txMdp.Password))
             {
-                MessageBox.Show("Mot de passe ou login incorrect, réessayer");
+                MessageBox.Show("Veuillez entrer un nom d'utilisateur et un mot de passe.");
+                return;
             }
-            else
+
+            try
             {
-                
-                EmployeConnecte = user; 
-                DialogResult = true;
+                new DataAccess(txLogin.Text, txMdp.Password);
+                Employe user = Employe.FindByLoginAndPassword(txLogin.Text, txMdp.Password);
+
+                if (user is null)
+                {
+                    MessageBox.Show("Mot de passe ou login incorrect, réessayez.");
+                }
+                else
+                {
+                    EmployeConnecte = user;
+                    DialogResult = true;
+                    ChargeData();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Échec de la connexion à la base de données. Vérifiez vos identifiants.");
+                LogError.Log(ex, "Erreur de connexion");
             }
         }
+
         public void ChargeData()
         {
             try
