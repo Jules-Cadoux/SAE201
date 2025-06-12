@@ -9,9 +9,6 @@
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800">
 
-    <UserControl.Resources>
-        <converters:MontantToColor x:Key="MontantColorConverter" />
-    </UserControl.Resources>
     
     <TabControl>
         <TabItem Header="Rechercher Vin">
@@ -140,14 +137,33 @@
                             <DataGridTextColumn Width="*" Binding="{Binding NumEmploye.Nom}" Header="Demandé par " />
                             <DataGridTextColumn Width="*" Binding="{Binding DateDemande}" Header="Date" />
                             <DataGridTextColumn Width="*" Binding="{Binding Accepter}" Header="Choix ">
-                                <DataGridTextColumn.CellStyle>
-                                    <Style TargetType="DataGridCell">
-                                        <Setter Property="Foreground" Value="{Binding Accepter, Converter={StaticResource MontantColorConverter}}" />
+                                <DataGridTextColumn.ElementStyle>
+                                    <Style TargetType="TextBlock">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding Accepter}" Value="">
+                                                <Setter Property="Background" Value="Orange" />
+                                                <Setter Property="Foreground" Value="White" />
+                                                <Setter Property="FontWeight" Value="Bold" />
+                                                <Setter Property="Padding" Value="5,2" />
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding Accepter}" Value="Disponible">
+                                                <Setter Property="Background" Value="Green" />
+                                                <Setter Property="Foreground" Value="White" />
+                                                <Setter Property="FontWeight" Value="Bold" />
+                                                <Setter Property="Padding" Value="5,2" />
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding Accepter}" Value="À réparer">
+                                                <Setter Property="Background" Value="Red" />
+                                                <Setter Property="Foreground" Value="White" />
+                                                <Setter Property="FontWeight" Value="Bold" />
+                                                <Setter Property="Padding" Value="5,2" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
                                     </Style>
-                                </DataGridTextColumn.CellStyle>
+                                </DataGridTextColumn.ElementStyle>
                             </DataGridTextColumn>
                         </DataGrid.Columns>
-                    </DataGrid>
+                    </DataGrid> 
                 </StackPanel>
             </Grid>
         </TabItem>
