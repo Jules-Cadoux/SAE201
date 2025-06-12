@@ -44,6 +44,7 @@
         <TabControl>
             <TabItem Header="Les commandes">
                 <Grid>
+
                     <DataGrid
                         x:Name="dgCommandes"
                         Margin="30,103,84,561"
@@ -93,30 +94,30 @@
                                 Width="*"
                                 Binding="{Binding Accepter}"
                                 Header="Choix ">
-                            <DataGridTextColumn.ElementStyle>
-                                <Style TargetType="TextBlock">
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding Accepter}" Value="En Attente">
-                                            <Setter Property="Background" Value="Orange" />
-                                            <Setter Property="Foreground" Value="White" />
-                                            <Setter Property="FontWeight" Value="Bold" />
-                                            <Setter Property="Padding" Value="5,2" />
-                                        </DataTrigger>
-                                        <DataTrigger Binding="{Binding Accepter}" Value="Accepter">
-                                            <Setter Property="Background" Value="Green" />
-                                            <Setter Property="Foreground" Value="White" />
-                                            <Setter Property="FontWeight" Value="Bold" />
-                                            <Setter Property="Padding" Value="5,2" />
-                                        </DataTrigger>
-                                        <DataTrigger Binding="{Binding Accepter}" Value="Refuser">
-                                            <Setter Property="Background" Value="Red" />
-                                            <Setter Property="Foreground" Value="White" />
-                                            <Setter Property="FontWeight" Value="Bold" />
-                                            <Setter Property="Padding" Value="5,2" />
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </DataGridTextColumn.ElementStyle>
+                                <DataGridTextColumn.ElementStyle>
+                                    <Style TargetType="TextBlock">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding Accepter}" Value="En Attente">
+                                                <Setter Property="Background" Value="Orange" />
+                                                <Setter Property="Foreground" Value="White" />
+                                                <Setter Property="FontWeight" Value="Bold" />
+                                                <Setter Property="Padding" Value="5,2" />
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding Accepter}" Value="Accepter">
+                                                <Setter Property="Background" Value="Green" />
+                                                <Setter Property="Foreground" Value="White" />
+                                                <Setter Property="FontWeight" Value="Bold" />
+                                                <Setter Property="Padding" Value="5,2" />
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding Accepter}" Value="Refuser">
+                                                <Setter Property="Background" Value="Red" />
+                                                <Setter Property="Foreground" Value="White" />
+                                                <Setter Property="FontWeight" Value="Bold" />
+                                                <Setter Property="Padding" Value="5,2" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </DataGridTextColumn.ElementStyle>
                             </DataGridTextColumn>
                         </DataGrid.Columns>
                     </DataGrid>
@@ -327,7 +328,32 @@
                     </ScrollViewer>
                 </Grid>
             </TabItem>
-            <TabItem Header="Etat des commandes" />
+            <TabItem Header="Etat des commandes" >
+                <Grid>
+                    <Label Margin="10,6,584,279" Content="Etat Des Commandes" FontSize="18" FontWeight="Bold" />
+                    <DataGrid x:Name="dgCommandes_Copy" Height="269" AlternatingRowBackground="#FFF8F8" AutoGenerateColumns="False" Background="White" BorderBrush="#8B0000" BorderThickness="2" GridLinesVisibility="Horizontal" HeadersVisibility="Column" HorizontalGridLinesBrush="#E0E0E0" IsReadOnly="True" ItemsSource="{Binding LesDemandes}" RowBackground="White" SelectionChanged="dgCommandes_Copy_SelectionChanged" Margin="0,40,0,0">
+                        <DataGrid.ColumnHeaderStyle>
+                            <Style TargetType="{x:Type DataGridColumnHeader}">
+                                <Setter Property="Background" Value="#8B0000" />
+                                <Setter Property="Foreground" Value="White" />
+                                <Setter Property="FontWeight" Value="Bold" />
+                                <Setter Property="Padding" Value="8,5" />
+                                <Setter Property="BorderBrush" Value="#660000" />
+                                <Setter Property="BorderThickness" Value="0,0,1,0" />
+                            </Style>
+                        </DataGrid.ColumnHeaderStyle>
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Width="2*" Binding="{Binding NumVin.NomVin}" Header="Vin" />
+                            <DataGridTextColumn Width="*" Binding="{Binding NumVin.NumFournisseur.NomFournisseur}" Header="Fournisseur" />
+                            <DataGridTextColumn Width="*" Binding="{Binding NumEmploye.Nom}" Header="Demandé par " />
+                            <DataGridTextColumn Width="*" Binding="{Binding DateDemande}" Header="Date" />
+                            <DataGridTextColumn Width="*" Binding="{Binding Accepter}" Header="Choix ">
+                            </DataGridTextColumn>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Grid>
+
+            </TabItem>
         </TabControl>
         <Border
             Height="30"
@@ -340,5 +366,6 @@
                 Foreground="White"
                 Text="Nicolas - L'art de bien choisir son vin" />
         </Border>
+
     </StackPanel>
 </UserControl>
