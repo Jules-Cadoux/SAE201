@@ -233,7 +233,7 @@
                                 <Setter Property="BorderThickness" Value="0,0,1,0" />
                             </Style>
                         </DataGrid.ColumnHeaderStyle>
-                        <DataGrid.Columns>
+                        <DataGrid.Columns>                                                                                                            
                             <DataGridTextColumn
                                 Width="2*"
                                 Binding="{Binding NomVin}"

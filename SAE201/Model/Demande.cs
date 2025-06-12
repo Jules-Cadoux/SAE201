@@ -342,6 +342,23 @@ namespace SAE201.Model
             return demandes;
         }
 
+        public int UpdateCommande()
+        {
+            using (NpgsqlCommand cmd = new NpgsqlCommand("UPDATE sae201_nicolas.demande SET numcommande = @numcommande WHERE numdemande = @numdemande"))
+            {
+                if (this.NumCommande != null)
+                {
+                    cmd.Parameters.AddWithValue("numcommande", this.NumCommande.NumCommande);
+                }
+                else
+                {
+                    cmd.Parameters.AddWithValue("numcommande", DBNull.Value);
+                }
+                cmd.Parameters.AddWithValue("numdemande", this.NumDemande);
+                return DataAccess.Instance.ExecuteSet(cmd);
+            }
+        }
+
 
 
         public override bool Equals(object? obj)    

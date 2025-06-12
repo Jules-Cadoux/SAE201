@@ -1,4 +1,5 @@
-﻿using SAE201.Model;
+﻿using Npgsql;
+using SAE201.Model;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -124,8 +125,10 @@ namespace SAE201.UserControls
                 {
                     try
                     {
-                        demandeSelectionnee.Update();  
-                        dgCommandes.Items.Refresh();   
+                        demandeSelectionnee.Update();
+                        dgCommandes.Items.Refresh();
+                        // Recharger les données pour mettre à jour les groupes de fournisseurs
+                        ChargeData();
                     }
                     catch (Exception ex)
                     {
@@ -134,44 +137,75 @@ namespace SAE201.UserControls
                 }
             }
         }
+
         private void buttValiderCommande_Click(object sender, RoutedEventArgs e)
         {
-            Button button = sender as Button;
-            GroupeFournisseur groupeFournisseur = button.DataContext as GroupeFournisseur;
-
-            if (groupeFournisseur != null)
+            try
             {
-                try
+                // Récupérer le bouton qui a déclenché l'événement
+                Button bouton = sender as Button;
+                if (bouton == null) return;
+
+                // Récupérer le groupe de fournisseur depuis le DataContext du bouton
+                GroupeFournisseur groupeFournisseur = bouton.DataContext as GroupeFournisseur;
+                if (groupeFournisseur == null) return;
+
+                // Demander confirmation à l'utilisateur
+                MessageBoxResult result = MessageBox.Show(
+                    $"Êtes-vous sûr de vouloir valider la commande pour {groupeFournisseur.NomFournisseur} ?\n" +
+                    $"Prix total : {groupeFournisseur.PrixTotal:C2}",
+                    "Confirmation",
+                    MessageBoxButton.YesNo,
+                    MessageBoxImage.Question
+                );
+
+                if (result == MessageBoxResult.Yes)
                 {
-                    // Créer une nouvelle commande
-                    Commande nouvelleCommande = new Commande();
-                    nouvelleCommande.NumEmploye = 1; // À adapter selon votre logique d'employé connecté
-                    nouvelleCommande.DateCommande = DateTime.Now;
-                    nouvelleCommande.Valider = true;
-                    nouvelleCommande.PrixTotal = groupeFournisseur.PrixTotal;
+                    // Créer une nouvelle commande - NE PAS définir NumCommande, il sera auto-généré
+                    Commande commande = new Commande();
 
-                    // Insérer la commande en base
-                    int idCommande = nouvelleCommande.Create();
+                    // Définir les valeurs nécessaires
+                    commande.NumEmploye = 101; 
+                    commande.DateCommande = DateTime.Now;
+                    commande.Valider = true;
+                    commande.PrixTotal = groupeFournisseur.PrixTotal;
 
-                    // Mettre à jour les demandes avec l'ID de la commande créée
-                    foreach (Demande demande in groupeFournisseur.DemandesVins)
+                    try
                     {
-                        demande.NumCommande = new Commande();
-                        demande.NumCommande.NumCommande = idCommande;
-                        demande.Update();
+                        // Créer la commande en base - l'ID sera retourné et assigné automatiquement
+                        int numeroCommande = commande.Create();
+
+                        // Mettre à jour les demandes pour les lier à cette commande
+                        foreach (Demande demande in groupeFournisseur.DemandesVins)
+                        {
+                            // Créer une nouvelle instance Commande avec l'ID retourné
+                            demande.NumCommande = new Commande { NumCommande = numeroCommande };
+                            // Utiliser UpdateCommande() pour ne modifier que le lien vers la commande
+                            demande.UpdateCommande();
+                        }
+
+                        MessageBox.Show($"Commande #{numeroCommande} créée avec succès pour {groupeFournisseur.NomFournisseur}!");
+
+                        // Recharger les données pour actualiser l'affichage
+                        ChargeData();
                     }
-
-                    MessageBox.Show("Commande validée avec succès pour " + groupeFournisseur.NomFournisseur + "!",
-                                  "Succès", MessageBoxButton.OK, MessageBoxImage.Information);
-
-                    // Recharger les données
-                    ChargeData();
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("Erreur lors de l'ajout : " + ex.Message);
+                        LogError.Log(ex, "Erreur lors de la création de commande");
+                        return;
+                    }
                 }
-                catch (Exception ex)
-                {
-                    MessageBox.Show("Erreur lors de la validation de la commande : " + ex.Message,
-                                  "Erreur", MessageBoxButton.OK, MessageBoxImage.Error);
-                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(
+                    $"Erreur lors de la validation de la commande : {ex.Message}",
+                    "Erreur",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error
+                );
+                LogError.Log(ex, "Erreur lors de la validation de commande");
             }
         }
     }
@@ -180,7 +214,7 @@ namespace SAE201.UserControls
     public class GroupeFournisseur
     {
         public string NomFournisseur { get; set; }
-        public int NumFournisseur { get; set; } // Utiliser directement NumFournisseur au lieu d'IdFournisseur
+        public int NumFournisseur { get; set; }
         public ObservableCollection<Demande> DemandesVins { get; set; }
         public double PrixTotal { get; set; }
 
@@ -190,5 +224,3 @@ namespace SAE201.UserControls
         }
     }
 }
-
-
