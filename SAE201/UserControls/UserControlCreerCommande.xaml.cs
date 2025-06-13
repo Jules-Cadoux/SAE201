@@ -24,7 +24,8 @@ namespace SAE201.UserControls
     public partial class UserControlCreerCommande : UserControl
     {
         public ObservableCollection<Demande> LesDemandes { get; set; }
-        public ObservableCollection<GroupeFournisseur> LesCommandesParFournisseur { get; set; }
+        public ObservableCollection<Commande> LesCommandes { get; set; }
+        public ObservableCollection<GroupeFournisseur> LesCommandesParFournisseur { get; set; } = new ObservableCollection<GroupeFournisseur>();
 
 
         public UserControlCreerCommande()
@@ -33,13 +34,22 @@ namespace SAE201.UserControls
             ChargeData();
         }
 
+
         public void ChargeData()
         {
             try
             {
+                // Charger toutes les demandes mais exclure celles qui ont déjà été associées à une commande
                 List<Demande> demandes = Demande.FindAll();
-                LesDemandes = new ObservableCollection<Demande>(demandes);
-                RegrouperDemandesParFournisseur();
+
+                // Filtrer les demandes qui sont "Accepter" mais qui n'ont pas encore été associées à une commande
+                LesDemandes = new ObservableCollection<Demande>(
+                    demandes.Where(d => d.Accepter == "Accepter" && d.NumCommande == null || d.Accepter == "En Attente" || d.Accepter == "Refuser").ToList()
+                );
+
+                List<Commande> commandes = Commande.FindAll();
+                LesCommandes = new ObservableCollection<Commande>(commandes);
+                RegrouperDemandesParFournisseur();  // Regrouper les demandes restantes par fournisseur
                 this.DataContext = this;
             }
             catch (Exception ex)
@@ -49,12 +59,13 @@ namespace SAE201.UserControls
             }
         }
 
+
         private void RegrouperDemandesParFournisseur()
         {
-            // Filtrer les demandes acceptées
+            // 1. Filtrer les demandes acceptées depuis la liste principale
             List<Demande> demandesAcceptees = LesDemandes.Where(d => d.Accepter == "Accepter").ToList();
 
-            // Regrouper par fournisseur
+            // 2. Regrouper ces demandes par fournisseur dans un dictionnaire
             Dictionary<int, List<Demande>> demandesParFournisseur = new Dictionary<int, List<Demande>>();
 
             foreach (Demande demande in demandesAcceptees)
@@ -69,9 +80,10 @@ namespace SAE201.UserControls
                 demandesParFournisseur[numFournisseur].Add(demande);
             }
 
-            // Créer la collection pour l'affichage
-            LesCommandesParFournisseur = new ObservableCollection<GroupeFournisseur>();
+            // 3. (LA CORRECTION) Vider la collection existante au lieu d'en créer une nouvelle
+            LesCommandesParFournisseur.Clear();
 
+            // 4. Remplir la collection (maintenant vide) avec les nouveaux groupes
             foreach (KeyValuePair<int, List<Demande>> kvp in demandesParFournisseur)
             {
                 GroupeFournisseur groupeFournisseur = new GroupeFournisseur();
@@ -124,7 +136,11 @@ namespace SAE201.UserControls
                     try
                     {
                         demandeSelectionnee.Update();
-                        dgCommandes.Items.Refresh();
+
+                        // /// CORRECTION ///
+                        // On remplace le simple refresh par un rechargement complet des données.
+                        // Cela va mettre à jour la liste du haut ET la liste des groupes en bas.
+                        ChargeData();
                     }
                     catch (Exception ex)
                     {
@@ -168,13 +184,13 @@ namespace SAE201.UserControls
                     {
                         // Créer la commande en base de données
                         using NpgsqlCommand cmdCommande = new NpgsqlCommand(@"INSERT INTO sae201_nicolas.commande
-                        (numemploye, datecommande, valider, prixtotal)
-                        VALUES (@numemploye, @datecommande, @valider, @prixtotal)
-                        RETURNING numcommande");
+                (numemploye, datecommande, valider, prixtotal)
+                VALUES (@numemploye, @datecommande, @valider, @prixtotal)
+                RETURNING numcommande");
 
-                        cmdCommande.Parameters.AddWithValue("numemploye", 101); 
+                        cmdCommande.Parameters.AddWithValue("numemploye", 101);
                         cmdCommande.Parameters.AddWithValue("datecommande", DateTime.Now);
-                        cmdCommande.Parameters.AddWithValue("valider", true); 
+                        cmdCommande.Parameters.AddWithValue("valider", true);
                         cmdCommande.Parameters.AddWithValue("prixtotal", groupeFournisseur.PrixTotal);
 
                         int numeroCommande = DataAccess.Instance.ExecuteInsert(cmdCommande);
@@ -200,9 +216,11 @@ namespace SAE201.UserControls
 
                             foreach (Demande demande in groupeFournisseur.DemandesVins)
                             {
+                                // Associer la demande à la nouvelle commande créée
                                 demande.NumCommande = new Commande { NumCommande = numeroCommande };
                                 try
                                 {
+                                    // Enregistrer cette association en base
                                     demande.UpdateCommande();
                                 }
                                 catch (Exception ex)
@@ -211,6 +229,12 @@ namespace SAE201.UserControls
                                     LogError.Log(ex, "Erreur lors de la mise à jour de demande");
                                 }
                             }
+
+                            // Mettre à jour la liste pour ne plus afficher ce fournisseur
+                            LesCommandesParFournisseur.Remove(groupeFournisseur);
+
+                            // Forcer le rafraîchissement de l'affichage de la DataGrid
+                            dgCommandes.Items.Refresh();  // Force un rafraîchissement
 
                             // Recharger les données pour mettre à jour l'affichage
                             ChargeData();
@@ -233,6 +257,8 @@ namespace SAE201.UserControls
                 LogError.Log(ex, "Erreur lors de la création de commande");
             }
         }
+
+
     }
 
     public class GroupeFournisseur

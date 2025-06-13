@@ -47,6 +47,8 @@
 
                     <DataGrid
                         x:Name="dgCommandes"
+                        Width="680"
+                        Height="295"
                         Margin="30,55,84,609"
                         AlternatingRowBackground="#FFF8F8"
                         AutoGenerateColumns="False"
@@ -58,7 +60,7 @@
                         HorizontalGridLinesBrush="#E0E0E0"
                         IsReadOnly="True"
                         ItemsSource="{Binding LesDemandes}"
-                        RowBackground="White" Width="680" Height="295">
+                        RowBackground="White">
                         <DataGrid.ColumnHeaderStyle>
                             <Style TargetType="{x:Type DataGridColumnHeader}">
                                 <Setter Property="Background" Value="#8B0000" />
@@ -326,10 +328,28 @@
                     </ScrollViewer>
                 </Grid>
             </TabItem>
-            <TabItem Header="Etat des commandes" >
+            <TabItem Header="Etat des commandes">
                 <Grid>
-                    <Label Margin="10,6,584,279" Content="Réception Commandes" FontSize="18" FontWeight="Bold" />
-                    <DataGrid x:Name="dgCommandes_Copy" Height="269" AlternatingRowBackground="#FFF8F8" AutoGenerateColumns="False" Background="White" BorderBrush="#8B0000" BorderThickness="2" GridLinesVisibility="Horizontal" HeadersVisibility="Column" HorizontalGridLinesBrush="#E0E0E0" IsReadOnly="True" ItemsSource="{Binding LesDemandes}" RowBackground="White" Margin="0,40,0,0">
+                    <Label
+                        Margin="10,6,584,279"
+                        Content="Réception Commandes"
+                        FontSize="18"
+                        FontWeight="Bold" />
+                    <DataGrid
+                        x:Name="dgCommandes_Copy"
+                        Height="269"
+                        Margin="0,40,0,0"
+                        AlternatingRowBackground="#FFF8F8"
+                        AutoGenerateColumns="False"
+                        Background="White"
+                        BorderBrush="#8B0000"
+                        BorderThickness="2"
+                        GridLinesVisibility="Horizontal"
+                        HeadersVisibility="Column"
+                        HorizontalGridLinesBrush="#E0E0E0"
+                        IsReadOnly="True"
+                        ItemsSource="{Binding LesCommandes}"
+                        RowBackground="White">
                         <DataGrid.ColumnHeaderStyle>
                             <Style TargetType="{x:Type DataGridColumnHeader}">
                                 <Setter Property="Background" Value="#8B0000" />
@@ -341,10 +361,22 @@
                             </Style>
                         </DataGrid.ColumnHeaderStyle>
                         <DataGrid.Columns>
-                            <DataGridTextColumn Width="*" Binding="{Binding NumCommande}" Header="N° Commande" />
-                            <DataGridTextColumn Width="*" Binding="{Binding NumVin.NumFournisseur.NomFournisseur}" Header="Fournisseur" />
-                            <DataGridTextColumn Width="*" Binding="{Binding DateDemande, StringFormat='dd/MM/yyyy'}" Header="Date de Commande" />
-                            <DataGridTextColumn Width="*" Binding="{Binding QuantiteDemande}" Header="Nombre de Vin" />
+                            <DataGridTextColumn
+                                Width="*"
+                                Binding="{Binding NumCommande}"
+                                Header="N° Commande" />
+                            <DataGridTextColumn
+                                Width="*"
+                                Binding="{Binding NomFournisseurPrincipal}"
+                                Header="Fournisseur" />
+                            <DataGridTextColumn
+                                Width="*"
+                                Binding="{Binding DateCommande, StringFormat='dd/MM/yyyy'}"
+                                Header="Date de Commande" />
+                            <DataGridTextColumn
+                                Width="*"
+                                Binding="{Binding PrixTotal}"
+                                Header="Prix commande" />
 
                         </DataGrid.Columns>
                     </DataGrid>
