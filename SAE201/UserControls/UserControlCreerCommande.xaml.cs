@@ -1,55 +1,51 @@
-﻿using Npgsql;
-using SAE201.Model;
+﻿using SAE201.Model;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace SAE201.UserControls
 {
-    /// <summary>
-    /// Logique d'interaction pour UserControlCreerCommande.xaml
-    /// </summary>
     public partial class UserControlCreerCommande : UserControl
     {
         private readonly Employe employeConnecte;
         public ObservableCollection<Demande> LesDemandes { get; set; }
         public ObservableCollection<Commande> LesCommandes { get; set; }
-        public ObservableCollection<GroupeFournisseur> LesCommandesParFournisseur { get; set; } = new ObservableCollection<GroupeFournisseur>();
-
+        public ObservableCollection<GroupeFournisseur> LesCommandesParFournisseur { get; set; }
+        public event Action? CommandeCree;
 
         public UserControlCreerCommande(Employe employe)
         {
             InitializeComponent();
             this.employeConnecte = employe;
+            LesDemandes = new ObservableCollection<Demande>();
+            LesCommandes = new ObservableCollection<Commande>();
+            LesCommandesParFournisseur = new ObservableCollection<GroupeFournisseur>();
+            this.DataContext = this;
             ChargeData();
         }
-
 
         public void ChargeData()
         {
             try
             {
-                List<Demande> demandes = Demande.FindAll();
-                LesDemandes = new ObservableCollection<Demande>(
-                    demandes.Where(d => d.Accepter == "Accepter" && d.NumCommande == null || d.Accepter == "En Attente" || d.Accepter == "Refuser").ToList()
-                );
+                List<Demande> demandesFromDb = Demande.FindAll();
+                LesDemandes.Clear();
+                foreach (var d in demandesFromDb.Where(d => (d.Accepter == "Accepter" && d.NumCommande == null) || d.Accepter == "En Attente" || d.Accepter == "Refuser"))
+                {
+                    LesDemandes.Add(d);
+                }
 
-                List<Commande> commandes = Commande.FindAll();
-                LesCommandes = new ObservableCollection<Commande>(commandes);
+                List<Commande> commandesFromDb = Commande.FindAll();
+                LesCommandes.Clear();
+                foreach (var c in commandesFromDb)
+                {
+                    LesCommandes.Add(c);
+                }
+
                 RegrouperDemandesParFournisseur();
-                this.DataContext = this;
             }
             catch (Exception ex)
             {
@@ -58,6 +54,10 @@ namespace SAE201.UserControls
             }
         }
 
+        public void ActualiserDonnees()
+        {
+            ChargeData();
+        }
 
         private void RegrouperDemandesParFournisseur()
         {
@@ -66,28 +66,25 @@ namespace SAE201.UserControls
 
             foreach (Demande demande in demandesAcceptees)
             {
-                int numFournisseur = demande.NumVin.NumFournisseur.NumFournisseur;
-
-                if (!demandesParFournisseur.ContainsKey(numFournisseur))
+                if (demande.NumVin?.NumFournisseur != null)
                 {
-                    demandesParFournisseur[numFournisseur] = new List<Demande>();
+                    int numFournisseur = demande.NumVin.NumFournisseur.NumFournisseur;
+                    if (!demandesParFournisseur.ContainsKey(numFournisseur))
+                    {
+                        demandesParFournisseur[numFournisseur] = new List<Demande>();
+                    }
+                    demandesParFournisseur[numFournisseur].Add(demande);
                 }
-
-                demandesParFournisseur[numFournisseur].Add(demande);
             }
+
             LesCommandesParFournisseur.Clear();
+
             foreach (KeyValuePair<int, List<Demande>> kvp in demandesParFournisseur)
             {
                 GroupeFournisseur groupeFournisseur = new GroupeFournisseur();
                 groupeFournisseur.NomFournisseur = kvp.Value[0].NumVin.NumFournisseur.NomFournisseur;
                 groupeFournisseur.NumFournisseur = kvp.Key;
-                groupeFournisseur.DemandesVins = new ObservableCollection<Demande>();
-
-                foreach (Demande demande in kvp.Value)
-                {
-                    groupeFournisseur.DemandesVins.Add(demande);
-                }
-
+                groupeFournisseur.DemandesVins = new ObservableCollection<Demande>(kvp.Value);
                 groupeFournisseur.PrixTotal = CalculerPrixTotal(kvp.Value);
                 LesCommandesParFournisseur.Add(groupeFournisseur);
             }
@@ -98,20 +95,18 @@ namespace SAE201.UserControls
             double total = 0;
             foreach (Demande demande in demandes)
             {
-                total += demande.NumVin.PrixVin * demande.QuantiteDemande;
+                if (demande.NumVin != null)
+                {
+                    total += demande.NumVin.PrixVin * demande.QuantiteDemande;
+                }
             }
             return total;
         }
 
         private void buttEditerDemande_Click(object sender, RoutedEventArgs e)
         {
-            if (dgCommandes.SelectedItem == null)
+            if (dgCommandes.SelectedItem is Demande demandeSelectionnee)
             {
-                MessageBox.Show("Veuillez sélectionner une demande", "Attention", MessageBoxButton.OK, MessageBoxImage.Information);
-            }
-            else
-            {
-                Demande demandeSelectionnee = (Demande)dgCommandes.SelectedItem;
                 UserControlModifierDemande ucModifierDemande = new UserControlModifierDemande(demandeSelectionnee);
                 Window dialogWindow = new Window()
                 {
@@ -122,8 +117,7 @@ namespace SAE201.UserControls
                     ResizeMode = ResizeMode.NoResize
                 };
 
-                bool? result = dialogWindow.ShowDialog();
-                if (result == true)
+                if (dialogWindow.ShowDialog() == true)
                 {
                     try
                     {
@@ -137,29 +131,18 @@ namespace SAE201.UserControls
                     }
                 }
             }
+            else
+            {
+                MessageBox.Show("Veuillez sélectionner une demande", "Attention", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
         }
 
         private void buttValiderCommande_Click(object sender, RoutedEventArgs e)
         {
-            try
+            if (sender is Button bouton && bouton.DataContext is GroupeFournisseur groupeFournisseur)
             {
-                Button bouton = sender as Button;
-                if (bouton == null)
-                {
-                    MessageBox.Show("Erreur: impossible de récupérer le bouton", "Erreur", MessageBoxButton.OK, MessageBoxImage.Error);
-                    return;
-                }
-
-                GroupeFournisseur groupeFournisseur = bouton.DataContext as GroupeFournisseur;
-                if (groupeFournisseur == null)
-                {
-                    MessageBox.Show("Erreur: impossible de récupérer les informations du fournisseur", "Erreur", MessageBoxButton.OK, MessageBoxImage.Error);
-                    return;
-                }
-
                 MessageBoxResult result = MessageBox.Show(
                     $"Êtes-vous sûr de vouloir valider la commande pour {groupeFournisseur.NomFournisseur} ?\n" +
-                    $"Nombre d'articles : {groupeFournisseur.DemandesVins.Count}\n" +
                     $"Prix total : {groupeFournisseur.PrixTotal:C2}",
                     "Confirmation",
                     MessageBoxButton.YesNo,
@@ -170,79 +153,38 @@ namespace SAE201.UserControls
                 {
                     try
                     {
-                        using NpgsqlCommand cmdCommande = new NpgsqlCommand(@"INSERT INTO sae201_nicolas.commande
-                (numemploye, datecommande, valider, prixtotal)
-                VALUES (@numemploye, @datecommande, @valider, @prixtotal)
-                RETURNING numcommande");
-
-                        cmdCommande.Parameters.AddWithValue("numemploye", this.employeConnecte.NumEmploye);
-                        cmdCommande.Parameters.AddWithValue("datecommande", DateTime.Now);
-                        cmdCommande.Parameters.AddWithValue("valider", true);
-                        cmdCommande.Parameters.AddWithValue("prixtotal", groupeFournisseur.PrixTotal);
-
-                        int numeroCommande = DataAccess.Instance.ExecuteInsert(cmdCommande);
-
                         Commande commande = new Commande
                         {
-                            NumCommande = numeroCommande,
-                            DateCommande = DateTime.Now,
                             NumEmploye = this.employeConnecte.NumEmploye,
+                            DateCommande = DateTime.Now,
                             Valider = true,
                             PrixTotal = groupeFournisseur.PrixTotal
                         };
+                        int numeroCommande = commande.Create();
 
-                        if (numeroCommande > 0)
+                        foreach (Demande demande in groupeFournisseur.DemandesVins)
                         {
-                            MessageBox.Show(
-                                $"Commande #{numeroCommande} créée avec succès pour {groupeFournisseur.NomFournisseur}!\n" +
-                                $"Prix total : {groupeFournisseur.PrixTotal:C2}",
-                                "Succès",
-                                MessageBoxButton.OK,
-                                MessageBoxImage.Information
-                            );
+                            demande.NumCommande = new Commande { NumCommande = numeroCommande };
+                            demande.UpdateCommande();
+                        }
 
-                            foreach (Demande demande in groupeFournisseur.DemandesVins)
-                            {
-                                demande.NumCommande = new Commande { NumCommande = numeroCommande };
-                                try
-                                {
-                                    demande.UpdateCommande();
-                                }
-                                catch (Exception ex)
-                                {
-                                    MessageBox.Show($"Erreur lors de la mise à jour d'une demande : {ex.Message}", "Erreur", MessageBoxButton.OK, MessageBoxImage.Error);
-                                    LogError.Log(ex, "Erreur lors de la mise à jour de demande");
-                                }
-                            }
-                            LesCommandesParFournisseur.Remove(groupeFournisseur);
-                            dgCommandes.Items.Refresh();
-                            ChargeData();
-                        }
-                        else
-                        {
-                            MessageBox.Show("Erreur: La commande n'a pas pu être créée (numéro invalide)", "Erreur", MessageBoxButton.OK, MessageBoxImage.Error);
-                        }
+                        MessageBox.Show($"Commande #{numeroCommande} créée avec succès pour {groupeFournisseur.NomFournisseur}!");
+                        ChargeData();
+                        CommandeCree?.Invoke();
                     }
                     catch (Exception ex)
                     {
-                        MessageBox.Show($"Erreur lors de l'insertion de la commande : {ex.Message}", "Erreur", MessageBoxButton.OK, MessageBoxImage.Error);
-                        LogError.Log(ex, "Erreur SQL lors de l'insertion de commande");
+                        MessageBox.Show("Erreur lors de l'ajout : " + ex.Message, "Erreur", MessageBoxButton.OK, MessageBoxImage.Error);
+                        LogError.Log(ex, "Erreur lors de la création de commande");
                     }
                 }
             }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Erreur lors de la création de la commande : {ex.Message}", "Erreur", MessageBoxButton.OK, MessageBoxImage.Error);
-                LogError.Log(ex, "Erreur lors de la création de commande");
-            }
         }
-
-
     }
 
     public class GroupeFournisseur
     {
-        public string NomFournisseur { get; set; }
+        public string NomFournisseur { get; set; } = string.Empty;
         public int NumFournisseur { get; set; }
         public ObservableCollection<Demande> DemandesVins { get; set; }
         public double PrixTotal { get; set; }
