@@ -271,7 +271,7 @@
                             Height="30"
                             Margin="10,5,0,0"
                             Click="butAjouterClient_Click"
-                            Content="Ajouter le client" />
+                            Content="Ajouter le client" Background="DarkRed" Foreground="White" BorderBrush="#FF660000" />
                         <Button x:Name="buttSupprimer" Width="30" Height="30" Margin="100,5,0,0" Background="#8B0000" BorderBrush="#660000" BorderThickness="1" Content="&#xE74D;" Cursor="Hand" FontFamily="Segoe MDL2 Assets" FontWeight="SemiBold" Foreground="White" ToolTip="Supprimer" Click="buttSupprimer_Click"/>
                         
                         <Button
@@ -280,7 +280,7 @@
                             Height="30"
                             Margin="100,5,0,0"
                             Click="butValiderCommande_Click"
-                            Content="Valider la demande" />
+                            Content="Valider la demande" Background="DarkRed" Foreground="White" BorderBrush="#FF660000" />
                     </StackPanel>
                     
                 </StackPanel>

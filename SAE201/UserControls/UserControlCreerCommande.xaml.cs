@@ -23,14 +23,16 @@ namespace SAE201.UserControls
     /// </summary>
     public partial class UserControlCreerCommande : UserControl
     {
+        private readonly Employe employeConnecte;
         public ObservableCollection<Demande> LesDemandes { get; set; }
         public ObservableCollection<Commande> LesCommandes { get; set; }
         public ObservableCollection<GroupeFournisseur> LesCommandesParFournisseur { get; set; } = new ObservableCollection<GroupeFournisseur>();
 
 
-        public UserControlCreerCommande()
+        public UserControlCreerCommande(Employe employe)
         {
             InitializeComponent();
+            this.employeConnecte = employe; // Store the connected employee
             ChargeData();
         }
 
@@ -188,7 +190,7 @@ namespace SAE201.UserControls
                 VALUES (@numemploye, @datecommande, @valider, @prixtotal)
                 RETURNING numcommande");
 
-                        cmdCommande.Parameters.AddWithValue("numemploye", 101);
+                        cmdCommande.Parameters.AddWithValue("numemploye", this.employeConnecte.NumEmploye); // Use the connected employee's ID
                         cmdCommande.Parameters.AddWithValue("datecommande", DateTime.Now);
                         cmdCommande.Parameters.AddWithValue("valider", true);
                         cmdCommande.Parameters.AddWithValue("prixtotal", groupeFournisseur.PrixTotal);
@@ -199,7 +201,7 @@ namespace SAE201.UserControls
                         {
                             NumCommande = numeroCommande,
                             DateCommande = DateTime.Now,
-                            NumEmploye = 101,
+                            NumEmploye = this.employeConnecte.NumEmploye, // Use the connected employee's ID
                             Valider = true,
                             PrixTotal = groupeFournisseur.PrixTotal
                         };
