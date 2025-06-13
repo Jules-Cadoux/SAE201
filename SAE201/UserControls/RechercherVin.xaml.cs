@@ -51,10 +51,11 @@ namespace SAE201.UserControls
         public ObservableCollection<Demande> LesDemandes { get; set; }
         private readonly Action logout;
 
-        public RechercherVin(Employe employe)  
+        public RechercherVin(Employe employe, Action logoutAction)  
         {
             InitializeComponent();
             this.employeConnecte = employe;
+            this.onLogout = logoutAction;
             Vins = new ObservableCollection<Vin>();
             VinsView = CollectionViewSource.GetDefaultView(Vins);
             VinsView.Filter = RechercheMotClefVin;

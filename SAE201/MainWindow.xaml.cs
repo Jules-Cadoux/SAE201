@@ -39,12 +39,12 @@ namespace SAE201
 
         private void Vendeur()
         {
-            Main.Content = new RechercherVin(employeConnecte);
+            Main.Content = new RechercherVin(employeConnecte, LogoutAndShowLogin);
         }
 
         private void Responsable()
         {
-            Main.Content = new UserControlCreerCommande(employeConnecte);
+            Main.Content = new UserControlCreerCommande(employeConnecte, LogoutAndShowLogin);
         }
 
         private void Login()

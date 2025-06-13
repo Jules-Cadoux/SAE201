@@ -45,7 +45,7 @@
                         Background="DarkRed"
                         BorderBrush="DarkRed"
                         Content="Déconnexion"
-                        Foreground="White"  />
+                        Foreground="White" Click="buttDeconnexion_Click"  />
                 </StackPanel>
             </Grid>
         </Border>

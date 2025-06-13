@@ -11,15 +11,18 @@ namespace SAE201.UserControls
     public partial class UserControlCreerCommande : UserControl
     {
         private readonly Employe employeConnecte;
+        private readonly Action onLogout; 
+
         public ObservableCollection<Demande> LesDemandes { get; set; }
         public ObservableCollection<Commande> LesCommandes { get; set; }
         public ObservableCollection<GroupeFournisseur> LesCommandesParFournisseur { get; set; }
         public event Action? CommandeCree;
 
-        public UserControlCreerCommande(Employe employe)
+        public UserControlCreerCommande(Employe employe, Action logoutAction)
         {
             InitializeComponent();
             this.employeConnecte = employe;
+            this.onLogout = logoutAction; 
             LesDemandes = new ObservableCollection<Demande>();
             LesCommandes = new ObservableCollection<Commande>();
             LesCommandesParFournisseur = new ObservableCollection<GroupeFournisseur>();
@@ -179,6 +182,11 @@ namespace SAE201.UserControls
                     }
                 }
             }
+        }
+
+        private void buttDeconnexion_Click(object sender, RoutedEventArgs e)
+        {
+            onLogout?.Invoke();
         }
     }
 
