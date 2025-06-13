@@ -6,17 +6,12 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
-    <ApplicationIcon>favicon-32x32.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>
     <None Remove="img\vin_blanc.png" />
     <None Remove="img\vin_rosé.png" />
     <None Remove="img\vin_rouge.png" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Include="favicon-32x32.ico" />
   </ItemGroup>
 
   <ItemGroup>
@@ -33,6 +28,10 @@
     <Resource Include="img\vin_rouge.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Test\" />
   </ItemGroup>
 
 </Project>

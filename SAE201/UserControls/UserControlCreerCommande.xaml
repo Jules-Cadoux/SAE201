@@ -38,6 +38,11 @@
                         FontSize="12"
                         Foreground="#FFD700"
                         Text="Caviste depuis 1822" />
+                    <Button
+                        x:Name="buttDeconnexion"
+                        Background="DarkRed"
+                        Content="Déconnexion"
+                        Foreground="White" Margin="20,0,0,0" />
                 </StackPanel>
             </Grid>
         </Border>

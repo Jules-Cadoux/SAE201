@@ -199,7 +199,7 @@ namespace SAE201.Model
         public static List<Commande> FindAll()
         {
             List<Commande> commandes = new List<Commande>();
-            using (NpgsqlCommand cmd = new NpgsqlCommand("SELECT * FROM commande"))
+            using (NpgsqlCommand cmd = new NpgsqlCommand("SELECT * FROM commande order by datecommande DESC"))
             {
                 DataTable dt = DataAccess.Instance.ExecuteSelect(cmd);
                 foreach (DataRow row in dt.Rows)
