@@ -368,6 +368,8 @@ namespace SAE201.UserControls
             }
 
             VinsDemande.Clear();
+            dgEtatDemande.Items.Refresh();
+            ChargeData();
         }
 
         private void buttSupprimer_Click(object sender, RoutedEventArgs e)

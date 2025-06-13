@@ -11,7 +11,7 @@
     d:DesignWidth="800"
     mc:Ignorable="d">
 
-    
+
     <StackPanel>
         <Border
             Height="60"
@@ -70,7 +70,10 @@
                         </Grid>
 
                         <!--  Zone de filtres  -->
-                        <StackPanel Margin="0,10,0,10" Orientation="Horizontal" HorizontalAlignment="Center">
+                        <StackPanel
+                            Margin="0,10,0,10"
+                            HorizontalAlignment="Center"
+                            Orientation="Horizontal">
                             <ComboBox
                                 x:Name="comboTypeVin"
                                 Width="120"
@@ -102,7 +105,8 @@
                             <TextBlock
                                 Margin="10,0,5,0"
                                 VerticalAlignment="Center"
-                                Text="Année :" Foreground="White" />
+                                Foreground="White"
+                                Text="Année :" />
                             <TextBox
                                 x:Name="textAnnee"
                                 Width="60"
@@ -113,7 +117,8 @@
                             <TextBlock
                                 Margin="10,0,5,0"
                                 VerticalAlignment="Center"
-                                Text="Prix (€):" Foreground="White" />
+                                Foreground="White"
+                                Text="Prix (€):" />
                             <TextBox
                                 x:Name="textPrix"
                                 Width="80"
@@ -159,8 +164,7 @@
                                                 <Image
                                                     Height="100"
                                                     Margin="0,0,0,10"
-                                                    Source="{Binding ImagePath}"
-                                                    />
+                                                    Source="{Binding ImagePath}" />
                                                 <TextBlock
                                                     Margin="0,5,0,0"
                                                     FontSize="14"
@@ -202,9 +206,9 @@
                                         <Style.Triggers>
                                             <Trigger Property="IsMouseOver" Value="True">
                                                 <Setter Property="Background" Value="Transparent" />
-                                                <!-- Conserve la couleur de fond survolée -->
+                                                <!--  Conserve la couleur de fond survolée  -->
                                                 <Setter Property="BorderBrush" Value="#00E0E0E0" />
-                                                <!-- Conserve la couleur de la bordure -->
+                                                <!--  Conserve la couleur de la bordure  -->
                                             </Trigger>
                                         </Style.Triggers>
                                     </Style>
@@ -244,7 +248,7 @@
                                 <Setter Property="BorderThickness" Value="0,0,1,0" />
                             </Style>
                         </DataGrid.ColumnHeaderStyle>
-                        <DataGrid.Columns>                                                                                                            
+                        <DataGrid.Columns>
                             <DataGridTextColumn
                                 Width="2*"
                                 Binding="{Binding NomVin}"
@@ -264,38 +268,62 @@
                                 Header="Quantité" />
                         </DataGrid.Columns>
                     </DataGrid>
-                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                    <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
                         <Button
                             x:Name="butAjouterClient"
                             Width="120"
                             Height="30"
                             Margin="10,5,0,0"
+                            Background="DarkRed"
+                            BorderBrush="#FF660000"
                             Click="butAjouterClient_Click"
-                            Content="Ajouter le client" Background="DarkRed" Foreground="White" BorderBrush="#FF660000" />
-                        <Button x:Name="buttSupprimer" Width="30" Height="30" Margin="100,5,0,0" Background="#8B0000" BorderBrush="#660000" BorderThickness="1" Content="&#xE74D;" Cursor="Hand" FontFamily="Segoe MDL2 Assets" FontWeight="SemiBold" Foreground="White" ToolTip="Supprimer" Click="buttSupprimer_Click"/>
-                        
+                            Content="Ajouter le client"
+                            Foreground="White" />
+                        <Button
+                            x:Name="buttSupprimer"
+                            Width="30"
+                            Height="30"
+                            Margin="100,5,0,0"
+                            Background="#8B0000"
+                            BorderBrush="#660000"
+                            BorderThickness="1"
+                            Click="buttSupprimer_Click"
+                            Content="&#xE74D;"
+                            Cursor="Hand"
+                            FontFamily="Segoe MDL2 Assets"
+                            FontWeight="SemiBold"
+                            Foreground="White"
+                            ToolTip="Supprimer" />
+
                         <Button
                             x:Name="butValiderCommande"
                             Width="120"
                             Height="30"
                             Margin="100,5,0,0"
+                            Background="DarkRed"
+                            BorderBrush="#FF660000"
                             Click="butValiderCommande_Click"
-                            Content="Valider la demande" Background="DarkRed" Foreground="White" BorderBrush="#FF660000" />
+                            Content="Valider la demande"
+                            Foreground="White" />
                     </StackPanel>
-                    
+
                 </StackPanel>
             </TabItem>
-            <TabItem Header="Etat demande" Margin="-2,0,2,0">
+            <TabItem
+                x:Name="tabEtatDemande"
+                Margin="-2,0,2,0"
+                Header="Etat demande">
                 <Grid>
                     <StackPanel>
                         <Label
                             Width="730"
                             Margin="0,10,0,0"
+                            HorizontalContentAlignment="Center"
                             Content="Etat Demande"
                             FontSize="18"
-                            FontWeight="Bold" HorizontalContentAlignment="Center" />
+                            FontWeight="Bold" />
                         <DataGrid
-                            x:Name="dgCommandes"
+                            x:Name="dgEtatDemande"
                             Height="269"
                             Margin="57,30,57,124"
                             AlternatingRowBackground="#FFF8F8"
@@ -341,29 +369,29 @@
                                     Binding="{Binding Accepter}"
                                     Header="Choix ">
                                     <DataGridTextColumn.ElementStyle>
-                                    <Style TargetType="TextBlock">
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding Accepter}" Value="En Attente">
-                                                <Setter Property="Background" Value="Orange" />
-                                                <Setter Property="Foreground" Value="White" />
-                                                <Setter Property="FontWeight" Value="Bold" />
-                                                <Setter Property="Padding" Value="5,2" />
-                                            </DataTrigger>
-                                            <DataTrigger Binding="{Binding Accepter}" Value="Accepter">
-                                                <Setter Property="Background" Value="Green" />
-                                                <Setter Property="Foreground" Value="White" />
-                                                <Setter Property="FontWeight" Value="Bold" />
-                                                <Setter Property="Padding" Value="5,2" />
-                                            </DataTrigger>
-                                            <DataTrigger Binding="{Binding Accepter}" Value="Refuser">
-                                                <Setter Property="Background" Value="Red" />
-                                                <Setter Property="Foreground" Value="White" />
-                                                <Setter Property="FontWeight" Value="Bold" />
-                                                <Setter Property="Padding" Value="5,2" />
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </DataGridTextColumn.ElementStyle>
+                                        <Style TargetType="TextBlock">
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding Accepter}" Value="En Attente">
+                                                    <Setter Property="Background" Value="Orange" />
+                                                    <Setter Property="Foreground" Value="White" />
+                                                    <Setter Property="FontWeight" Value="Bold" />
+                                                    <Setter Property="Padding" Value="5,2" />
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding Accepter}" Value="Accepter">
+                                                    <Setter Property="Background" Value="Green" />
+                                                    <Setter Property="Foreground" Value="White" />
+                                                    <Setter Property="FontWeight" Value="Bold" />
+                                                    <Setter Property="Padding" Value="5,2" />
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding Accepter}" Value="Refuser">
+                                                    <Setter Property="Background" Value="Red" />
+                                                    <Setter Property="Foreground" Value="White" />
+                                                    <Setter Property="FontWeight" Value="Bold" />
+                                                    <Setter Property="Padding" Value="5,2" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </DataGridTextColumn.ElementStyle>
                                 </DataGridTextColumn>
                             </DataGrid.Columns>
                         </DataGrid>

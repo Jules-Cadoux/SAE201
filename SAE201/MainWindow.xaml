@@ -9,7 +9,7 @@
     Width="900"
     Height="600"
     Background="#FAFAFA"
-    WindowStartupLocation="CenterScreen">
+    WindowStartupLocation="CenterScreen" ResizeMode="NoResize">
     <Grid>
         <ContentControl x:Name="Main"/>
     </Grid>

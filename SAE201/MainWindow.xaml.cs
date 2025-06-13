@@ -26,6 +26,7 @@ namespace SAE201
         public MainWindow()
         {
             InitializeComponent();
+            this.WindowState = WindowState.Maximized;
             Login();
             // Add this check to prevent a crash if login fails
             if (employeConnecte == null)
