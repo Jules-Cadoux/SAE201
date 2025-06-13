@@ -49,7 +49,7 @@ namespace SAE201.UserControls
         public RechercherVin(Employe employe)
         {
             InitializeComponent();
-            this.employeConnecte = employe; // Store the connected employee
+            this.employeConnecte = employe;
             Vins = new ObservableCollection<Vin>();
             VinsView = CollectionViewSource.GetDefaultView(Vins);
             VinsView.Filter = RechercheMotClefVin;
@@ -98,8 +98,6 @@ namespace SAE201.UserControls
             Vin unVin = obj as Vin;
             if (unVin == null)
                 return false;
-
-            // Filtre par nom de vin
             if (textRechercheVin != null && !String.IsNullOrEmpty(textRechercheVin.Text))
             {
                 if (String.IsNullOrEmpty(unVin.NomVin) ||
@@ -108,15 +106,10 @@ namespace SAE201.UserControls
                     return false;
                 }
             }
-
-            // Filtre par type de vin - CORRIGÉ
             if (comboTypeVin != null && comboTypeVin.SelectedItem is ComboBoxItem typeItem &&
                 typeItem.Content.ToString() != "Tous les types")
             {
                 string typeSelectionne = typeItem.Content.ToString();
-
-                // Mapping des types selon votre logique métier
-                // Adaptez cette partie selon la structure de votre classe Vin
                 string typeVin = "";
                 switch (unVin.NumType)
                 {
@@ -139,14 +132,10 @@ namespace SAE201.UserControls
                     return false;
                 }
             }
-
-            // Filtre par appellation - CORRIGÉ
             if (comboAppellation != null && comboAppellation.SelectedItem is ComboBoxItem appellationItem &&
                 appellationItem.Content.ToString() != "Toutes appellations")
             {
                 string appellationSelectionnee = appellationItem.Content.ToString();
-
-                // Mapping selon votre base de données : 1=AOP, 2=AOC, 3=IGP
                 string appellationVin = "";
                 if (unVin.NumType2 != null)
                 {
@@ -172,8 +161,6 @@ namespace SAE201.UserControls
                     return false;
                 }
             }
-
-            // Filtre par année exacte - CORRIGÉ
             if (textAnnee != null && !String.IsNullOrEmpty(textAnnee.Text))
             {
                 if (int.TryParse(textAnnee.Text, out int anneeRecherchee))
@@ -185,12 +172,8 @@ namespace SAE201.UserControls
                 }
                 else
                 {
-                    // Si la saisie n'est pas un nombre valide, on ignore ce filtre
-                    // Ou vous pouvez choisir de retourner false pour masquer tous les résultats
                 }
             }
-
-            // Filtre par prix exact - CORRIGÉ
             if (textPrix != null && !String.IsNullOrEmpty(textPrix.Text) &&
                 double.TryParse(textPrix.Text, out double prixMax))
             {
@@ -261,18 +244,14 @@ namespace SAE201.UserControls
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             Button btn = sender as Button;
-
-            // Vérifiez si le bouton et le vin sont valides
             if (btn != null && btn.Tag is Vin vinSelectionne)
             {
-                // Vérifiez si NumFournisseur et NumType2 sont non nuls avant d'y accéder
                 if (vinSelectionne.NumFournisseur == null || vinSelectionne.NumType2 == null)
                 {
                     MessageBox.Show("Le vin sélectionné est incomplet.");
                     return;
                 }
 
-                // Ajoutez à la collection VinsDemande
                 VinsDemande.Add(new VinDemande(vinSelectionne.NomVin, DateTime.Now, 1));
                 MessageBox.Show($"Vin '{vinSelectionne.NomVin}' ajouté ! Total: {VinsDemande.Count} vins");
             }
@@ -310,7 +289,6 @@ namespace SAE201.UserControls
                 return;
             }
 
-            // Vérifie que chaque demande possède un client associé
             if (VinsDemande.Any(v => v.NumClient == 0))
             {
                 MessageBox.Show("Veuillez sélectionner un client pour chaque demande.",
@@ -342,7 +320,6 @@ namespace SAE201.UserControls
 
                     int idDemande = DataAccess.Instance.ExecuteInsert(cmd);
 
-                    // Mise à jour de la liste d'affichage
                     Demande demande = new Demande
                     {
                         NumDemande = idDemande,

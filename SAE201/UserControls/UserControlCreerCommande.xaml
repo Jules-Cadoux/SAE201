@@ -198,7 +198,6 @@
                                             BorderThickness="1"
                                             CornerRadius="8">
                                             <StackPanel>
-                                                <!--  En-tête avec nom du fournisseur  -->
                                                 <TextBlock
                                                     Margin="0,0,0,15"
                                                     VerticalAlignment="Center"
@@ -206,8 +205,6 @@
                                                     FontWeight="Bold"
                                                     Foreground="#333"
                                                     Text="{Binding NomFournisseur}" />
-
-                                                <!--  En-têtes des colonnes  -->
                                                 <Grid Margin="0,0,0,10">
                                                     <Grid.ColumnDefinitions>
                                                         <ColumnDefinition Width="3*" />
@@ -244,14 +241,10 @@
                                                         Foreground="#666"
                                                         Text="PRIX LIGNE" />
                                                 </Grid>
-
-                                                <!--  Séparateur  -->
                                                 <Border
                                                     Height="1"
                                                     Margin="0,0,0,10"
                                                     Background="#E0E0E0" />
-
-                                                <!--  Liste des vins  -->
                                                 <ItemsControl ItemsSource="{Binding DemandesVins}">
                                                     <ItemsControl.ItemTemplate>
                                                         <DataTemplate>
@@ -386,10 +379,7 @@
                         </DataGrid.Columns>
                     </DataGrid>
                 </Grid>
-
             </TabItem>
         </TabControl>
-
-
     </StackPanel>
 </UserControl>

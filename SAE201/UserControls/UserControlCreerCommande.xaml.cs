@@ -32,7 +32,7 @@ namespace SAE201.UserControls
         public UserControlCreerCommande(Employe employe)
         {
             InitializeComponent();
-            this.employeConnecte = employe; // Store the connected employee
+            this.employeConnecte = employe;
             ChargeData();
         }
 
@@ -41,17 +41,14 @@ namespace SAE201.UserControls
         {
             try
             {
-                // Charger toutes les demandes mais exclure celles qui ont déjà été associées à une commande
                 List<Demande> demandes = Demande.FindAll();
-
-                // Filtrer les demandes qui sont "Accepter" mais qui n'ont pas encore été associées à une commande
                 LesDemandes = new ObservableCollection<Demande>(
                     demandes.Where(d => d.Accepter == "Accepter" && d.NumCommande == null || d.Accepter == "En Attente" || d.Accepter == "Refuser").ToList()
                 );
 
                 List<Commande> commandes = Commande.FindAll();
                 LesCommandes = new ObservableCollection<Commande>(commandes);
-                RegrouperDemandesParFournisseur();  // Regrouper les demandes restantes par fournisseur
+                RegrouperDemandesParFournisseur();
                 this.DataContext = this;
             }
             catch (Exception ex)
@@ -64,10 +61,7 @@ namespace SAE201.UserControls
 
         private void RegrouperDemandesParFournisseur()
         {
-            // 1. Filtrer les demandes acceptées depuis la liste principale
             List<Demande> demandesAcceptees = LesDemandes.Where(d => d.Accepter == "Accepter").ToList();
-
-            // 2. Regrouper ces demandes par fournisseur dans un dictionnaire
             Dictionary<int, List<Demande>> demandesParFournisseur = new Dictionary<int, List<Demande>>();
 
             foreach (Demande demande in demandesAcceptees)
@@ -81,11 +75,7 @@ namespace SAE201.UserControls
 
                 demandesParFournisseur[numFournisseur].Add(demande);
             }
-
-            // 3. (LA CORRECTION) Vider la collection existante au lieu d'en créer une nouvelle
             LesCommandesParFournisseur.Clear();
-
-            // 4. Remplir la collection (maintenant vide) avec les nouveaux groupes
             foreach (KeyValuePair<int, List<Demande>> kvp in demandesParFournisseur)
             {
                 GroupeFournisseur groupeFournisseur = new GroupeFournisseur();
@@ -138,10 +128,6 @@ namespace SAE201.UserControls
                     try
                     {
                         demandeSelectionnee.Update();
-
-                        // /// CORRECTION ///
-                        // On remplace le simple refresh par un rechargement complet des données.
-                        // Cela va mettre à jour la liste du haut ET la liste des groupes en bas.
                         ChargeData();
                     }
                     catch (Exception ex)
@@ -184,13 +170,12 @@ namespace SAE201.UserControls
                 {
                     try
                     {
-                        // Créer la commande en base de données
                         using NpgsqlCommand cmdCommande = new NpgsqlCommand(@"INSERT INTO sae201_nicolas.commande
                 (numemploye, datecommande, valider, prixtotal)
                 VALUES (@numemploye, @datecommande, @valider, @prixtotal)
                 RETURNING numcommande");
 
-                        cmdCommande.Parameters.AddWithValue("numemploye", this.employeConnecte.NumEmploye); // Use the connected employee's ID
+                        cmdCommande.Parameters.AddWithValue("numemploye", this.employeConnecte.NumEmploye);
                         cmdCommande.Parameters.AddWithValue("datecommande", DateTime.Now);
                         cmdCommande.Parameters.AddWithValue("valider", true);
                         cmdCommande.Parameters.AddWithValue("prixtotal", groupeFournisseur.PrixTotal);
@@ -201,7 +186,7 @@ namespace SAE201.UserControls
                         {
                             NumCommande = numeroCommande,
                             DateCommande = DateTime.Now,
-                            NumEmploye = this.employeConnecte.NumEmploye, // Use the connected employee's ID
+                            NumEmploye = this.employeConnecte.NumEmploye,
                             Valider = true,
                             PrixTotal = groupeFournisseur.PrixTotal
                         };
@@ -218,11 +203,9 @@ namespace SAE201.UserControls
 
                             foreach (Demande demande in groupeFournisseur.DemandesVins)
                             {
-                                // Associer la demande à la nouvelle commande créée
                                 demande.NumCommande = new Commande { NumCommande = numeroCommande };
                                 try
                                 {
-                                    // Enregistrer cette association en base
                                     demande.UpdateCommande();
                                 }
                                 catch (Exception ex)
@@ -231,14 +214,8 @@ namespace SAE201.UserControls
                                     LogError.Log(ex, "Erreur lors de la mise à jour de demande");
                                 }
                             }
-
-                            // Mettre à jour la liste pour ne plus afficher ce fournisseur
                             LesCommandesParFournisseur.Remove(groupeFournisseur);
-
-                            // Forcer le rafraîchissement de l'affichage de la DataGrid
-                            dgCommandes.Items.Refresh();  // Force un rafraîchissement
-
-                            // Recharger les données pour mettre à jour l'affichage
+                            dgCommandes.Items.Refresh();
                             ChargeData();
                         }
                         else

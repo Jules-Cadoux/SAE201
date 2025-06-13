@@ -112,7 +112,6 @@ namespace SAE201.Model
             {
                 try
                 {
-                    // Trouver la première demande liée à cette commande
                     Demande demande = Demande.FindAll().FirstOrDefault(d => d.NumCommande?.NumCommande == this.NumCommande);
 
                     if (demande != null && demande.NumVin?.NumFournisseur != null)
@@ -127,7 +126,6 @@ namespace SAE201.Model
                 }
             }
         }
-
 
         public override bool Equals(object? obj)
         {

@@ -28,7 +28,6 @@ namespace SAE201
             InitializeComponent();
             this.WindowState = WindowState.Maximized;
             Login();
-            // Add this check to prevent a crash if login fails
             if (employeConnecte == null)
             {
                 Close();
@@ -40,12 +39,10 @@ namespace SAE201
         }
         private void Vendeur()
         {
-            // Pass the connected employee to the UserControl
             Main.Content = new RechercherVin(employeConnecte);
         }
         private void Responsable()
         {
-            // Pass the connected employee to the UserControl
             Main.Content = new UserControlCreerCommande(employeConnecte);
         }
         private void Login()
@@ -69,13 +66,9 @@ namespace SAE201
                     Responsable();
                     break;
                 default:
-                    // Gérer le cas où le rôle n'est pas reconnu
                     MessageBox.Show("Rôle non reconnu");
                     break;
             }
         }
-        //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
-
     }
 }

@@ -190,7 +190,6 @@ namespace SAE201.Model
                     string login = (string)dr["login"];
                     string mdp = (string)dr["mdp"];
 
-                    // Créer l'objet Role correctement
                     int role = numRole ;
 
                     lesEmployes.Add(new Employe(numEmploye, role, nom, prenom, login, mdp));
