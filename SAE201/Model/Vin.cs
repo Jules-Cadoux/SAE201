@@ -120,6 +120,7 @@ namespace SAE201.Model
                 if(value <= 0)
                 {
                     MessageBox.Show("Le prix en peut pas être <= 0", "Erreur création vin", MessageBoxButton.OK, MessageBoxImage.Error);
+                    throw new ArgumentOutOfRangeException("Le prix ne peut pas être inférieur ou égal à 0.");
                 }
                 prixVin = value;
             }
@@ -150,6 +151,7 @@ namespace SAE201.Model
                 if(value > DateTime.Today.Year)
                 {
                     MessageBox.Show("Le millésime doit être < à la date actuelle", "Erreur création vin",MessageBoxButton.OK,MessageBoxImage.Error);
+                    throw new ArgumentOutOfRangeException("Le millésime ne peut pas être dans le futur.");
                 }
                 this.millesime = value;
             }
