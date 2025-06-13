@@ -20,34 +20,33 @@ namespace SAE201
     /// </summary>
     public partial class MainWindow : Window
     {
-
         private Employe employeConnecte;
 
         public MainWindow()
         {
             InitializeComponent();
             this.WindowState = WindowState.Maximized;
+            this.Visibility = Visibility.Collapsed;
             Login();
-            // Add this check to prevent a crash if login fails
             if (employeConnecte == null)
             {
                 Close();
                 return;
             }
+            this.Visibility = Visibility.Visible;
             ChargeUserControl();
-
-
         }
+
         private void Vendeur()
         {
-            // Pass the connected employee to the UserControl
-            Main.Content = new RechercherVin(employeConnecte);
+            Main.Content = new RechercherVin(employeConnecte, LogoutAndShowLogin);
         }
+
         private void Responsable()
         {
-            // Pass the connected employee to the UserControl
-            Main.Content = new UserControlCreerCommande(employeConnecte);
+            Main.Content = new UserControlCreerCommande(employeConnecte, LogoutAndShowLogin);
         }
+
         private void Login()
         {
             Connection co = new Connection();
@@ -56,6 +55,7 @@ namespace SAE201
                 employeConnecte = co.EmployeConnecte;
             }
         }
+
         private void ChargeUserControl()
         {
             Main.Content = null;
@@ -69,13 +69,22 @@ namespace SAE201
                     Responsable();
                     break;
                 default:
-                    // Gérer le cas où le rôle n'est pas reconnu
                     MessageBox.Show("Rôle non reconnu");
                     break;
             }
         }
-        //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+        private void LogoutAndShowLogin()
+        {
+            employeConnecte = null;
+            Main.Content = null;
 
+            this.Visibility = Visibility.Collapsed;
+
+            Login();
+
+            ChargeUserControl();
+            this.Visibility = Visibility.Visible;
+        }
     }
 }

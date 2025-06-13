@@ -39,17 +39,23 @@ namespace SAE201.UserControls
     }
     public partial class RechercherVin : UserControl
     {
+        
+        
+        //------------------------------------CLASSES MODELE ...------------------------------------
+        
         private readonly Employe employeConnecte;
         public ObservableCollection<Vin> Vins { get; set; }
         public ICollectionView VinsView { get; set; }
 
         public ObservableCollection<VinDemande> VinsDemande { get; set; } = new ObservableCollection<VinDemande>();
         public ObservableCollection<Demande> LesDemandes { get; set; }
+        private readonly Action logout;
 
-        public RechercherVin(Employe employe)
+        public RechercherVin(Employe employe, Action logoutAction)  
         {
             InitializeComponent();
-            this.employeConnecte = employe; // Store the connected employee
+            this.employeConnecte = employe;
+            this.logout = logoutAction;
             Vins = new ObservableCollection<Vin>();
             VinsView = CollectionViewSource.GetDefaultView(Vins);
             VinsView.Filter = RechercheMotClefVin;
@@ -58,6 +64,7 @@ namespace SAE201.UserControls
             ChargeData();
         }
 
+        //----------------------------------------GESTION DONNEES-----------------------------------------
         private void ChargerVins()
         {
             try
@@ -93,13 +100,14 @@ namespace SAE201.UserControls
             }
         }
 
+        //-------------------------------------------------RECHERCHE VIN-------------------------------------------
+
         private bool RechercheMotClefVin(object obj)
         {
             Vin unVin = obj as Vin;
             if (unVin == null)
                 return false;
 
-            // Filtre par nom de vin
             if (textRechercheVin != null && !String.IsNullOrEmpty(textRechercheVin.Text))
             {
                 if (String.IsNullOrEmpty(unVin.NomVin) ||
@@ -109,14 +117,11 @@ namespace SAE201.UserControls
                 }
             }
 
-            // Filtre par type de vin - CORRIGÉ
             if (comboTypeVin != null && comboTypeVin.SelectedItem is ComboBoxItem typeItem &&
                 typeItem.Content.ToString() != "Tous les types")
             {
                 string typeSelectionne = typeItem.Content.ToString();
 
-                // Mapping des types selon votre logique métier
-                // Adaptez cette partie selon la structure de votre classe Vin
                 string typeVin = "";
                 switch (unVin.NumType)
                 {
@@ -140,13 +145,11 @@ namespace SAE201.UserControls
                 }
             }
 
-            // Filtre par appellation - CORRIGÉ
             if (comboAppellation != null && comboAppellation.SelectedItem is ComboBoxItem appellationItem &&
                 appellationItem.Content.ToString() != "Toutes appellations")
             {
                 string appellationSelectionnee = appellationItem.Content.ToString();
 
-                // Mapping selon votre base de données : 1=AOP, 2=AOC, 3=IGP
                 string appellationVin = "";
                 if (unVin.NumType2 != null)
                 {
@@ -173,7 +176,6 @@ namespace SAE201.UserControls
                 }
             }
 
-            // Filtre par année exacte - CORRIGÉ
             if (textAnnee != null && !String.IsNullOrEmpty(textAnnee.Text))
             {
                 if (int.TryParse(textAnnee.Text, out int anneeRecherchee))
@@ -183,14 +185,9 @@ namespace SAE201.UserControls
                         return false;
                     }
                 }
-                else
-                {
-                    // Si la saisie n'est pas un nombre valide, on ignore ce filtre
-                    // Ou vous pouvez choisir de retourner false pour masquer tous les résultats
-                }
             }
 
-            // Filtre par prix exact - CORRIGÉ
+
             if (textPrix != null && !String.IsNullOrEmpty(textPrix.Text) &&
                 double.TryParse(textPrix.Text, out double prixMax))
             {
@@ -258,21 +255,22 @@ namespace SAE201.UserControls
             VinsView?.Refresh();
         }
 
+
+
+        //--------------------------------------AJOUT VIN AUX DEMANDES-------------------------------------
+
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             Button btn = sender as Button;
 
-            // Vérifiez si le bouton et le vin sont valides
             if (btn != null && btn.Tag is Vin vinSelectionne)
             {
-                // Vérifiez si NumFournisseur et NumType2 sont non nuls avant d'y accéder
                 if (vinSelectionne.NumFournisseur == null || vinSelectionne.NumType2 == null)
                 {
                     MessageBox.Show("Le vin sélectionné est incomplet.");
                     return;
                 }
 
-                // Ajoutez à la collection VinsDemande
                 VinsDemande.Add(new VinDemande(vinSelectionne.NomVin, DateTime.Now, 1));
                 MessageBox.Show($"Vin '{vinSelectionne.NomVin}' ajouté ! Total: {VinsDemande.Count} vins");
             }
@@ -302,7 +300,7 @@ namespace SAE201.UserControls
             }
         }
 
-        private void butValiderCommande_Click(object sender, RoutedEventArgs e)
+        private void butValiderDemande_Click(object sender, RoutedEventArgs e)
         {
             if (VinsDemande.Count == 0)
             {
@@ -310,7 +308,6 @@ namespace SAE201.UserControls
                 return;
             }
 
-            // Vérifie que chaque demande possède un client associé
             if (VinsDemande.Any(v => v.NumClient == 0))
             {
                 MessageBox.Show("Veuillez sélectionner un client pour chaque demande.",
@@ -334,7 +331,7 @@ namespace SAE201.UserControls
                             RETURNING numdemande");
 
                     cmd.Parameters.AddWithValue("numvin", vinBdd.NumVin);
-                    cmd.Parameters.AddWithValue("numemploye", this.employeConnecte.NumEmploye); // Use the connected employee's ID
+                    cmd.Parameters.AddWithValue("numemploye", this.employeConnecte.NumEmploye); 
                     cmd.Parameters.AddWithValue("numcommande", DBNull.Value);
                     cmd.Parameters.AddWithValue("numclient", vin.NumClient);
                     cmd.Parameters.AddWithValue("datedemande", vin.Date);
@@ -342,7 +339,6 @@ namespace SAE201.UserControls
 
                     int idDemande = DataAccess.Instance.ExecuteInsert(cmd);
 
-                    // Mise à jour de la liste d'affichage
                     Demande demande = new Demande
                     {
                         NumDemande = idDemande,
@@ -350,8 +346,7 @@ namespace SAE201.UserControls
                         QuantiteDemande = vin.Quantite,
                         Accepter = "En Attente",
                         NumVin = vinBdd,
-                        NumEmploye = new Employe { NumEmploye = this.employeConnecte.NumEmploye }, // Use the connected employee's ID
-                        NumCommande = null,
+                        NumEmploye = new Employe { NumEmploye = this.employeConnecte.NumEmploye },
                         NumClient = new Client { NumClient = vin.NumClient }
                     };
 
@@ -371,6 +366,7 @@ namespace SAE201.UserControls
             dgEtatDemande.Items.Refresh();
             ChargeData();
         }
+
 
         private void buttSupprimer_Click(object sender, RoutedEventArgs e)
         {
@@ -396,5 +392,14 @@ namespace SAE201.UserControls
                 }
             }
         }
+
+
+        //-----------------------------------------------SE DECONNECTER---------------------------------------
+
+        private void buttDeconnexion_Click(object sender, RoutedEventArgs e)
+        {
+            logout?.Invoke();
+        }
+
     }
 }

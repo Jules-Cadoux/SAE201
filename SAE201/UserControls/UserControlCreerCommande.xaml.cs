@@ -23,35 +23,51 @@ namespace SAE201.UserControls
     /// </summary>
     public partial class UserControlCreerCommande : UserControl
     {
+        //------------------------CLASSE MODELE ...----------------------------------------------------------
+        public class GroupeFournisseur
+        {
+            public string NomFournisseur { get; set; }
+            public int NumFournisseur { get; set; }
+            public ObservableCollection<Demande> DemandesVins { get; set; }
+            public double PrixTotal { get; set; }
+
+            public GroupeFournisseur()
+            {
+                DemandesVins = new ObservableCollection<Demande>();
+            }
+        }
+
         private readonly Employe employeConnecte;
+        private readonly Action logout; 
         public ObservableCollection<Demande> LesDemandes { get; set; }
         public ObservableCollection<Commande> LesCommandes { get; set; }
         public ObservableCollection<GroupeFournisseur> LesCommandesParFournisseur { get; set; } = new ObservableCollection<GroupeFournisseur>();
 
 
-        public UserControlCreerCommande(Employe employe)
+        public UserControlCreerCommande(Employe employe, Action logoutAction)
         {
             InitializeComponent();
-            this.employeConnecte = employe; // Store the connected employee
+            this.employeConnecte = employe;
+            this.logout = logoutAction; 
+
             ChargeData();
         }
 
+        //----------------------------------------GESTION DES DONNES-----------------------------------------------//
 
         public void ChargeData()
         {
             try
             {
-                // Charger toutes les demandes mais exclure celles qui ont déjà été associées à une commande
                 List<Demande> demandes = Demande.FindAll();
 
-                // Filtrer les demandes qui sont "Accepter" mais qui n'ont pas encore été associées à une commande
                 LesDemandes = new ObservableCollection<Demande>(
                     demandes.Where(d => d.Accepter == "Accepter" && d.NumCommande == null || d.Accepter == "En Attente" || d.Accepter == "Refuser").ToList()
                 );
 
                 List<Commande> commandes = Commande.FindAll();
                 LesCommandes = new ObservableCollection<Commande>(commandes);
-                RegrouperDemandesParFournisseur();  // Regrouper les demandes restantes par fournisseur
+                RegrouperDemandesParFournisseur();  
                 this.DataContext = this;
             }
             catch (Exception ex)
@@ -60,6 +76,49 @@ namespace SAE201.UserControls
                 LogError.Log(ex, "Erreur SQL");
             }
         }
+
+
+        //---------------------------------------------GESTION DEMANDES-------------------------------------------------------------
+
+        private void buttEditerDemande_Click(object sender, RoutedEventArgs e)
+        {
+            if (dgCommandes.SelectedItem == null)
+            {
+                MessageBox.Show("Veuillez sélectionner une demande", "Attention", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            else
+            {
+                Demande demandeSelectionnee = (Demande)dgCommandes.SelectedItem;
+                UserControlModifierDemande ucModifierDemande = new UserControlModifierDemande(demandeSelectionnee);
+                Window dialogWindow = new Window()
+                {
+                    Title = "Modifier le statut de la demande",
+                    Content = ucModifierDemande,
+                    SizeToContent = SizeToContent.WidthAndHeight,
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                    ResizeMode = ResizeMode.NoResize
+                };
+
+                bool? result = dialogWindow.ShowDialog();
+                if (result == true)
+                {
+                    try
+                    {
+                        demandeSelectionnee.Update();
+                        ChargeData();
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("La demande n'a pas pu être modifiée.", "Erreur", MessageBoxButton.OK, MessageBoxImage.Error);
+                        LogError.Log(ex, "Erreur lors de la modification de demande");
+                    }
+                }
+            }
+        }
+
+
+
+        //---------------------------------GESTION COMMANDES----------------------------------------
 
 
         private void RegrouperDemandesParFournisseur()
@@ -82,10 +141,8 @@ namespace SAE201.UserControls
                 demandesParFournisseur[numFournisseur].Add(demande);
             }
 
-            // 3. (LA CORRECTION) Vider la collection existante au lieu d'en créer une nouvelle
             LesCommandesParFournisseur.Clear();
 
-            // 4. Remplir la collection (maintenant vide) avec les nouveaux groupes
             foreach (KeyValuePair<int, List<Demande>> kvp in demandesParFournisseur)
             {
                 GroupeFournisseur groupeFournisseur = new GroupeFournisseur();
@@ -113,45 +170,7 @@ namespace SAE201.UserControls
             return total;
         }
 
-        private void buttEditerDemande_Click(object sender, RoutedEventArgs e)
-        {
-            if (dgCommandes.SelectedItem == null)
-            {
-                MessageBox.Show("Veuillez sélectionner une demande", "Attention", MessageBoxButton.OK, MessageBoxImage.Information);
-            }
-            else
-            {
-                Demande demandeSelectionnee = (Demande)dgCommandes.SelectedItem;
-                UserControlModifierDemande ucModifierDemande = new UserControlModifierDemande(demandeSelectionnee);
-                Window dialogWindow = new Window()
-                {
-                    Title = "Modifier le statut de la demande",
-                    Content = ucModifierDemande,
-                    SizeToContent = SizeToContent.WidthAndHeight,
-                    WindowStartupLocation = WindowStartupLocation.CenterOwner,
-                    ResizeMode = ResizeMode.NoResize
-                };
-
-                bool? result = dialogWindow.ShowDialog();
-                if (result == true)
-                {
-                    try
-                    {
-                        demandeSelectionnee.Update();
-
-                        // /// CORRECTION ///
-                        // On remplace le simple refresh par un rechargement complet des données.
-                        // Cela va mettre à jour la liste du haut ET la liste des groupes en bas.
-                        ChargeData();
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show("La demande n'a pas pu être modifiée.", "Erreur", MessageBoxButton.OK, MessageBoxImage.Error);
-                        LogError.Log(ex, "Erreur lors de la modification de demande");
-                    }
-                }
-            }
-        }
+        
 
         private void buttValiderCommande_Click(object sender, RoutedEventArgs e)
         {
@@ -184,13 +203,12 @@ namespace SAE201.UserControls
                 {
                     try
                     {
-                        // Créer la commande en base de données
                         using NpgsqlCommand cmdCommande = new NpgsqlCommand(@"INSERT INTO sae201_nicolas.commande
                 (numemploye, datecommande, valider, prixtotal)
                 VALUES (@numemploye, @datecommande, @valider, @prixtotal)
                 RETURNING numcommande");
 
-                        cmdCommande.Parameters.AddWithValue("numemploye", this.employeConnecte.NumEmploye); // Use the connected employee's ID
+                        cmdCommande.Parameters.AddWithValue("numemploye", this.employeConnecte.NumEmploye); 
                         cmdCommande.Parameters.AddWithValue("datecommande", DateTime.Now);
                         cmdCommande.Parameters.AddWithValue("valider", true);
                         cmdCommande.Parameters.AddWithValue("prixtotal", groupeFournisseur.PrixTotal);
@@ -201,7 +219,7 @@ namespace SAE201.UserControls
                         {
                             NumCommande = numeroCommande,
                             DateCommande = DateTime.Now,
-                            NumEmploye = this.employeConnecte.NumEmploye, // Use the connected employee's ID
+                            NumEmploye = this.employeConnecte.NumEmploye, 
                             Valider = true,
                             PrixTotal = groupeFournisseur.PrixTotal
                         };
@@ -218,11 +236,9 @@ namespace SAE201.UserControls
 
                             foreach (Demande demande in groupeFournisseur.DemandesVins)
                             {
-                                // Associer la demande à la nouvelle commande créée
                                 demande.NumCommande = new Commande { NumCommande = numeroCommande };
                                 try
                                 {
-                                    // Enregistrer cette association en base
                                     demande.UpdateCommande();
                                 }
                                 catch (Exception ex)
@@ -232,13 +248,8 @@ namespace SAE201.UserControls
                                 }
                             }
 
-                            // Mettre à jour la liste pour ne plus afficher ce fournisseur
                             LesCommandesParFournisseur.Remove(groupeFournisseur);
-
-                            // Forcer le rafraîchissement de l'affichage de la DataGrid
-                            dgCommandes.Items.Refresh();  // Force un rafraîchissement
-
-                            // Recharger les données pour mettre à jour l'affichage
+                            dgCommandes.Items.Refresh();  
                             ChargeData();
                         }
                         else
@@ -261,18 +272,12 @@ namespace SAE201.UserControls
         }
 
 
-    }
 
-    public class GroupeFournisseur
-    {
-        public string NomFournisseur { get; set; }
-        public int NumFournisseur { get; set; }
-        public ObservableCollection<Demande> DemandesVins { get; set; }
-        public double PrixTotal { get; set; }
+        //-----------------------------------------------SE DECONNECTER---------------------------------------
 
-        public GroupeFournisseur()
+        private void buttDeconnexion_Click(object sender, RoutedEventArgs e)
         {
-            DemandesVins = new ObservableCollection<Demande>();
+            logout?.Invoke();
         }
     }
 }
