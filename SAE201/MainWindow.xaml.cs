@@ -20,37 +20,45 @@ namespace SAE201
     /// </summary>
     public partial class MainWindow : Window
     {
-        
+
         private Employe employeConnecte;
 
         public MainWindow()
         {
             InitializeComponent();
             Login();
+            // Add this check to prevent a crash if login fails
+            if (employeConnecte == null)
+            {
+                Close();
+                return;
+            }
             ChargeUserControl();
-            
+
 
         }
         private void Vendeur()
         {
-            Main.Content = new RechercherVin();
+            // Pass the connected employee to the UserControl
+            Main.Content = new RechercherVin(employeConnecte);
         }
         private void Responsable()
         {
-            Main.Content = new UserControlCreerCommande();
+            // Pass the connected employee to the UserControl
+            Main.Content = new UserControlCreerCommande(employeConnecte);
         }
         private void Login()
         {
             Connection co = new Connection();
-            if (co.ShowDialog()==true)
+            if (co.ShowDialog() == true)
             {
                 employeConnecte = co.EmployeConnecte;
             }
         }
         private void ChargeUserControl()
         {
-            Main.Content=null;
-            switch(employeConnecte.NumRole)
+            Main.Content = null;
+            switch (employeConnecte.NumRole)
             {
                 case 1:
                     Vendeur();

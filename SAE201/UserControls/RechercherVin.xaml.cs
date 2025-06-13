@@ -39,15 +39,17 @@ namespace SAE201.UserControls
     }
     public partial class RechercherVin : UserControl
     {
+        private readonly Employe employeConnecte;
         public ObservableCollection<Vin> Vins { get; set; }
         public ICollectionView VinsView { get; set; }
 
         public ObservableCollection<VinDemande> VinsDemande { get; set; } = new ObservableCollection<VinDemande>();
         public ObservableCollection<Demande> LesDemandes { get; set; }
 
-        public RechercherVin()
+        public RechercherVin(Employe employe)
         {
             InitializeComponent();
+            this.employeConnecte = employe; // Store the connected employee
             Vins = new ObservableCollection<Vin>();
             VinsView = CollectionViewSource.GetDefaultView(Vins);
             VinsView.Filter = RechercheMotClefVin;
@@ -332,7 +334,7 @@ namespace SAE201.UserControls
                             RETURNING numdemande");
 
                     cmd.Parameters.AddWithValue("numvin", vinBdd.NumVin);
-                    cmd.Parameters.AddWithValue("numemploye", 1);
+                    cmd.Parameters.AddWithValue("numemploye", this.employeConnecte.NumEmploye); // Use the connected employee's ID
                     cmd.Parameters.AddWithValue("numcommande", DBNull.Value);
                     cmd.Parameters.AddWithValue("numclient", vin.NumClient);
                     cmd.Parameters.AddWithValue("datedemande", vin.Date);
@@ -348,7 +350,7 @@ namespace SAE201.UserControls
                         QuantiteDemande = vin.Quantite,
                         Accepter = "En Attente",
                         NumVin = vinBdd,
-                        NumEmploye = new Employe { NumEmploye = 1 },
+                        NumEmploye = new Employe { NumEmploye = this.employeConnecte.NumEmploye }, // Use the connected employee's ID
                         NumCommande = null,
                         NumClient = new Client { NumClient = vin.NumClient }
                     };
@@ -378,7 +380,7 @@ namespace SAE201.UserControls
 
             VinDemande demandeAsupprimer = (VinDemande)dgDemande.SelectedItem;
 
-            MessageBoxResult result = MessageBox.Show("Voulez-vous vraiment supprimer ce demande ?", "Confirmation", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+            MessageBoxResult result = MessageBox.Show("Voulez-vous vraiment supprimer ce demande ?", "Con firmation", MessageBoxButton.YesNo, MessageBoxImage.Warning);
 
             if (result == MessageBoxResult.Yes)
             {

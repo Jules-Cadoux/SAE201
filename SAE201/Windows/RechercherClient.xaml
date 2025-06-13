@@ -155,7 +155,7 @@
                             HorizontalAlignment="Left"
                             VerticalAlignment="Top"
                             Click="Button_Click"
-                            Content="Lier client" />
+                            Content="Lier client" Background="DarkRed" Foreground="White" BorderBrush="#FF660000" />
                     </Grid>
                 </TabItem>
             </TabControl>
