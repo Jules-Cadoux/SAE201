@@ -326,7 +326,7 @@
                     </ScrollViewer>
                 </Grid>
             </TabItem>
-            <TabItem Header="Etat des commandes">
+            <TabItem Header="Réception commandes">
                 <Grid>
                     <Label
                         Margin="10,6,584,279"
