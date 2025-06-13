@@ -10,9 +10,21 @@ namespace SAE201.UserControls
 {
     public partial class UserControlCreerCommande : UserControl
     {
+        //--------------------------------------------CLASSES MODELE ...--------------------------------------
         private readonly Employe employeConnecte;
-        private readonly Action onLogout; 
+        private readonly Action onLogout;
+        public class GroupeFournisseur
+        {
+            public string NomFournisseur { get; set; } = string.Empty;
+            public int NumFournisseur { get; set; }
+            public ObservableCollection<Demande> DemandesVins { get; set; }
+            public double PrixTotal { get; set; }
 
+            public GroupeFournisseur()
+            {
+                DemandesVins = new ObservableCollection<Demande>();
+            }
+        }
         public ObservableCollection<Demande> LesDemandes { get; set; }
         public ObservableCollection<Commande> LesCommandes { get; set; }
         public ObservableCollection<GroupeFournisseur> LesCommandesParFournisseur { get; set; }
@@ -30,6 +42,8 @@ namespace SAE201.UserControls
             ChargeData();
         }
 
+
+        //----------------------------------------------------GESTION DES DONNEES--------------------------------------------------
         public void ChargeData()
         {
             try
@@ -61,6 +75,45 @@ namespace SAE201.UserControls
         {
             ChargeData();
         }
+
+        //-----------------------------------------GESTION DES DEMANDES------------------------------------------
+
+        private void buttEditerDemande_Click(object sender, RoutedEventArgs e)
+        {
+            if (dgCommandes.SelectedItem is Demande demandeSelectionnee)
+            {
+                UserControlModifierDemande ucModifierDemande = new UserControlModifierDemande(demandeSelectionnee);
+                Window dialogWindow = new Window()
+                {
+                    Title = "Modifier le statut de la demande",
+                    Content = ucModifierDemande,
+                    SizeToContent = SizeToContent.WidthAndHeight,
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                    ResizeMode = ResizeMode.NoResize
+                };
+
+                if (dialogWindow.ShowDialog() == true)
+                {
+                    try
+                    {
+                        demandeSelectionnee.Update();
+                        ChargeData();
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("La demande n'a pas pu être modifiée.", "Erreur", MessageBoxButton.OK, MessageBoxImage.Error);
+                        LogError.Log(ex, "Erreur lors de la modification de demande");
+                    }
+                }
+            }
+            else
+            {
+                MessageBox.Show("Veuillez sélectionner une demande", "Attention", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+        }
+
+
+        //---------------------------------------------GESTION PASSAGE COMMANDE----------------------------------------------
 
         private void RegrouperDemandesParFournisseur()
         {
@@ -106,39 +159,7 @@ namespace SAE201.UserControls
             return total;
         }
 
-        private void buttEditerDemande_Click(object sender, RoutedEventArgs e)
-        {
-            if (dgCommandes.SelectedItem is Demande demandeSelectionnee)
-            {
-                UserControlModifierDemande ucModifierDemande = new UserControlModifierDemande(demandeSelectionnee);
-                Window dialogWindow = new Window()
-                {
-                    Title = "Modifier le statut de la demande",
-                    Content = ucModifierDemande,
-                    SizeToContent = SizeToContent.WidthAndHeight,
-                    WindowStartupLocation = WindowStartupLocation.CenterOwner,
-                    ResizeMode = ResizeMode.NoResize
-                };
-
-                if (dialogWindow.ShowDialog() == true)
-                {
-                    try
-                    {
-                        demandeSelectionnee.Update();
-                        ChargeData();
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show("La demande n'a pas pu être modifiée.", "Erreur", MessageBoxButton.OK, MessageBoxImage.Error);
-                        LogError.Log(ex, "Erreur lors de la modification de demande");
-                    }
-                }
-            }
-            else
-            {
-                MessageBox.Show("Veuillez sélectionner une demande", "Attention", MessageBoxButton.OK, MessageBoxImage.Information);
-            }
-        }
+        
 
         private void buttValiderCommande_Click(object sender, RoutedEventArgs e)
         {
@@ -187,19 +208,6 @@ namespace SAE201.UserControls
         private void buttDeconnexion_Click(object sender, RoutedEventArgs e)
         {
             onLogout?.Invoke();
-        }
-    }
-
-    public class GroupeFournisseur
-    {
-        public string NomFournisseur { get; set; } = string.Empty;
-        public int NumFournisseur { get; set; }
-        public ObservableCollection<Demande> DemandesVins { get; set; }
-        public double PrixTotal { get; set; }
-
-        public GroupeFournisseur()
-        {
-            DemandesVins = new ObservableCollection<Demande>();
         }
     }
 }
