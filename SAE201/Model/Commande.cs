@@ -15,20 +15,22 @@ namespace SAE201.Model
         private DateTime dateCommande;
         private bool valider;
         private double prixTotal;
-        private string nomFournisseurPrincipal;
+
+        public string NomFournisseurPrincipal { get; set; }
 
         public Commande()
         {
+            NomFournisseurPrincipal = string.Empty;
         }
+
         public Commande(int numEmploye, DateTime dateCommande, bool valider, double prixTotal)
         {
-
             this.NumEmploye = numEmploye;
             this.DateCommande = dateCommande;
             this.Valider = valider;
             this.PrixTotal = prixTotal;
+            this.NomFournisseurPrincipal = string.Empty;
         }
-
 
         public Commande(int numCommande, int numEmploye, DateTime dateCommande, bool valider, double prixTotal)
         {
@@ -37,100 +39,48 @@ namespace SAE201.Model
             this.DateCommande = dateCommande;
             this.Valider = valider;
             this.PrixTotal = prixTotal;
+            this.NomFournisseurPrincipal = string.Empty;
         }
-
 
         public int NumCommande
         {
-            get
-            {
-                return numCommande;
-            }
-
-            set
-            {
-                numCommande = value;
-            }
+            get { return numCommande; }
+            set { numCommande = value; }
         }
 
         public int NumEmploye
         {
-            get
-            {
-                return this.numEmploye;
-            }
-
-            set
-            {
-                this.numEmploye = value;
-            }
+            get { return this.numEmploye; }
+            set { this.numEmploye = value; }
         }
 
         public DateTime DateCommande
         {
-            get
-            {
-                return dateCommande;
-            }
-
-            set
-            {
-                dateCommande = value;
-            }
+            get { return dateCommande; }
+            set { dateCommande = value; }
         }
 
         public bool Valider
         {
-            get
-            {
-                return valider;
-            }
-
-            set
-            {
-                valider = value;
-            }
+            get { return valider; }
+            set { valider = value; }
         }
 
         public double PrixTotal
         {
-            get
-            {
-                return this.prixTotal;
-            }
-
-            set
-            {
-                this.prixTotal = value;
-            }
-        }
-
-
-        public string NomFournisseurPrincipal
-        {
-            get
-            {
-                try
-                {
-                    Demande demande = Demande.FindAll().FirstOrDefault(d => d.NumCommande?.NumCommande == this.NumCommande);
-
-                    if (demande != null && demande.NumVin?.NumFournisseur != null)
-                    {
-                        return demande.NumVin.NumFournisseur.NomFournisseur;
-                    }
-                    return "N/A";
-                }
-                catch
-                {
-                    return "N/A";
-                }
-            }
+            get { return this.prixTotal; }
+            set { this.prixTotal = value; }
         }
 
         public override bool Equals(object? obj)
         {
             return obj is Commande commande &&
                    this.NumCommande == commande.NumCommande;
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(this.NumCommande);
         }
 
         public int Create()
@@ -144,7 +94,6 @@ namespace SAE201.Model
                 cmd.Parameters.AddWithValue("datecommande", this.DateCommande);
                 cmd.Parameters.AddWithValue("valider", this.Valider);
                 cmd.Parameters.AddWithValue("prixtotal", this.PrixTotal);
-
                 id = DataAccess.Instance.ExecuteInsert(cmd);
                 this.NumCommande = id;
             }
@@ -163,7 +112,6 @@ namespace SAE201.Model
                     this.DateCommande = (DateTime)row["datecommande"];
                     this.Valider = (bool)row["valider"];
                     this.PrixTotal = Convert.ToDouble(row["prixtotal"]);
-
                     this.NumEmploye = (int)row["numemploye"];
                 }
             }
@@ -180,7 +128,6 @@ namespace SAE201.Model
                 cmd.Parameters.AddWithValue("valider", this.Valider);
                 cmd.Parameters.AddWithValue("prixtotal", this.PrixTotal);
                 cmd.Parameters.AddWithValue("numcommande", this.NumCommande);
-
                 return DataAccess.Instance.ExecuteSet(cmd);
             }
         }
@@ -197,18 +144,33 @@ namespace SAE201.Model
         public static List<Commande> FindAll()
         {
             List<Commande> commandes = new List<Commande>();
-            using (NpgsqlCommand cmd = new NpgsqlCommand("SELECT * FROM commande order by datecommande DESC"))
+            string query = @"
+                SELECT c.*, f.nomfournisseur
+                FROM sae201_nicolas.commande c
+                LEFT JOIN (
+                    SELECT DISTINCT ON (d.numcommande) d.numcommande, v.numfournisseur
+                    FROM sae201_nicolas.demande d
+                    JOIN sae201_nicolas.vin v ON d.numvin = v.numvin
+                    WHERE d.numcommande IS NOT NULL
+                ) AS df ON c.numcommande = df.numcommande
+                LEFT JOIN sae201_nicolas.fournisseur f ON df.numfournisseur = f.numfournisseur
+                ORDER BY c.datecommande DESC";
+
+            using (NpgsqlCommand cmd = new NpgsqlCommand(query))
             {
                 DataTable dt = DataAccess.Instance.ExecuteSelect(cmd);
                 foreach (DataRow row in dt.Rows)
                 {
-                    int id = (int)row["numcommande"];
-                    int numEmploye = (int)row["numemploye"];
-                    DateTime date = (DateTime)row["datecommande"];
-                    bool valider = (bool)row["valider"];
-                    double prix = Convert.ToDouble(row["prixtotal"]);
-
-                    commandes.Add(new Commande(id, numEmploye, date, valider, prix));
+                    Commande commande = new Commande
+                    {
+                        NumCommande = (int)row["numcommande"],
+                        NumEmploye = (int)row["numemploye"],
+                        DateCommande = (DateTime)row["datecommande"],
+                        Valider = (bool)row["valider"],
+                        PrixTotal = Convert.ToDouble(row["prixtotal"]),
+                        NomFournisseurPrincipal = row["nomfournisseur"] == DBNull.Value ? "N/A" : (string)row["nomfournisseur"]
+                    };
+                    commandes.Add(commande);
                 }
             }
             return commandes;
@@ -227,8 +189,6 @@ namespace SAE201.Model
                     DateTime date = (DateTime)row["datecommande"];
                     bool valider = (bool)row["valider"];
                     double prix = Convert.ToDouble(row["prixtotal"]);
-
-
                     commandes.Add(new Commande(id, numEmploye, date, valider, prix));
                 }
             }
