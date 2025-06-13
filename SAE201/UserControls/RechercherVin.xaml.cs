@@ -39,17 +39,23 @@ namespace SAE201.UserControls
     }
     public partial class RechercherVin : UserControl
     {
+        
+        
+        //------------------------------------CLASSES MODELE ...------------------------------------
+        
         private readonly Employe employeConnecte;
         public ObservableCollection<Vin> Vins { get; set; }
         public ICollectionView VinsView { get; set; }
 
         public ObservableCollection<VinDemande> VinsDemande { get; set; } = new ObservableCollection<VinDemande>();
         public ObservableCollection<Demande> LesDemandes { get; set; }
+        private readonly Action logout;
 
-        public RechercherVin(Employe employe)
+        public RechercherVin(Employe employe, Action logoutAction)  
         {
             InitializeComponent();
             this.employeConnecte = employe;
+            this.logout = logoutAction;
             Vins = new ObservableCollection<Vin>();
             VinsView = CollectionViewSource.GetDefaultView(Vins);
             VinsView.Filter = RechercheMotClefVin;
@@ -58,6 +64,7 @@ namespace SAE201.UserControls
             ChargeData();
         }
 
+        //----------------------------------------GESTION DONNEES-----------------------------------------
         private void ChargerVins()
         {
             try
@@ -93,11 +100,14 @@ namespace SAE201.UserControls
             }
         }
 
+        //-------------------------------------------------RECHERCHE VIN-------------------------------------------
+
         private bool RechercheMotClefVin(object obj)
         {
             Vin unVin = obj as Vin;
             if (unVin == null)
                 return false;
+
             if (textRechercheVin != null && !String.IsNullOrEmpty(textRechercheVin.Text))
             {
                 if (String.IsNullOrEmpty(unVin.NomVin) ||
@@ -106,10 +116,12 @@ namespace SAE201.UserControls
                     return false;
                 }
             }
+
             if (comboTypeVin != null && comboTypeVin.SelectedItem is ComboBoxItem typeItem &&
                 typeItem.Content.ToString() != "Tous les types")
             {
                 string typeSelectionne = typeItem.Content.ToString();
+
                 string typeVin = "";
                 switch (unVin.NumType)
                 {
@@ -132,10 +144,12 @@ namespace SAE201.UserControls
                     return false;
                 }
             }
+
             if (comboAppellation != null && comboAppellation.SelectedItem is ComboBoxItem appellationItem &&
                 appellationItem.Content.ToString() != "Toutes appellations")
             {
                 string appellationSelectionnee = appellationItem.Content.ToString();
+
                 string appellationVin = "";
                 if (unVin.NumType2 != null)
                 {
@@ -161,6 +175,7 @@ namespace SAE201.UserControls
                     return false;
                 }
             }
+
             if (textAnnee != null && !String.IsNullOrEmpty(textAnnee.Text))
             {
                 if (int.TryParse(textAnnee.Text, out int anneeRecherchee))
@@ -170,10 +185,9 @@ namespace SAE201.UserControls
                         return false;
                     }
                 }
-                else
-                {
-                }
             }
+
+
             if (textPrix != null && !String.IsNullOrEmpty(textPrix.Text) &&
                 double.TryParse(textPrix.Text, out double prixMax))
             {
@@ -241,9 +255,14 @@ namespace SAE201.UserControls
             VinsView?.Refresh();
         }
 
+
+
+        //--------------------------------------AJOUT VIN AUX DEMANDES-------------------------------------
+
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             Button btn = sender as Button;
+
             if (btn != null && btn.Tag is Vin vinSelectionne)
             {
                 if (vinSelectionne.NumFournisseur == null || vinSelectionne.NumType2 == null)
@@ -281,7 +300,7 @@ namespace SAE201.UserControls
             }
         }
 
-        private void butValiderCommande_Click(object sender, RoutedEventArgs e)
+        private void butValiderDemande_Click(object sender, RoutedEventArgs e)
         {
             if (VinsDemande.Count == 0)
             {
@@ -312,7 +331,7 @@ namespace SAE201.UserControls
                             RETURNING numdemande");
 
                     cmd.Parameters.AddWithValue("numvin", vinBdd.NumVin);
-                    cmd.Parameters.AddWithValue("numemploye", this.employeConnecte.NumEmploye); // Use the connected employee's ID
+                    cmd.Parameters.AddWithValue("numemploye", this.employeConnecte.NumEmploye); 
                     cmd.Parameters.AddWithValue("numcommande", DBNull.Value);
                     cmd.Parameters.AddWithValue("numclient", vin.NumClient);
                     cmd.Parameters.AddWithValue("datedemande", vin.Date);
@@ -327,8 +346,7 @@ namespace SAE201.UserControls
                         QuantiteDemande = vin.Quantite,
                         Accepter = "En Attente",
                         NumVin = vinBdd,
-                        NumEmploye = new Employe { NumEmploye = this.employeConnecte.NumEmploye }, // Use the connected employee's ID
-                        NumCommande = null,
+                        NumEmploye = new Employe { NumEmploye = this.employeConnecte.NumEmploye },
                         NumClient = new Client { NumClient = vin.NumClient }
                     };
 
@@ -348,6 +366,7 @@ namespace SAE201.UserControls
             dgEtatDemande.Items.Refresh();
             ChargeData();
         }
+
 
         private void buttSupprimer_Click(object sender, RoutedEventArgs e)
         {
@@ -373,5 +392,14 @@ namespace SAE201.UserControls
                 }
             }
         }
+
+
+        //-----------------------------------------------SE DECONNECTER---------------------------------------
+
+        private void buttDeconnexion_Click(object sender, RoutedEventArgs e)
+        {
+            logout?.Invoke();
+        }
+
     }
 }

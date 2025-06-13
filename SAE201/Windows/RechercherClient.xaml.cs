@@ -32,6 +32,8 @@ namespace SAE201.Windows
 
         }
 
+        //----------------------------------------------GESTION DES DONNEES---------------------------------------------
+
         public void ChargeData()
         {
             try
@@ -46,6 +48,10 @@ namespace SAE201.Windows
                 LogError.Log(ex, "Erreur SQL");
             }
         }
+
+
+        //-----------------------------------------------GESTION DES CLIENTS-------------------------------------------------
+
 
         private bool RechercheMotClefClient(object obj)
         {
@@ -73,7 +79,6 @@ namespace SAE201.Windows
                 Content = ucClient,
                 SizeToContent = SizeToContent.WidthAndHeight,
                 WindowStartupLocation = WindowStartupLocation.CenterOwner,
-                Owner = this,
                 ResizeMode = ResizeMode.NoResize
             };
 

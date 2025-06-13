@@ -40,9 +40,12 @@
                         Text="Caviste depuis 1822" />
                     <Button
                         x:Name="buttDeconnexion"
+                        Margin="1500,0,0,0"
+                        HorizontalAlignment="Right"
                         Background="DarkRed"
+                        BorderBrush="DarkRed"
                         Content="Déconnexion"
-                        Foreground="White" Margin="20,0,0,0" />
+                        Foreground="White" Click="buttDeconnexion_Click" />
                 </StackPanel>
             </Grid>
         </Border>

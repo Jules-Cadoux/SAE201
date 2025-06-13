@@ -40,6 +40,15 @@
                         FontSize="12"
                         Foreground="#FFD700"
                         Text="Caviste depuis 1822" />
+                    <Button
+                        x:Name="buttDeconnexion"
+                        Margin="1500,0,0,0"
+                        HorizontalAlignment="Right"
+                        Background="DarkRed"
+                        BorderBrush="DarkRed"
+                        Click="buttDeconnexion_Click"
+                        Content="Déconnexion"
+                        Foreground="White" />
                 </StackPanel>
             </Grid>
         </Border>
@@ -288,13 +297,13 @@
                             ToolTip="Supprimer" />
 
                         <Button
-                            x:Name="butValiderCommande"
+                            x:Name="butValiderDemande"
                             Width="120"
                             Height="30"
                             Margin="100,5,0,0"
                             Background="DarkRed"
                             BorderBrush="#FF660000"
-                            Click="butValiderCommande_Click"
+                            Click="butValiderDemande_Click"
                             Content="Valider la demande"
                             Foreground="White" />
                     </StackPanel>
@@ -354,7 +363,7 @@
                                     Header="Demandé par " />
                                 <DataGridTextColumn
                                     Width="*"
-                                    Binding="{Binding DateDemande}"
+                                    Binding="{Binding DateDemande, StringFormat='dd/MM/yyyy'}"
                                     Header="Date" />
                                 <DataGridTextColumn
                                     Width="*"

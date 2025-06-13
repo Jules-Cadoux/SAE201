@@ -5,106 +5,109 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:SAE201"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    x:Name="LoginWindow"
     Title="Connection"
     Width="350"
     Height="600"
-    mc:Ignorable="d" KeyDown="Window_KeyDown" ResizeMode="NoResize" WindowStartupLocation="CenterScreen">
+    KeyDown="Window_KeyDown"
+    ResizeMode="NoResize"
+    WindowStartupLocation="CenterScreen"
+    mc:Ignorable="d">
 
-    
+
     <Grid Background="#F5F5F5">
-        
+
         <Border
             Width="320"
             Height="546"
             HorizontalAlignment="Center"
             VerticalAlignment="Center"
             Background="White"
-            CornerRadius="15"
-            >
+            CornerRadius="15">
 
             <StackPanel Margin="40,50,40,50">
 
                 <Border
+                    Margin="0,0,0,40"
+                    Padding="20,10"
                     HorizontalAlignment="Center"
                     Background="#C41E3A"
-                    CornerRadius="8"
-                    Padding="20,10"
-                    Margin="0,0,0,40">
+                    CornerRadius="8">
                     <Label
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
                         Content="NICOLAS"
                         FontSize="36"
                         FontWeight="Bold"
-                        Foreground="#FFC107"
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center" />
+                        Foreground="#FFC107" />
                 </Border>
 
+
                 <Label
+                    Margin="0,0,0,30"
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center"
                     Content="Se connecter"
                     FontSize="24"
                     FontWeight="Bold"
-                    Foreground="#666"
-                    Margin="0,0,0,30" />
+                    Foreground="#666" />
 
-                <Label 
+
+                <Label
+                    Margin="0,0,0,5"
                     Content="Identifiant"
                     FontSize="14"
                     FontWeight="Bold"
-                    Foreground="#333"
-                    Margin="0,0,0,5" />
+                    Foreground="#333" />
 
                 <TextBox
                     x:Name="txLogin"
                     Height="40"
+                    Margin="0,0,0,20"
                     Padding="10,8"
-                    FontSize="14"
                     BorderBrush="#C41E3A"
                     BorderThickness="2"
-                    Margin="0,0,0,20"
+                    FontSize="14"
                     TextWrapping="Wrap" />
 
-                <Label 
+
+                <Label
+                    Margin="0,0,0,5"
                     Content="Mot de passe"
                     FontSize="14"
                     FontWeight="Bold"
-                    Foreground="#333"
-                    Margin="0,0,0,5" />
+                    Foreground="#333" />
 
                 <PasswordBox
                     x:Name="txMdp"
                     Height="40"
+                    Margin="0,0,0,30"
                     Padding="10,8"
-                    FontSize="14"
                     BorderBrush="#C41E3A"
                     BorderThickness="2"
-                    Margin="0,0,0,30"
-                     />
+                    FontSize="14" />
 
                 <Button
                     x:Name="seConnecter"
                     Height="45"
+                    Background="#C41E3A"
+                    BorderThickness="0"
                     Click="seConnecter_Click"
                     Content="Se connecter"
+                    Cursor="Hand"
                     FontSize="16"
                     FontWeight="SemiBold"
-                    Background="#C41E3A"
-                    Foreground="#FFC107"
-                    BorderThickness="0"
-                    Cursor="Hand">
+                    Foreground="#FFC107">
                     <Button.Style>
                         <Style TargetType="Button">
                             <Setter Property="Template">
                                 <Setter.Value>
                                     <ControlTemplate TargetType="Button">
-                                        <Border 
+                                        <Border
+                                            Padding="20,10"
                                             Background="{TemplateBinding Background}"
-                                            CornerRadius="8"
-                                            Padding="20,10">
-                                            <ContentPresenter 
-                                                HorizontalAlignment="Center"
-                                                VerticalAlignment="Center" />
+                                            CornerRadius="8">
+                                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
                                         </Border>
                                         <ControlTemplate.Triggers>
                                             <Trigger Property="IsMouseOver" Value="True">

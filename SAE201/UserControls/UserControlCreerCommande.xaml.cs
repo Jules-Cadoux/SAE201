@@ -20,12 +20,28 @@ namespace SAE201.UserControls
 {
     public partial class UserControlCreerCommande : UserControl
     {
+        //------------------------CLASSE MODELE ...----------------------------------------------------------
+        public class GroupeFournisseur
+        {
+            public string NomFournisseur { get; set; }
+            public int NumFournisseur { get; set; }
+            public ObservableCollection<Demande> DemandesVins { get; set; }
+            public double PrixTotal { get; set; }
+
+            public GroupeFournisseur()
+            {
+                DemandesVins = new ObservableCollection<Demande>();
+            }
+        }
+
         private readonly Employe employeConnecte;
+        private readonly Action logout; 
         public ObservableCollection<Demande> LesDemandes { get; set; }
         public ObservableCollection<Commande> LesCommandes { get; set; }
         public ObservableCollection<GroupeFournisseur> LesCommandesParFournisseur { get; set; }
 
-        public UserControlCreerCommande(Employe employe)
+
+        public UserControlCreerCommande(Employe employe, Action logoutAction)
         {
             InitializeComponent();
             this.employeConnecte = employe;
@@ -33,8 +49,11 @@ namespace SAE201.UserControls
             LesCommandes = new ObservableCollection<Commande>();
             LesCommandesParFournisseur = new ObservableCollection<GroupeFournisseur>();
             this.DataContext = this;
+            this.logout = logoutAction; 
+
             ChargeData();
         }
+
 
         public void ChargeData()
         {
@@ -62,6 +81,48 @@ namespace SAE201.UserControls
                 LogError.Log(ex, "Erreur SQL");
             }
         }
+
+
+        private void buttEditerDemande_Click(object sender, RoutedEventArgs e)
+        {
+            if (dgCommandes.SelectedItem == null)
+            {
+                MessageBox.Show("Veuillez sélectionner une demande", "Attention", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            else
+            {
+                Demande demandeSelectionnee = (Demande)dgCommandes.SelectedItem;
+                UserControlModifierDemande ucModifierDemande = new UserControlModifierDemande(demandeSelectionnee);
+                Window dialogWindow = new Window()
+                {
+                    Title = "Modifier le statut de la demande",
+                    Content = ucModifierDemande,
+                    SizeToContent = SizeToContent.WidthAndHeight,
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                    ResizeMode = ResizeMode.NoResize
+                };
+
+                bool? result = dialogWindow.ShowDialog();
+                if (result == true)
+                {
+                    try
+                    {
+                        demandeSelectionnee.Update();
+                        ChargeData();
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("La demande n'a pas pu être modifiée.", "Erreur", MessageBoxButton.OK, MessageBoxImage.Error);
+                        LogError.Log(ex, "Erreur lors de la modification de demande");
+                    }
+                }
+            }
+        }
+
+
+
+        //---------------------------------GESTION COMMANDES----------------------------------------
+
 
         private void RegrouperDemandesParFournisseur()
         {
@@ -157,6 +218,18 @@ namespace SAE201.UserControls
                 {
                     try
                     {
+                        using NpgsqlCommand cmdCommande = new NpgsqlCommand(@"INSERT INTO sae201_nicolas.commande
+                (numemploye, datecommande, valider, prixtotal)
+                VALUES (@numemploye, @datecommande, @valider, @prixtotal)
+                RETURNING numcommande");
+
+                        cmdCommande.Parameters.AddWithValue("numemploye", this.employeConnecte.NumEmploye); 
+                        cmdCommande.Parameters.AddWithValue("datecommande", DateTime.Now);
+                        cmdCommande.Parameters.AddWithValue("valider", true);
+                        cmdCommande.Parameters.AddWithValue("prixtotal", groupeFournisseur.PrixTotal);
+
+                        int numeroCommande = DataAccess.Instance.ExecuteInsert(cmdCommande);
+
                         Commande commande = new Commande
                         {
                             NumEmploye = this.employeConnecte.NumEmploye,
@@ -166,14 +239,28 @@ namespace SAE201.UserControls
                         };
                         int numeroCommande = commande.Create();
 
-                        foreach (Demande demande in groupeFournisseur.DemandesVins)
-                        {
-                            demande.NumCommande = new Commande { NumCommande = numeroCommande };
-                            demande.UpdateCommande();
-                        }
+                            foreach (Demande demande in groupeFournisseur.DemandesVins)
+                            {
+                                demande.NumCommande = new Commande { NumCommande = numeroCommande };
+                                try
+                                {
+                                    demande.UpdateCommande();
+                                }
+                                catch (Exception ex)
+                                {
+                                    MessageBox.Show($"Erreur lors de la mise à jour d'une demande : {ex.Message}", "Erreur", MessageBoxButton.OK, MessageBoxImage.Error);
+                                    LogError.Log(ex, "Erreur lors de la mise à jour de demande");
+                                }
+                            }
 
-                        MessageBox.Show($"Commande #{numeroCommande} créée avec succès pour {groupeFournisseur.NomFournisseur}!");
-                        ChargeData();
+                            LesCommandesParFournisseur.Remove(groupeFournisseur);
+                            dgCommandes.Items.Refresh();  
+                            ChargeData();
+                        }
+                        else
+                        {
+                            MessageBox.Show("Erreur: La commande n'a pas pu être créée (numéro invalide)", "Erreur", MessageBoxButton.OK, MessageBoxImage.Error);
+                        }
                     }
                     catch (Exception ex)
                     {
@@ -183,6 +270,8 @@ namespace SAE201.UserControls
                 }
             }
         }
+
+
     }
 
     public class GroupeFournisseur
@@ -192,9 +281,9 @@ namespace SAE201.UserControls
         public ObservableCollection<Demande> DemandesVins { get; set; }
         public double PrixTotal { get; set; }
 
-        public GroupeFournisseur()
+        private void buttDeconnexion_Click(object sender, RoutedEventArgs e)
         {
-            DemandesVins = new ObservableCollection<Demande>();
+            logout?.Invoke();
         }
     }
 }

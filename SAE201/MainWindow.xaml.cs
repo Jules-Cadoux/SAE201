@@ -20,31 +20,33 @@ namespace SAE201
     /// </summary>
     public partial class MainWindow : Window
     {
-
         private Employe employeConnecte;
 
         public MainWindow()
         {
             InitializeComponent();
             this.WindowState = WindowState.Maximized;
+            this.Visibility = Visibility.Collapsed;
             Login();
             if (employeConnecte == null)
             {
                 Close();
                 return;
             }
+            this.Visibility = Visibility.Visible;
             ChargeUserControl();
-
-
         }
+
         private void Vendeur()
         {
-            Main.Content = new RechercherVin(employeConnecte);
+            Main.Content = new RechercherVin(employeConnecte, LogoutAndShowLogin);
         }
+
         private void Responsable()
         {
-            Main.Content = new UserControlCreerCommande(employeConnecte);
+            Main.Content = new UserControlCreerCommande(employeConnecte, LogoutAndShowLogin);
         }
+
         private void Login()
         {
             Connection co = new Connection();
@@ -53,6 +55,7 @@ namespace SAE201
                 employeConnecte = co.EmployeConnecte;
             }
         }
+
         private void ChargeUserControl()
         {
             Main.Content = null;
@@ -69,6 +72,19 @@ namespace SAE201
                     MessageBox.Show("Rôle non reconnu");
                     break;
             }
+        }
+
+        private void LogoutAndShowLogin()
+        {
+            employeConnecte = null;
+            Main.Content = null;
+
+            this.Visibility = Visibility.Collapsed;
+
+            Login();
+
+            ChargeUserControl();
+            this.Visibility = Visibility.Visible;
         }
     }
 }
