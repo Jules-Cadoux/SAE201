@@ -18,39 +18,21 @@ using System.Windows.Shapes;
 
 namespace SAE201.UserControls
 {
+    /// <summary>
+    /// Logique d'interaction pour UserControlCreerCommande.xaml
+    /// </summary>
     public partial class UserControlCreerCommande : UserControl
     {
-        //------------------------CLASSE MODELE ...----------------------------------------------------------
-        public class GroupeFournisseur
-        {
-            public string NomFournisseur { get; set; }
-            public int NumFournisseur { get; set; }
-            public ObservableCollection<Demande> DemandesVins { get; set; }
-            public double PrixTotal { get; set; }
-
-            public GroupeFournisseur()
-            {
-                DemandesVins = new ObservableCollection<Demande>();
-            }
-        }
-
         private readonly Employe employeConnecte;
-        private readonly Action logout; 
         public ObservableCollection<Demande> LesDemandes { get; set; }
         public ObservableCollection<Commande> LesCommandes { get; set; }
-        public ObservableCollection<GroupeFournisseur> LesCommandesParFournisseur { get; set; }
+        public ObservableCollection<GroupeFournisseur> LesCommandesParFournisseur { get; set; } = new ObservableCollection<GroupeFournisseur>();
 
 
-        public UserControlCreerCommande(Employe employe, Action logoutAction)
+        public UserControlCreerCommande(Employe employe)
         {
             InitializeComponent();
             this.employeConnecte = employe;
-            LesDemandes = new ObservableCollection<Demande>();
-            LesCommandes = new ObservableCollection<Commande>();
-            LesCommandesParFournisseur = new ObservableCollection<GroupeFournisseur>();
-            this.DataContext = this;
-            this.logout = logoutAction; 
-
             ChargeData();
         }
 
@@ -59,21 +41,15 @@ namespace SAE201.UserControls
         {
             try
             {
-                List<Demande> demandesFromDb = Demande.FindAll();
-                LesDemandes.Clear();
-                foreach (var d in demandesFromDb.Where(d => (d.Accepter == "Accepter" && d.NumCommande == null) || d.Accepter == "En Attente" || d.Accepter == "Refuser"))
-                {
-                    LesDemandes.Add(d);
-                }
+                List<Demande> demandes = Demande.FindAll();
+                LesDemandes = new ObservableCollection<Demande>(
+                    demandes.Where(d => d.Accepter == "Accepter" && d.NumCommande == null || d.Accepter == "En Attente" || d.Accepter == "Refuser").ToList()
+                );
 
-                List<Commande> commandesFromDb = Commande.FindAll();
-                LesCommandes.Clear();
-                foreach (var c in commandesFromDb)
-                {
-                    LesCommandes.Add(c);
-                }
-
+                List<Commande> commandes = Commande.FindAll();
+                LesCommandes = new ObservableCollection<Commande>(commandes);
                 RegrouperDemandesParFournisseur();
+                this.DataContext = this;
             }
             catch (Exception ex)
             {
@@ -82,6 +58,50 @@ namespace SAE201.UserControls
             }
         }
 
+
+        private void RegrouperDemandesParFournisseur()
+        {
+            List<Demande> demandesAcceptees = LesDemandes.Where(d => d.Accepter == "Accepter").ToList();
+            Dictionary<int, List<Demande>> demandesParFournisseur = new Dictionary<int, List<Demande>>();
+
+            foreach (Demande demande in demandesAcceptees)
+            {
+                int numFournisseur = demande.NumVin.NumFournisseur.NumFournisseur;
+
+                if (!demandesParFournisseur.ContainsKey(numFournisseur))
+                {
+                    demandesParFournisseur[numFournisseur] = new List<Demande>();
+                }
+
+                demandesParFournisseur[numFournisseur].Add(demande);
+            }
+            LesCommandesParFournisseur.Clear();
+            foreach (KeyValuePair<int, List<Demande>> kvp in demandesParFournisseur)
+            {
+                GroupeFournisseur groupeFournisseur = new GroupeFournisseur();
+                groupeFournisseur.NomFournisseur = kvp.Value[0].NumVin.NumFournisseur.NomFournisseur;
+                groupeFournisseur.NumFournisseur = kvp.Key;
+                groupeFournisseur.DemandesVins = new ObservableCollection<Demande>();
+
+                foreach (Demande demande in kvp.Value)
+                {
+                    groupeFournisseur.DemandesVins.Add(demande);
+                }
+
+                groupeFournisseur.PrixTotal = CalculerPrixTotal(kvp.Value);
+                LesCommandesParFournisseur.Add(groupeFournisseur);
+            }
+        }
+
+        private double CalculerPrixTotal(List<Demande> demandes)
+        {
+            double total = 0;
+            foreach (Demande demande in demandes)
+            {
+                total += demande.NumVin.PrixVin * demande.QuantiteDemande;
+            }
+            return total;
+        }
 
         private void buttEditerDemande_Click(object sender, RoutedEventArgs e)
         {
@@ -119,95 +139,27 @@ namespace SAE201.UserControls
             }
         }
 
-
-
-        //---------------------------------GESTION COMMANDES----------------------------------------
-
-
-        private void RegrouperDemandesParFournisseur()
-        {
-            List<Demande> demandesAcceptees = LesDemandes.Where(d => d.Accepter == "Accepter").ToList();
-            Dictionary<int, List<Demande>> demandesParFournisseur = new Dictionary<int, List<Demande>>();
-
-            foreach (Demande demande in demandesAcceptees)
-            {
-                if (demande.NumVin?.NumFournisseur != null)
-                {
-                    int numFournisseur = demande.NumVin.NumFournisseur.NumFournisseur;
-                    if (!demandesParFournisseur.ContainsKey(numFournisseur))
-                    {
-                        demandesParFournisseur[numFournisseur] = new List<Demande>();
-                    }
-                    demandesParFournisseur[numFournisseur].Add(demande);
-                }
-            }
-
-            LesCommandesParFournisseur.Clear();
-
-            foreach (KeyValuePair<int, List<Demande>> kvp in demandesParFournisseur)
-            {
-                GroupeFournisseur groupeFournisseur = new GroupeFournisseur();
-                groupeFournisseur.NomFournisseur = kvp.Value[0].NumVin.NumFournisseur.NomFournisseur;
-                groupeFournisseur.NumFournisseur = kvp.Key;
-                groupeFournisseur.DemandesVins = new ObservableCollection<Demande>(kvp.Value);
-                groupeFournisseur.PrixTotal = CalculerPrixTotal(kvp.Value);
-                LesCommandesParFournisseur.Add(groupeFournisseur);
-            }
-        }
-
-        private double CalculerPrixTotal(List<Demande> demandes)
-        {
-            double total = 0;
-            foreach (Demande demande in demandes)
-            {
-                if (demande.NumVin != null)
-                {
-                    total += demande.NumVin.PrixVin * demande.QuantiteDemande;
-                }
-            }
-            return total;
-        }
-
-        private void buttEditerDemande_Click(object sender, RoutedEventArgs e)
-        {
-            if (dgCommandes.SelectedItem is Demande demandeSelectionnee)
-            {
-                UserControlModifierDemande ucModifierDemande = new UserControlModifierDemande(demandeSelectionnee);
-                Window dialogWindow = new Window()
-                {
-                    Title = "Modifier le statut de la demande",
-                    Content = ucModifierDemande,
-                    SizeToContent = SizeToContent.WidthAndHeight,
-                    WindowStartupLocation = WindowStartupLocation.CenterOwner,
-                    ResizeMode = ResizeMode.NoResize
-                };
-
-                if (dialogWindow.ShowDialog() == true)
-                {
-                    try
-                    {
-                        demandeSelectionnee.Update();
-                        ChargeData();
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show("La demande n'a pas pu être modifiée.", "Erreur", MessageBoxButton.OK, MessageBoxImage.Error);
-                        LogError.Log(ex, "Erreur lors de la modification de demande");
-                    }
-                }
-            }
-            else
-            {
-                MessageBox.Show("Veuillez sélectionner une demande", "Attention", MessageBoxButton.OK, MessageBoxImage.Information);
-            }
-        }
-
         private void buttValiderCommande_Click(object sender, RoutedEventArgs e)
         {
-            if (sender is Button bouton && bouton.DataContext is GroupeFournisseur groupeFournisseur)
+            try
             {
+                Button bouton = sender as Button;
+                if (bouton == null)
+                {
+                    MessageBox.Show("Erreur: impossible de récupérer le bouton", "Erreur", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
+
+                GroupeFournisseur groupeFournisseur = bouton.DataContext as GroupeFournisseur;
+                if (groupeFournisseur == null)
+                {
+                    MessageBox.Show("Erreur: impossible de récupérer les informations du fournisseur", "Erreur", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
+
                 MessageBoxResult result = MessageBox.Show(
                     $"Êtes-vous sûr de vouloir valider la commande pour {groupeFournisseur.NomFournisseur} ?\n" +
+                    $"Nombre d'articles : {groupeFournisseur.DemandesVins.Count}\n" +
                     $"Prix total : {groupeFournisseur.PrixTotal:C2}",
                     "Confirmation",
                     MessageBoxButton.YesNo,
@@ -223,7 +175,7 @@ namespace SAE201.UserControls
                 VALUES (@numemploye, @datecommande, @valider, @prixtotal)
                 RETURNING numcommande");
 
-                        cmdCommande.Parameters.AddWithValue("numemploye", this.employeConnecte.NumEmploye); 
+                        cmdCommande.Parameters.AddWithValue("numemploye", this.employeConnecte.NumEmploye);
                         cmdCommande.Parameters.AddWithValue("datecommande", DateTime.Now);
                         cmdCommande.Parameters.AddWithValue("valider", true);
                         cmdCommande.Parameters.AddWithValue("prixtotal", groupeFournisseur.PrixTotal);
@@ -232,12 +184,22 @@ namespace SAE201.UserControls
 
                         Commande commande = new Commande
                         {
-                            NumEmploye = this.employeConnecte.NumEmploye,
+                            NumCommande = numeroCommande,
                             DateCommande = DateTime.Now,
+                            NumEmploye = this.employeConnecte.NumEmploye,
                             Valider = true,
                             PrixTotal = groupeFournisseur.PrixTotal
                         };
-                        int numeroCommande = commande.Create();
+
+                        if (numeroCommande > 0)
+                        {
+                            MessageBox.Show(
+                                $"Commande #{numeroCommande} créée avec succès pour {groupeFournisseur.NomFournisseur}!\n" +
+                                $"Prix total : {groupeFournisseur.PrixTotal:C2}",
+                                "Succès",
+                                MessageBoxButton.OK,
+                                MessageBoxImage.Information
+                            );
 
                             foreach (Demande demande in groupeFournisseur.DemandesVins)
                             {
@@ -252,9 +214,8 @@ namespace SAE201.UserControls
                                     LogError.Log(ex, "Erreur lors de la mise à jour de demande");
                                 }
                             }
-
                             LesCommandesParFournisseur.Remove(groupeFournisseur);
-                            dgCommandes.Items.Refresh();  
+                            dgCommandes.Items.Refresh();
                             ChargeData();
                         }
                         else
@@ -264,10 +225,15 @@ namespace SAE201.UserControls
                     }
                     catch (Exception ex)
                     {
-                        MessageBox.Show("Erreur lors de l'ajout : " + ex.Message, "Erreur", MessageBoxButton.OK, MessageBoxImage.Error);
-                        LogError.Log(ex, "Erreur lors de la création de commande");
+                        MessageBox.Show($"Erreur lors de l'insertion de la commande : {ex.Message}", "Erreur", MessageBoxButton.OK, MessageBoxImage.Error);
+                        LogError.Log(ex, "Erreur SQL lors de l'insertion de commande");
                     }
                 }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Erreur lors de la création de la commande : {ex.Message}", "Erreur", MessageBoxButton.OK, MessageBoxImage.Error);
+                LogError.Log(ex, "Erreur lors de la création de commande");
             }
         }
 
@@ -276,14 +242,14 @@ namespace SAE201.UserControls
 
     public class GroupeFournisseur
     {
-        public string NomFournisseur { get; set; } = string.Empty;
+        public string NomFournisseur { get; set; }
         public int NumFournisseur { get; set; }
         public ObservableCollection<Demande> DemandesVins { get; set; }
         public double PrixTotal { get; set; }
 
-        private void buttDeconnexion_Click(object sender, RoutedEventArgs e)
+        public GroupeFournisseur()
         {
-            logout?.Invoke();
+            DemandesVins = new ObservableCollection<Demande>();
         }
     }
 }
