@@ -49,7 +49,7 @@ namespace SAE201.UserControls
 
         public ObservableCollection<VinDemande> VinsDemande { get; set; } = new ObservableCollection<VinDemande>();
         public ObservableCollection<Demande> LesDemandes { get; set; }
-        private readonly Action logout;
+        private readonly Action onLogout;
 
         public RechercherVin(Employe employe, Action logoutAction)  
         {
@@ -398,7 +398,7 @@ namespace SAE201.UserControls
 
         private void buttDeconnexion_Click(object sender, RoutedEventArgs e)
         {
-            logout?.Invoke();
+            onLogout?.Invoke();
         }
 
     }
