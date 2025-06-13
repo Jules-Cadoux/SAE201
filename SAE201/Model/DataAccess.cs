@@ -23,7 +23,6 @@ namespace SAE201.Model
             }
         }
 
-        //  Constructeur privé pour empêcher l'instanciation multiple
         public DataAccess(string user, string password)
         {
             connectionString = $"Host=srv-peda-new;Port=5433;Username={user};Password={password};Database=sae201_Nicolas;Options='-c search_path=sae201_nicolas'";
@@ -40,8 +39,6 @@ namespace SAE201.Model
             }
         }
 
-
-        // pour récupérer la connexion (et l'ouvrir si nécessaire)
         public NpgsqlConnection GetConnection()
         {
             if (connection.State == ConnectionState.Closed || connection.State == ConnectionState.Broken)
@@ -58,7 +55,6 @@ namespace SAE201.Model
             return connection;
         }
 
-        //  pour requêtes SELECT et retourne un DataTable ( table de données en mémoire)
         public DataTable ExecuteSelect(NpgsqlCommand cmd)
         {
             DataTable dataTable = new DataTable();
@@ -78,8 +74,6 @@ namespace SAE201.Model
             return dataTable;
         }
 
-        //   pour requêtes INSERT et renvoie l'ID généré
-
         public int ExecuteInsert(NpgsqlCommand cmd)
         {
             int nb = 0;
@@ -97,10 +91,6 @@ namespace SAE201.Model
             return nb;
         }
 
-
-
-
-        //  pour requêtes UPDATE, DELETE
         public int ExecuteSet(NpgsqlCommand cmd)
         {
             int nb = 0;
@@ -118,7 +108,6 @@ namespace SAE201.Model
 
         }
 
-        // pour requêtes avec une seule valeur retour  (ex : COUNT, SUM) 
         public object ExecuteSelectUneValeur(NpgsqlCommand cmd)
         {
             object res = null;
@@ -136,7 +125,6 @@ namespace SAE201.Model
 
         }
 
-        //  Fermer la connexion 
         public void CloseConnection()
         {
             if (connection.State == ConnectionState.Open)

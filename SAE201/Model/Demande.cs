@@ -160,12 +160,13 @@ namespace SAE201.Model
             set
             {
                 if (value != "Accepter" && value != "En Attente" && value != "Refuser")
+                {
                     MessageBox.Show("Il faut choisir Accepter, En Attente ou Refuser", "Erreur demande", MessageBoxButton.OK, MessageBoxImage.Error);
-                this.accepter = value;                
+                    //throw new ArgumentException("Le statut doit être Accepter, En Attente ou Refuser.");
+                } 
+                this.accepter = value;
                 value = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(value.ToLower());
                 OnPropertyChanged(nameof(Accepter));
-
-
             }
         }
 

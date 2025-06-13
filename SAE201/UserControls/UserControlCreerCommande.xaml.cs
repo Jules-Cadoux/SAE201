@@ -123,10 +123,7 @@ namespace SAE201.UserControls
 
         private void RegrouperDemandesParFournisseur()
         {
-            // 1. Filtrer les demandes acceptées depuis la liste principale
             List<Demande> demandesAcceptees = LesDemandes.Where(d => d.Accepter == "Accepter").ToList();
-
-            // 2. Regrouper ces demandes par fournisseur dans un dictionnaire
             Dictionary<int, List<Demande>> demandesParFournisseur = new Dictionary<int, List<Demande>>();
 
             foreach (Demande demande in demandesAcceptees)
