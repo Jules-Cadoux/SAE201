@@ -8,7 +8,7 @@
     Title="Connection"
     Width="350"
     Height="600"
-    mc:Ignorable="d" KeyDown="Window_KeyDown">
+    mc:Ignorable="d" KeyDown="Window_KeyDown" ResizeMode="NoResize" WindowStartupLocation="CenterScreen">
 
     
     <Grid Background="#F5F5F5">
@@ -23,7 +23,7 @@
             >
 
             <StackPanel Margin="40,50,40,50">
-               
+
                 <Border
                     HorizontalAlignment="Center"
                     Background="#C41E3A"
@@ -39,7 +39,6 @@
                         VerticalAlignment="Center" />
                 </Border>
 
-                
                 <Label
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center"
@@ -49,7 +48,6 @@
                     Foreground="#666"
                     Margin="0,0,0,30" />
 
-                
                 <Label 
                     Content="Identifiant"
                     FontSize="14"
@@ -67,7 +65,6 @@
                     Margin="0,0,0,20"
                     TextWrapping="Wrap" />
 
-                
                 <Label 
                     Content="Mot de passe"
                     FontSize="14"

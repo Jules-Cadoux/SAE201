@@ -112,7 +112,6 @@ namespace SAE201.Model
             {
                 try
                 {
-                    // Trouver la première demande liée à cette commande
                     Demande demande = Demande.FindAll().FirstOrDefault(d => d.NumCommande?.NumCommande == this.NumCommande);
 
                     if (demande != null && demande.NumVin?.NumFournisseur != null)
@@ -127,7 +126,6 @@ namespace SAE201.Model
                 }
             }
         }
-
 
         public override bool Equals(object? obj)
         {
@@ -199,7 +197,7 @@ namespace SAE201.Model
         public static List<Commande> FindAll()
         {
             List<Commande> commandes = new List<Commande>();
-            using (NpgsqlCommand cmd = new NpgsqlCommand("SELECT * FROM commande"))
+            using (NpgsqlCommand cmd = new NpgsqlCommand("SELECT * FROM commande order by datecommande DESC"))
             {
                 DataTable dt = DataAccess.Instance.ExecuteSelect(cmd);
                 foreach (DataRow row in dt.Rows)
